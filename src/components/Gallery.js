@@ -39,7 +39,7 @@ const Gallery = () => {
       <div className="gallery">
         <div {...getRootProps()} className="dropzone">
           <input {...getInputProps()} />
-          <p>Drag & drop images here, or click to select</p>
+          <p>Drag &amp; drop images here, or click to select</p>
         </div>
         
         <div className="image-grid">
