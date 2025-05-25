@@ -1,0 +1,24 @@
+{
+  "theme": {
+    "colors": {
+      "primary": "#2c3e50",
+      "secondary": "#ecf0f1",
+      "accent": "#e74c3c"
+    },
+    "fonts": {
+      "primary": "'Helvetica Neue', Helvetica, Arial, sans-serif",
+      "secondary": "'Great Vibes', cursive"
+    }
+  },
+  "images": {
+    "uploadPath": "/public/uploads",
+    "allowedFormats": ["jpg", "jpeg", "png", "webp"],
+    "maxFileSizeMB": 5,
+    "thumbnailSizes": [300, 600, 1200]
+  },
+  "music": {
+    "backgroundMusic": "/audio/background.mp3",
+    "volume": 0.5,
+    "autoplay": true
+  }
+}
