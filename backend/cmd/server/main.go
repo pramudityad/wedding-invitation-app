@@ -32,6 +32,9 @@ func main() {
 	// 4. Router setup
 	r := mux.NewRouter()
 
+	// Admin route - no slug required
+	r.HandleFunc("/admin/rsvps", appCtx.AdminHandler).Methods("GET")
+
 	// API subrouter for /api/{slug}/...
 	api := r.PathPrefix("/api/{slug}").Subrouter()
 	api.HandleFunc("/login", appCtx.LoginHandler).Methods("POST")

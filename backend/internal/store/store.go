@@ -36,6 +36,15 @@ func (s *Store) UpdateGuest(g *models.Guest) error {
 	return s.DB.Save(g).Error
 }
 
+// ListGuests retrieves all guest records
+func (s *Store) ListGuests() ([]models.Guest, error) {
+	var guests []models.Guest
+	if err := s.DB.Find(&guests).Error; err != nil {
+		return nil, err
+	}
+	return guests, nil
+}
+
 // ListEvents fetches all events for given slug
 func (s *Store) ListEvents(slug string) ([]models.Event, error) {
 	var evs []models.Event
