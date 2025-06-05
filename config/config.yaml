@@ -1,0 +1,16 @@
+# config/config.yaml
+theme:
+  primaryColor: "#E2B0FF"
+  fontFamily: "Playfair Display, serif"
+headerImage: "/images/header.jpg"
+footerImage: "/images/footer.jpg"
+backgroundImage: "/images/bg.jpg"
+
+musicUrl: "/music/wedding-song.mp3"
+
+bankInfo:
+  bankName: "Bank ABC"
+  accountNumber: "123-456-789"
+  accountHolder: "Alice & Bob"
+
+mapEmbed: "https://www.google.com/maps/embed?...yourVenue..."
