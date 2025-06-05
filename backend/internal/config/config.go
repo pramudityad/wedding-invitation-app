@@ -27,6 +27,10 @@ type Config struct {
 	} `yaml:"bankInfo"`
 
 	MapEmbed string `yaml:"mapEmbed"`
+
+	Admin struct {
+		Password string `yaml:"password"`
+	} `yaml:"admin"`
 }
 
 // LoadConfig reads and parses config.yaml into Config struct

@@ -14,3 +14,6 @@ bankInfo:
   accountHolder: "Alice & Bob"
 
 mapEmbed: "https://www.google.com/maps/embed?...yourVenue..."
+
+admin:
+  password: "secretadmin123"
