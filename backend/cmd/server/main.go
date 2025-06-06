@@ -38,6 +38,11 @@ func main() {
 	// API subrouter for /api/{slug}/...
 	api := r.PathPrefix("/api/{slug}").Subrouter()
 	api.HandleFunc("/login", appCtx.LoginHandler).Methods("POST")
+
+	// Messages endpoint
+	messagesHandler := handlers.NewMessagesHandler(st)
+	api.HandleFunc("/messages", messagesHandler.GetMessages).Methods("GET")
+
 	api.HandleFunc("/invite", appCtx.GetInviteHandler).Methods("GET")
 	api.HandleFunc("/rsvp", appCtx.RSVPHandler).Methods("POST")
 

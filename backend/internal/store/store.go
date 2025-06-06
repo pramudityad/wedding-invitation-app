@@ -63,6 +63,15 @@ func (s *Store) ListGallery() ([]models.Gallery, error) {
 	return items, nil
 }
 
+// GetGuestsWithMessages returns guests who have left messages
+func (s *Store) GetGuestsWithMessages() ([]models.Guest, error) {
+	var guests []models.Guest
+	if err := s.DB.Where("message IS NOT NULL AND message != ''").Find(&guests).Error; err != nil {
+		return nil, err
+	}
+	return guests, nil
+}
+
 // RecordView sets ViewedAt for a guest
 func (s *Store) RecordView(slug string) error {
 	return s.DB.Model(&models.Guest{}).Where("slug = ?", slug).

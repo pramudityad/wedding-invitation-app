@@ -21,6 +21,7 @@ func main() {
 	guests := []models.Guest{
 		{Slug: "jane-doe", Name: "Jane Doe"},
 		{Slug: "john-smith", Name: "John Smith"},
+		{Slug: "lorep", Name: "Ipsum Dolom"},
 	}
 	for i := range guests {
 		hash, err := handlers.HashPassword("secret123")
