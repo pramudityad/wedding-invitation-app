@@ -2,6 +2,7 @@ package auth
 
 import (
 	"net/http"
+	"strings"
 	"time"
 	"wedding-invitation-backend/config"
 
@@ -35,12 +36,25 @@ func JWTMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		// Remove "Bearer " prefix if present
+		if len(tokenString) > 7 && strings.HasPrefix(tokenString, "Bearer ") {
+			tokenString = tokenString[7:]
+		}
+
 		claims := &Claims{}
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 			return []byte(config.JWTSecret), nil
 		})
 
-		if err != nil || !token.Valid {
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error":   "Invalid token",
+				"details": err.Error(),
+			})
+			return
+		}
+
+		if !token.Valid {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			return
 		}

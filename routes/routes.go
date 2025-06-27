@@ -46,6 +46,11 @@ func SetupRoutes(r *gin.Engine) {
 
 		protected.GET("/admin/rsvps", handleGetAllRSVPs)
 
+		// Comment routes
+		protected.POST("/comments", handleCommentSubmission)
+		protected.GET("/comments/me", handleGetMyComments)
+		protected.GET("/comments", handleGetAllComments)
+
 		// Spotify routes
 		protected.GET("/spotify/auth", spotify.AuthHandler)
 		protected.GET("/spotify/callback", spotify.CallbackHandler)
@@ -144,5 +149,65 @@ func handleGetAllRSVPs(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"count": len(guests),
 		"rsvps": guests,
+	})
+}
+
+func handleCommentSubmission(c *gin.Context) {
+	var comment models.Comment
+	if err := c.ShouldBindJSON(&comment); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
+		return
+	}
+
+	// Get guest ID from JWT claims
+	username := c.MustGet("username").(string)
+	guest, err := models.GetGuestByEmail(database.DB, username)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find guest"})
+		return
+	}
+
+	comment.GuestID = guest.ID
+	if err := comment.Create(database.DB); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create comment"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Comment created successfully",
+		"comment": comment,
+	})
+}
+
+func handleGetMyComments(c *gin.Context) {
+	username := c.MustGet("username").(string)
+	guest, err := models.GetGuestByEmail(database.DB, username)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find guest"})
+		return
+	}
+
+	comments, err := models.GetCommentsByGuestID(database.DB, guest.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch comments"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"count":    len(comments),
+		"comments": comments,
+	})
+}
+
+func handleGetAllComments(c *gin.Context) {
+	comments, err := models.GetAllComments(database.DB)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch comments"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"count":    len(comments),
+		"comments": comments,
 	})
 }
