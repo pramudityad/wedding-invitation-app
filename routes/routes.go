@@ -63,7 +63,7 @@ func SetupRoutes(r *gin.Engine) {
 		protected.GET("/protected", func(c *gin.Context) {
 			username := c.MustGet("username").(string)
 			c.JSON(http.StatusOK, gin.H{
-				"message": "Hello " + username,
+				"message": username,
 				"status":  "protected",
 			})
 		})
@@ -251,7 +251,7 @@ func handleGetMyComments(c *gin.Context) {
 }
 
 func handleGetAllComments(c *gin.Context) {
-	comments, err := models.GetAllComments(database.DB)
+	comments, err := models.GetAllCommentsWithGuests(database.DB)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch comments"})
 		return

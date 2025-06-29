@@ -1,9 +1,9 @@
 import api from './axiosConfig';
 
-export const login = async () => {
+export const login = async (name) => {
   try {
-    const response = await api.post('/login', {});
-    return response.data.token;
+    const response = await api.post('/login', { name });
+    return response.data;
   } catch (error) {
     console.error('Login failed:', error);
     throw error;

@@ -58,8 +58,13 @@ func GetCommentsByGuestID(db *sql.DB, guestID int64) ([]Comment, error) {
 	return comments, nil
 }
 
+type CommentWithGuest struct {
+	Comment
+	GuestName string
+}
+
 func GetAllComments(db *sql.DB) ([]Comment, error) {
-	stmt := `SELECT 
+	stmt := `SELECT
 		id, guest_id, content, created_at
 		FROM comments
 		ORDER BY created_at DESC`
@@ -78,6 +83,39 @@ func GetAllComments(db *sql.DB) ([]Comment, error) {
 			&comment.GuestID,
 			&comment.Content,
 			&comment.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		comments = append(comments, comment)
+	}
+
+	return comments, nil
+}
+
+func GetAllCommentsWithGuests(db *sql.DB) ([]CommentWithGuest, error) {
+	stmt := `SELECT
+		c.id, c.guest_id, c.content, c.created_at,
+		g.name as guest_name
+		FROM comments c
+		JOIN guests g ON c.guest_id = g.id
+		ORDER BY c.created_at DESC`
+
+	rows, err := db.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var comments []CommentWithGuest
+	for rows.Next() {
+		var comment CommentWithGuest
+		err := rows.Scan(
+			&comment.ID,
+			&comment.GuestID,
+			&comment.Content,
+			&comment.CreatedAt,
+			&comment.GuestName,
 		)
 		if err != nil {
 			return nil, err

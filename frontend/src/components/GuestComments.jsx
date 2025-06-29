@@ -1,22 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, List, ListItem, ListItemText } from '@mui/material';
+import { getAllComments } from '../api/comments';
 
 export default function GuestComments() {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await getAllComments();
+        setComments(response.comments);
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchComments();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (newComment.trim()) {
+      // TODO: Implement actual API call to post comment
       setComments([...comments, {
         id: Date.now(),
-        text: newComment,
-        author: 'Guest',
-        timestamp: new Date().toLocaleString()
+        content: newComment,
+        guest_name: 'You',
+        created_at: new Date().toISOString()
       }]);
       setNewComment('');
     }
   };
+
+  if (loading) {
+    return <Typography>Loading comments...</Typography>;
+  }
 
   return (
     <Box sx={{ p: 2 }}>
@@ -40,8 +61,8 @@ export default function GuestComments() {
         {comments.map(comment => (
           <ListItem key={comment.id}>
             <ListItemText
-              primary={comment.text}
-              secondary={`${comment.author} - ${comment.timestamp}`}
+              primary={comment.content}
+              secondary={`${comment.guest_name} - ${new Date(comment.created_at).toLocaleString()}`}
             />
           </ListItem>
         ))}

@@ -1,8 +1,68 @@
 import { Box, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { getGuestList } from '../api/guest';
+import { getAllComments } from '../api/comments';
+import { login } from '../api/auth';
+import axios from 'axios';
 
 export default function InvitationLanding() {
   const navigate = useNavigate();
+  const [rsvpCount, setRsvpCount] = useState(0);
+  const [featuredComments, setFeaturedComments] = useState([]);
+  const [token, setToken] = useState(null);
+  const [protectedData, setProtectedData] = useState(null);
+
+  const fetchProtectedData = async (token) => {
+    try {
+      console.log('Making protected request with token:', token);
+      const response = await axios.get('/protected', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      console.log('Protected endpoint response:', response.data);
+      setProtectedData({ name: response.data.message });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch protected data:', error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    console.log('InvitationLanding mounted');
+    const token = localStorage.getItem('weddingToken');
+    console.log('Token from localStorage:', token);
+    if (!token) {
+      console.log('No token found, redirecting to login');
+      navigate('/login');
+      return;
+    }
+    
+    setToken(token);
+    console.log('Attempting to fetch protected data with token:', token);
+    fetchProtectedData(token)
+      .then(data => console.log('Protected data response:', data))
+      .catch(err => {
+        console.error('Failed to fetch protected data:', err);
+        localStorage.removeItem('weddingToken');
+        navigate('/login');
+      });
+
+    const fetchData = async () => {
+      try {
+        const guests = await getGuestList();
+        setRsvpCount(guests.length);
+        
+        const comments = await getAllComments();
+        setFeaturedComments(comments.comments.slice(0, 3)); // Show top 3 comments
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+    };
+
+
+    fetchData();
+  }, [navigate]);
   
   return (
     <Box sx={{
@@ -45,7 +105,34 @@ export default function InvitationLanding() {
           }}
         >
           Join us as we celebrate our love and begin our new journey together
+          <br />
+          {protectedData ? `Welcome, ${protectedData.name}!` : 'Loading welcome message...'}
+          <br />
+          {rsvpCount > 0 && `${rsvpCount} guests have RSVP'd so far!`}
         </Typography>
+        
+        {featuredComments.length > 0 && (
+          <Box sx={{ mt: 4, mb: 4 }}>
+            <Typography variant="h6" sx={{ mb: 2, fontFamily: "'Montserrat', sans-serif" }}>
+              Recent Guest Comments:
+            </Typography>
+            {featuredComments.map((comment, index) => (
+              <Typography
+                key={index}
+                variant="body1"
+                sx={{
+                  fontStyle: 'italic',
+                  mb: 1,
+                  p: 2,
+                  backgroundColor: 'rgba(0,0,0,0.05)',
+                  borderRadius: 1
+                }}
+              >
+                "{comment.content}"
+              </Typography>
+            ))}
+          </Box>
+        )}
         
         <Box sx={{
           display: 'flex',

@@ -23,8 +23,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Handle unauthorized errors
+    if (error.response?.status === 401 && window.location.pathname !== '/') {
+      // Handle unauthorized errors except on home page
       localStorage.removeItem('weddingToken');
       window.location.href = '/login';
     }
