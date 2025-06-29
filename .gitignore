@@ -52,3 +52,22 @@ Thumbs.db
 
 # Rooroo system files
 .roo*
+
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Vite cache
+.cache/
+.temp/
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
