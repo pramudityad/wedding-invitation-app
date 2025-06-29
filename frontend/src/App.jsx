@@ -2,18 +2,8 @@ import { AppProvider } from './contexts/AppContext';
 import { AuthProvider } from './contexts/AuthContext';
 import AppRoutes from './routes/Routes';
 import { BrowserRouter } from 'react-router-dom';
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#4a148c', // Purple theme
-    },
-    secondary: {
-      main: '#ff6f00', // Orange accent
-    },
-  },
-});
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import theme from './theme';
 
 function App() {
   return (

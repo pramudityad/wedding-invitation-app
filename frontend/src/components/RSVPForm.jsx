@@ -27,30 +27,6 @@ function RSVPForm() {
   return (
     <form onSubmit={handleSubmit} style={styles.form}>
       <h3 style={styles.formTitle}>RSVP</h3>
-      
-      <div style={styles.formGroup}>
-        <label style={styles.label}>Name:</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          style={styles.input}
-          required
-        />
-      </div>
-
-      <div style={styles.formGroup}>
-        <label style={styles.label}>Email:</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          style={styles.input}
-          required
-        />
-      </div>
 
       <div style={styles.formGroup}>
         <label style={styles.label}>Will you be attending?</label>
@@ -65,29 +41,6 @@ function RSVPForm() {
         </select>
       </div>
 
-      <div style={styles.formGroup}>
-        <label style={styles.label}>Number of guests:</label>
-        <input
-          type="number"
-          name="guests"
-          value={formData.guests}
-          onChange={handleChange}
-          min="1"
-          max="10"
-          style={styles.input}
-        />
-      </div>
-
-      <div style={styles.formGroup}>
-        <label style={styles.label}>Message (optional):</label>
-        <textarea
-          name="message"
-          value={formData.message}
-          onChange={handleChange}
-          style={styles.textarea}
-        />
-      </div>
-
       <button type="submit" style={styles.submitButton}>
         Submit RSVP
       </button>
@@ -97,59 +50,89 @@ function RSVPForm() {
 
 const styles = {
   form: {
-    marginTop: '2rem',
-    padding: '2rem',
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    marginTop: '3rem',
+    padding: '3rem',
+    backgroundColor: '#f9f9f7',
+    borderRadius: '12px',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+    maxWidth: '600px',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   formTitle: {
-    marginBottom: '1.5rem',
-    color: '#8b5a2b',
+    marginBottom: '2rem',
+    color: '#333',
     textAlign: 'center',
+    fontSize: '1.8rem',
+    fontWeight: '300',
+    letterSpacing: '0.5px',
   },
   formGroup: {
-    marginBottom: '1rem',
+    marginBottom: '1.5rem',
   },
   label: {
     display: 'block',
-    marginBottom: '0.5rem',
-    fontWeight: '500',
+    marginBottom: '0.75rem',
+    fontWeight: '400',
+    color: '#555',
+    fontSize: '0.95rem',
   },
   input: {
     width: '100%',
-    padding: '0.5rem',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
+    padding: '0.75rem',
+    border: '1px solid #e0e0e0',
+    borderRadius: '6px',
     fontSize: '1rem',
+    backgroundColor: 'white',
+    transition: 'border-color 0.2s',
+    '&:focus': {
+      outline: 'none',
+      borderColor: '#999',
+    }
   },
   select: {
     width: '100%',
-    padding: '0.5rem',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
+    padding: '0.75rem',
+    border: '1px solid #e0e0e0',
+    borderRadius: '6px',
     fontSize: '1rem',
-    background: 'white',
+    backgroundColor: 'white',
+    transition: 'border-color 0.2s',
+    '&:focus': {
+      outline: 'none',
+      borderColor: '#999',
+    }
   },
   textarea: {
     width: '100%',
-    padding: '0.5rem',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
+    padding: '0.75rem',
+    border: '1px solid #e0e0e0',
+    borderRadius: '6px',
     fontSize: '1rem',
-    minHeight: '100px',
+    minHeight: '120px',
+    backgroundColor: 'white',
+    transition: 'border-color 0.2s',
+    '&:focus': {
+      outline: 'none',
+      borderColor: '#999',
+    }
   },
   submitButton: {
     width: '100%',
-    padding: '0.75rem',
-    backgroundColor: '#8b5a2b',
+    padding: '1rem',
+    backgroundColor: '#333',
     color: 'white',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '6px',
     fontSize: '1rem',
     cursor: 'pointer',
-    marginTop: '1rem',
-    transition: 'background-color 0.2s',
+    marginTop: '1.5rem',
+    transition: 'all 0.2s',
+    fontWeight: '400',
+    letterSpacing: '0.5px',
+    '&:hover': {
+      backgroundColor: '#444',
+    }
   }
 };
 

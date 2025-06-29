@@ -40,8 +40,23 @@ export default function GuestComments() {
   }
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Typography variant="h5" gutterBottom>
+    <Box sx={{
+      p: 4,
+      backgroundColor: '#f9f9f7',
+      borderRadius: '12px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+      maxWidth: '800px',
+      mx: 'auto'
+    }}>
+      <Typography
+        variant="h5"
+        sx={{
+          mb: 4,
+          fontFamily: "'Playfair Display', serif",
+          fontWeight: 300,
+          color: '#333'
+        }}
+      >
         Guest Comments
       </Typography>
       <form onSubmit={handleSubmit}>
@@ -51,18 +66,62 @@ export default function GuestComments() {
           label="Leave a comment"
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          sx={{ mb: 2 }}
+          sx={{
+            mb: 3,
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '6px',
+              '& fieldset': {
+                borderColor: '#e0e0e0',
+              },
+              '&:hover fieldset': {
+                borderColor: '#999',
+              },
+            }
+          }}
         />
-        <Button type="submit" variant="contained">
+        <Button
+          type="submit"
+          variant="outlined"
+          sx={{
+            px: 4,
+            py: 1.5,
+            fontSize: '1rem',
+            color: '#333',
+            borderColor: '#333',
+            borderRadius: '6px',
+            '&:hover': {
+              backgroundColor: 'rgba(0,0,0,0.04)',
+              borderColor: '#222'
+            }
+          }}
+        >
           Post Comment
         </Button>
       </form>
-      <List sx={{ mt: 3 }}>
+      <List sx={{ mt: 4 }}>
         {comments.map(comment => (
-          <ListItem key={comment.id}>
+          <ListItem
+            key={comment.id}
+            sx={{
+              p: 3,
+              mb: 2,
+              backgroundColor: 'white',
+              borderRadius: '6px',
+              boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+            }}
+          >
             <ListItemText
               primary={comment.content}
+              primaryTypographyProps={{
+                fontStyle: 'italic',
+                color: '#333',
+                mb: 1
+              }}
               secondary={`${comment.guest_name} - ${new Date(comment.created_at).toLocaleString()}`}
+              secondaryTypographyProps={{
+                color: '#666',
+                fontSize: '0.85rem'
+              }}
             />
           </ListItem>
         ))}

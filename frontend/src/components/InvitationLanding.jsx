@@ -71,25 +71,26 @@ export default function InvitationLanding() {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      background: 'linear-gradient(135deg, #f5f7fa 0%, #f8f9fa 100%)',
-      p: 4,
+      backgroundColor: '#f9f9f7',
+      p: 6,
       textAlign: 'center'
     }}>
       <Box sx={{
         maxWidth: 800,
-        p: 6,
-        borderRadius: 2,
-        boxShadow: 3,
-        background: 'rgba(255, 255, 255, 0.9)'
+        p: 8,
+        borderRadius: '12px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+        backgroundColor: 'white'
       }}>
         <Typography
           variant="h1"
           sx={{
             fontFamily: "'Playfair Display', serif",
-            fontWeight: 700,
+            fontWeight: 300,
             color: '#333',
-            mb: 3,
-            letterSpacing: 1
+            mb: 4,
+            letterSpacing: '0.5px',
+            fontSize: { xs: '2.5rem', sm: '3rem' }
           }}
         >
           Wedding Invitation
@@ -99,9 +100,11 @@ export default function InvitationLanding() {
           variant="h5"
           sx={{
             fontFamily: "'Montserrat', sans-serif",
-            color: '#666',
-            mb: 4,
-            lineHeight: 1.6
+            fontWeight: 300,
+            color: '#555',
+            mb: 5,
+            lineHeight: 1.6,
+            fontSize: '1.25rem'
           }}
         >
           Join us as we celebrate our love and begin our new journey together
@@ -112,8 +115,13 @@ export default function InvitationLanding() {
         </Typography>
         
         {featuredComments.length > 0 && (
-          <Box sx={{ mt: 4, mb: 4 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontFamily: "'Montserrat', sans-serif" }}>
+          <Box sx={{ mt: 5, mb: 5 }}>
+            <Typography variant="h6" sx={{
+              mb: 3,
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 400,
+              color: '#444'
+            }}>
               Recent Guest Comments:
             </Typography>
             {featuredComments.map((comment, index) => (
@@ -122,10 +130,11 @@ export default function InvitationLanding() {
                 variant="body1"
                 sx={{
                   fontStyle: 'italic',
-                  mb: 1,
-                  p: 2,
-                  backgroundColor: 'rgba(0,0,0,0.05)',
-                  borderRadius: 1
+                  mb: 2,
+                  p: 3,
+                  backgroundColor: 'rgba(0,0,0,0.02)',
+                  borderRadius: '6px',
+                  borderLeft: '3px solid #e0e0e0'
                 }}
               >
                 "{comment.content}"
@@ -137,20 +146,23 @@ export default function InvitationLanding() {
         <Box sx={{
           display: 'flex',
           flexDirection: { xs: 'column', sm: 'row' },
-          gap: 2,
+          gap: 3,
           justifyContent: 'center',
-          mt: 4
+          mt: 5
         }}>
           <Button
-            variant="contained"
+            variant="outlined"
             onClick={() => navigate('/rsvp')}
             sx={{
               px: 6,
               py: 2,
-              fontSize: '1.1rem',
-              background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+              fontSize: '1rem',
+              color: '#333',
+              borderColor: '#333',
+              borderRadius: '6px',
               '&:hover': {
-                background: 'linear-gradient(45deg, #FE6B8B 40%, #FF8E53 100%)'
+                backgroundColor: 'rgba(0,0,0,0.04)',
+                borderColor: '#222'
               }
             }}
           >
@@ -158,31 +170,37 @@ export default function InvitationLanding() {
           </Button>
           
           <Button
-          variant="contained"
-          onClick={() => navigate('/venue')}
-          sx={{
-            px: 6,
-            py: 2,
-            fontSize: '1.1rem',
-            background: 'linear-gradient(45deg, #4A6CF7 30%, #2541B2 90%)',
-            '&:hover': {
-              background: 'linear-gradient(45deg, #4A6CF7 40%, #2541B2 100%)'
-            }
-          }}
-        >
-          Venue Map
-        </Button>
+            variant="outlined"
+            onClick={() => navigate('/venue')}
+            sx={{
+              px: 6,
+              py: 2,
+              fontSize: '1rem',
+              color: '#333',
+              borderColor: '#333',
+              borderRadius: '6px',
+              '&:hover': {
+                backgroundColor: 'rgba(0,0,0,0.04)',
+                borderColor: '#222'
+              }
+            }}
+          >
+            Venue Map
+          </Button>
           
           <Button
-            variant="contained"
+            variant="outlined"
             onClick={() => navigate('/comments')}
             sx={{
               px: 6,
               py: 2,
-              fontSize: '1.1rem',
-              background: 'linear-gradient(45deg, #6A11CB 30%, #2575FC 90%)',
+              fontSize: '1rem',
+              color: '#333',
+              borderColor: '#333',
+              borderRadius: '6px',
               '&:hover': {
-                background: 'linear-gradient(45deg, #6A11CB 40%, #2575FC 100%)'
+                backgroundColor: 'rgba(0,0,0,0.04)',
+                borderColor: '#222'
               }
             }}
           >
