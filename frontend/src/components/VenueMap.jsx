@@ -1,28 +1,29 @@
+import './fix-leaflet-icons';
 import { Box, Typography } from '@mui/material';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer as Map, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 export default function VenueMap() {
-  const venuePosition = [51.505, -0.09]; // Example coordinates
+  const venuePosition = [-6.1754, 106.8272]; // Monas, Jakarta
   
   return (
-    <Box sx={{ height: '400px', p: 2 }}>
+    <Box sx={{ height: '500px', p: 2 }}>
       <Typography variant="h5" gutterBottom>
         Wedding Venue Location
       </Typography>
-      <MapContainer 
-        center={venuePosition} 
-        zoom={13} 
+      <Map
+        center={venuePosition}
+        zoom={15}
         style={{ height: '100%', width: '100%' }}
       >
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://tile.openstreetmap.de/{z}/{x}/{y}.png"
+          attribution="&copy; OpenStreetMap contributors"
         />
         <Marker position={venuePosition}>
           <Popup>Wedding Venue</Popup>
         </Marker>
-      </MapContainer>
+      </Map>
     </Box>
   );
 }
