@@ -1,0 +1,372 @@
+{
+  "info": {
+    "_postman_id": "wedding-api-tests",
+    "name": "Wedding API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Get Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Protected Route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/protected",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["protected"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit RSVP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"attending\": true,\n  \"guests\": 2,\n  \"message\": \"Looking forward to it!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/rsvp",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["rsvp"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Public Endpoints",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin Endpoints",
+      "item": [
+        {
+          "name": "Get All RSVPs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/admin/rsvps",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["admin", "rsvps"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Upload Guests (CSV)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/guests/bulk",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["admin", "guests", "bulk"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Update Guests (JSON)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"id\": 1,\n    \"name\": \"John Doe\",\n    \"attending\": true,\n    \"plus_ones\": 2,\n    \"dietary_restrictions\": \"None\"\n  }\n]"
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/guests/bulk",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["admin", "guests", "bulk"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Comment System",
+      "item": [
+        {
+          "name": "Submit Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"This is a test comment\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/comments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["comments"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Comments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/comments/me",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["comments", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Comments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/comments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["comments"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Spotify Integration",
+      "item": [
+        {
+          "name": "Start Spotify Auth Flow",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/spotify/auth",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["spotify", "auth"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Spotify Callback",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/spotify/callback",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["spotify", "callback"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Playlists",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/spotify/playlists",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["spotify", "playlists"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Play Music",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/spotify/play",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["spotify", "play"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pause Music",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/spotify/pause",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["spotify", "pause"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}

@@ -2,6 +2,7 @@ package routes
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 	"wedding-invitation-backend/database"
 	"wedding-invitation-backend/middleware/auth"
@@ -20,8 +21,31 @@ func SetupRoutes(r *gin.Engine) {
 	})
 
 	r.POST("/login", func(c *gin.Context) {
-		// In a real app, validate credentials here
-		token, err := auth.GenerateToken("testuser")
+		var login struct {
+			Name string `json:"name" binding:"required"`
+		}
+		if err := c.ShouldBindJSON(&login); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Name is required"})
+			return
+		}
+
+		// Check if user is on guest list
+		guest, err := models.GetGuestByName(database.DB, login.Name)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Error checking guest list",
+			})
+			return
+		}
+
+		if guest == nil {
+			c.JSON(http.StatusForbidden, gin.H{
+				"error": "You are not on the guest list",
+			})
+			return
+		}
+
+		token, err := auth.GenerateToken(guest.Name)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 			return
@@ -45,6 +69,10 @@ func SetupRoutes(r *gin.Engine) {
 		})
 
 		protected.GET("/admin/rsvps", handleGetAllRSVPs)
+
+		// Guest management routes
+		guestRoutes := protected.Group("/admin/guests")
+		SetupGuestRoutes(guestRoutes)
 
 		// Comment routes
 		protected.POST("/comments", handleCommentSubmission)
@@ -107,30 +135,40 @@ func SetupRoutes(r *gin.Engine) {
 func handleRSVPSubmission(c *gin.Context) {
 	var guest models.Guest
 	if err := c.ShouldBindJSON(&guest); err != nil {
+		log.Printf("Invalid request data: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
 		return
 	}
 
+	log.Printf("Processing RSVP for %s", guest.Name)
+
 	// Check if guest exists
-	existingGuest, err := models.GetGuestByEmail(database.DB, guest.Email)
+	existingGuest, err := models.GetGuestByName(database.DB, guest.Name)
 	if err != nil && err != sql.ErrNoRows {
+		log.Printf("Database error checking guest: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
 		return
 	}
 
 	if existingGuest == nil {
 		// New RSVP
+		log.Printf("Creating new RSVP for %s", guest.Name)
 		if err := guest.Create(database.DB); err != nil {
+			log.Printf("Failed to create RSVP: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create RSVP"})
 			return
 		}
+		log.Printf("Successfully created RSVP for %s", guest.Name)
 	} else {
 		// Update existing RSVP
+		log.Printf("Updating existing RSVP for %s (ID: %d)", guest.Name, existingGuest.ID)
 		guest.ID = existingGuest.ID
 		if err := guest.Update(database.DB); err != nil {
+			log.Printf("Failed to update RSVP: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update RSVP"})
 			return
 		}
+		log.Printf("Successfully updated RSVP for %s", guest.Name)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -155,24 +193,33 @@ func handleGetAllRSVPs(c *gin.Context) {
 func handleCommentSubmission(c *gin.Context) {
 	var comment models.Comment
 	if err := c.ShouldBindJSON(&comment); err != nil {
+		log.Printf("Invalid comment data: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
 		return
 	}
 
 	// Get guest ID from JWT claims
 	username := c.MustGet("username").(string)
-	guest, err := models.GetGuestByEmail(database.DB, username)
+	guest, err := models.GetGuestByName(database.DB, username)
 	if err != nil {
+		log.Printf("Error finding guest %s: %v", username, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find guest"})
+		return
+	}
+	if guest == nil {
+		log.Printf("No guest found with name %s", username)
+		c.JSON(http.StatusNotFound, gin.H{"error": "Guest not found"})
 		return
 	}
 
 	comment.GuestID = guest.ID
 	if err := comment.Create(database.DB); err != nil {
+		log.Printf("Failed to create comment: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create comment"})
 		return
 	}
 
+	log.Printf("Successfully created comment for guest %s", username)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Comment created successfully",
 		"comment": comment,
@@ -181,9 +228,13 @@ func handleCommentSubmission(c *gin.Context) {
 
 func handleGetMyComments(c *gin.Context) {
 	username := c.MustGet("username").(string)
-	guest, err := models.GetGuestByEmail(database.DB, username)
+	guest, err := models.GetGuestByName(database.DB, username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find guest"})
+		return
+	}
+	if guest == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Guest not found"})
 		return
 	}
 

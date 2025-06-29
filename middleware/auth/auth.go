@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 	"wedding-invitation-backend/config"
+	"wedding-invitation-backend/database"
+	"wedding-invitation-backend/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -60,6 +62,23 @@ func JWTMiddleware() gin.HandlerFunc {
 		}
 
 		c.Set("username", claims.Username)
+
+		// Check if user is on guest list
+		guest, err := models.GetGuestByName(database.DB, claims.Username)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"error": "Error checking guest list",
+			})
+			return
+		}
+
+		if guest == nil {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"error": "You are not on the guest list",
+			})
+			return
+		}
+
 		c.Next()
 	}
 }
