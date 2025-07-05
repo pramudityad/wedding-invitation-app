@@ -215,6 +215,20 @@ func handleCommentSubmission(c *gin.Context) {
 		return
 	}
 
+	// Check existing comment count
+	count, err := models.GetCommentCountByGuestID(database.DB, guest.ID)
+	if err != nil {
+		log.Printf("Error checking comment count: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check comment quota"})
+		return
+	}
+
+	if count >= 2 {
+		log.Printf("Guest %s has reached comment limit (2)", guest.Name)
+		c.JSON(http.StatusForbidden, gin.H{"error": "Maximum of 2 comments allowed per guest"})
+		return
+	}
+
 	comment := models.Comment{
 		GuestID: guest.ID,
 		Content: request.Content,

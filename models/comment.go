@@ -93,6 +93,13 @@ func GetAllComments(db *sql.DB) ([]Comment, error) {
 	return comments, nil
 }
 
+func GetCommentCountByGuestID(db *sql.DB, guestID int64) (int, error) {
+	var count int
+	row := db.QueryRow("SELECT COUNT(*) FROM comments WHERE guest_id = ?", guestID)
+	err := row.Scan(&count)
+	return count, err
+}
+
 func GetAllCommentsWithGuests(db *sql.DB) ([]CommentWithGuest, error) {
 	stmt := `SELECT
 		c.id, c.guest_id, c.content, c.created_at,
