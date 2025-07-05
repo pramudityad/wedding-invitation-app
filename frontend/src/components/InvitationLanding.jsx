@@ -109,11 +109,10 @@ export default function InvitationLanding() {
               Recent Guest Comments:
             </Typography>
             {featuredComments.map((comment, index) => (
-              <Typography
+              <Box
                 key={index}
-                variant="body1"
                 sx={{
-                  fontStyle: 'italic',
+                  textAlign: 'left',
                   mb: 2,
                   p: 3,
                   backgroundColor: 'rgba(0,0,0,0.02)',
@@ -121,8 +120,13 @@ export default function InvitationLanding() {
                   borderLeft: '3px solid #e0e0e0'
                 }}
               >
-                "{comment.content}"
-              </Typography>
+                <Typography variant="body1" sx={{ fontStyle: 'italic' }}>
+                  "{comment.Content}"
+                </Typography>
+                <Typography variant="caption" sx={{ display: 'block', mt: 1, color: '#666' }}>
+                  — {comment.GuestName}, {new Date(comment.CreatedAt).toLocaleDateString()}
+                </Typography>
+              </Box>
             ))}
           </Box>
         )}
