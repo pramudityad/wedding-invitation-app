@@ -191,9 +191,10 @@ func handleGetAllRSVPs(c *gin.Context) {
 }
 
 func handleCommentSubmission(c *gin.Context) {
-	var request struct {
+	type commentRequest struct {
 		Content string `json:"content" binding:"required"`
 	}
+	var request commentRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		log.Printf("Invalid comment data: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})

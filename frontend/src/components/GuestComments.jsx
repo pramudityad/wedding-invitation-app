@@ -29,7 +29,7 @@ export default function GuestComments() {
     if (!newComment.trim()) return;
     
     try {
-      const response = await submitComment({content: newComment});
+      const response = await submitComment(newComment);
       setComments([response, ...comments]);
       setNewComment('');
     } catch (error) {

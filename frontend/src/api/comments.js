@@ -2,7 +2,7 @@ import api from './axiosConfig';
 
 export const submitComment = async (content) => {
   try {
-    const response = await api.post('/comments', { content: content }, {
+    const response = await api.post('/comments', { content }, {
       headers: {
         'Content-Type': 'application/json',
       },
