@@ -111,7 +111,7 @@ export default function GuestComments() {
       <List sx={{ mt: 4 }}>
         {comments.map(comment => (
           <ListItem
-            key={comment.id}
+            key={comment.ID}
             sx={{
               p: 3,
               mb: 2,
@@ -127,7 +127,7 @@ export default function GuestComments() {
                 color: '#333',
                 mb: 1
               }}
-              secondary={`${comment.guest_name} - ${new Date(comment.created_at).toLocaleString()}`}
+              secondary={`${comment.GuestName} - ${new Date(comment.CreatedAt).toLocaleString()}`}
               secondaryTypographyProps={{
                 color: '#666',
                 fontSize: '0.85rem'
