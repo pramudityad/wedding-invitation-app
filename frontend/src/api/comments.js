@@ -3,7 +3,12 @@ import api from './axiosConfig';
 export const submitComment = async (content) => {
   try {
     const response = await api.post('/comments', { content });
-    return response.data.comment;
+    const comment = response.data.comment;
+    // Convert CreatedAt string to Date object for consistent handling
+    return {
+      ...comment,
+      CreatedAt: new Date(comment.CreatedAt)
+    };
   } catch (error) {
     console.error('Comment submission failed:', error);
     throw error;
