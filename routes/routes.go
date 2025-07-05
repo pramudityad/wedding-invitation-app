@@ -191,8 +191,10 @@ func handleGetAllRSVPs(c *gin.Context) {
 }
 
 func handleCommentSubmission(c *gin.Context) {
-	var comment models.Comment
-	if err := c.ShouldBindJSON(&comment); err != nil {
+	var request struct {
+		Content string `json:"content" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&request); err != nil {
 		log.Printf("Invalid comment data: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
 		return
@@ -212,7 +214,10 @@ func handleCommentSubmission(c *gin.Context) {
 		return
 	}
 
-	comment.GuestID = guest.ID
+	comment := models.Comment{
+		GuestID: guest.ID,
+		Content: request.Content,
+	}
 	if err := comment.Create(database.DB); err != nil {
 		log.Printf("Failed to create comment: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create comment"})

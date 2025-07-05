@@ -2,7 +2,11 @@ import api from './axiosConfig';
 
 export const submitComment = async (content) => {
   try {
-    const response = await api.post('/comments', { content });
+    const response = await api.post('/comments', { content }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     const comment = response.data.comment;
     // Convert CreatedAt string to Date object for consistent handling
     return {
