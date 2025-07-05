@@ -2,17 +2,15 @@ import { useState } from 'react';
 import { login, verifyToken } from '../api/auth';
 
 export const useAuth = () => {
-  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleLogin = async () => {
+  const handleLogin = async (name) => {
     setLoading(true);
     setError(null);
     try {
-      const authToken = await login();
-      setToken(authToken);
-      return authToken;
+      const response = await login(name);
+      return response.token;
     } catch (err) {
       setError(err.message || 'Login failed');
       throw err;
@@ -21,17 +19,15 @@ export const useAuth = () => {
     }
   };
 
-  const validateToken = async () => {
+  const validateToken = async (token) => {
+    if (!token) return false;
+    
     setLoading(true);
     setError(null);
     try {
-      await verifyToken();
-      const token = localStorage.getItem('weddingToken');
-      setToken(token);
+      await verifyToken(token);
       return true;
     } catch (err) {
-      setError('Invalid or expired token');
-      setToken(null);
       return false;
     } finally {
       setLoading(false);
@@ -39,7 +35,6 @@ export const useAuth = () => {
   };
 
   return {
-    token,
     loading,
     error,
     login: handleLogin,

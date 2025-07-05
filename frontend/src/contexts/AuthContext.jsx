@@ -8,25 +8,22 @@ export const AuthProvider = ({ children }) => {
   const { login: authLogin, validateToken } = useAuth();
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('weddingToken');
-    if (storedToken) {
-      validateToken(storedToken)
-        .then(isValid => {
-          if (isValid) setToken(storedToken);
-          else localStorage.removeItem('weddingToken');
-        });
-    }
+    const initAuth = async () => {
+      const storedToken = localStorage.getItem('weddingToken');
+      if (storedToken && await validateToken(storedToken)) {
+        setToken(storedToken);
+      } else {
+        localStorage.removeItem('weddingToken');
+      }
+    };
+    initAuth();
   }, []);
 
-  const login = async () => {
-    try {
-      const newToken = await authLogin();
-      setToken(newToken);
-      localStorage.setItem('weddingToken', newToken);
-      return true;
-    } catch (error) {
-      return false;
-    }
+  const login = async (name) => {
+    const newToken = await authLogin(name);
+    setToken(newToken);
+    localStorage.setItem('weddingToken', newToken);
+    return true;
   };
 
   const logout = () => {

@@ -29,40 +29,26 @@ export default function InvitationLanding() {
   };
 
   useEffect(() => {
-    console.log('InvitationLanding mounted');
-    const token = localStorage.getItem('weddingToken');
-    console.log('Token from localStorage:', token);
     if (!token) {
-      console.log('No token found, redirecting to login');
       navigate('/login');
       return;
     }
-    
-    setToken(token);
-    console.log('Attempting to fetch protected data with token:', token);
-    fetchProtectedData(token)
-      .then(data => console.log('Protected data response:', data))
-      .catch(err => {
-        console.error('Failed to fetch protected data:', err);
-        localStorage.removeItem('weddingToken');
-        navigate('/login');
-      });
 
     const fetchData = async () => {
       try {
-        const guests = await getGuestList();
+        const [guests, comments] = await Promise.all([
+          getGuestList(),
+          getAllComments()
+        ]);
         setRsvpCount(guests.length);
-        
-        const comments = await getAllComments();
-        setFeaturedComments(comments.comments.slice(0, 3)); // Show top 3 comments
+        setFeaturedComments(comments.comments.slice(0, 3));
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
     };
 
-
     fetchData();
-  }, [navigate]);
+  }, [token, navigate]);
   
   return (
     <Box sx={{
