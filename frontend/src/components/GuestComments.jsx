@@ -121,7 +121,7 @@ export default function GuestComments() {
             }}
           >
             <ListItemText
-              primary={comment.content}
+              primary={comment.Content}
               primaryTypographyProps={{
                 fontStyle: 'italic',
                 color: '#333',
