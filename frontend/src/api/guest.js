@@ -10,6 +10,16 @@ export const submitRSVP = async (rsvpData) => {
   }
 };
 
+export const getGuestByName = async (name) => {
+  try {
+    const response = await api.get(`/admin/guests?name=${name}`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch guest:', error);
+    throw error;
+  }
+};
+
 export const getGuestList = async () => {
   try {
     const response = await api.get('/admin/rsvps');

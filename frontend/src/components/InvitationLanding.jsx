@@ -3,7 +3,7 @@ import { useAuthContext } from '../contexts/AuthContext';
 import { submitRSVP } from '../api/guest';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { getGuestList } from '../api/guest';
+import { getGuestList, getGuestByName } from '../api/guest';
 import { getAllComments } from '../api/comments';
 import { login } from '../api/auth';
 import axios from 'axios';
@@ -24,6 +24,7 @@ export default function InvitationLanding() {
         attending,
         name: username // Assuming username from JWT is the guest's name
       });
+      setRsvpStatus(attending);
       setSnackbar({
         open: true,
         message: `Thank you for your RSVP! We've noted you'll ${attending ? '' : 'not '}be attending.`,
@@ -42,6 +43,7 @@ export default function InvitationLanding() {
   };
   const { token } = useAuthContext();
   const [username, setUsername] = useState('');
+  const [rsvpStatus, setRsvpStatus] = useState(null); // null=unknown, true=attending, false=not attending
 
   useEffect(() => {
     if (!token) {
@@ -59,14 +61,20 @@ export default function InvitationLanding() {
     };
     
     const jwtData = parseJwt(token);
-    setUsername(jwtData?.username || '');
+    const username = jwtData?.username;
+    setUsername(username || '');
 
     const fetchData = async () => {
       try {
-        const [guests, comments] = await Promise.all([
-          getGuestList(),
-          getAllComments()
+        const [guestData, comments, guests] = await Promise.all([
+          username ? getGuestByName(username) : Promise.resolve(null),
+          getAllComments(),
+          getGuestList()
         ]);
+        
+        if (guestData) {
+          setRsvpStatus(guestData.attending);
+        }
         setRsvpCount(guests.length);
         setFeaturedComments(comments.comments.slice(0, 3));
       } catch (error) {
@@ -162,40 +170,45 @@ export default function InvitationLanding() {
         
         <Box sx={{ mt: 6, mb: 4 }}>
           <Typography variant="h6" sx={{ mb: 3 }}>
-            Will you be attending?
+            {rsvpStatus === null ? 'Will you be attending?' :
+             rsvpStatus === true ? 'You are attending - Thank you!' :
+             'You are not attending - We will miss you!'}
           </Typography>
-          <Box sx={{ 
-            display: 'flex', 
-            gap: 2,
-            justifyContent: 'center',
-            mb: 3
-          }}>
-            <Button
-              variant="contained"
-              color="success"
-              sx={{
-                px: 5,
-                py: 1.5,
-                borderRadius: '50px',
-                minWidth: '120px'
-              }}
-              onClick={() => handleRSVP(true)}
-            >
-              Yes
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              sx={{
-                px: 5,
-                py: 1.5,
-                borderRadius: '50px',
-                minWidth: '120px'
-              }}
-              onClick={() => handleRSVP(false)}
-            >
-              No
-            </Button>
+          {rsvpStatus === null && (
+            <Box sx={{ 
+              display: 'flex', 
+              gap: 2,
+              justifyContent: 'center',
+              mb: 3
+            }}>
+              <Button
+                variant="contained"
+                color="success"
+                sx={{
+                  px: 5,
+                  py: 1.5,
+                  borderRadius: '50px',
+                  minWidth: '120px'
+                }}
+                onClick={() => handleRSVP(true)}
+              >
+                Yes
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                sx={{
+                  px: 5,
+                  py: 1.5,
+                  borderRadius: '50px',
+                  minWidth: '120px'
+                }}
+                onClick={() => handleRSVP(false)}
+              >
+                No
+              </Button>
+            </Box>
+          )}
           </Box>
           
           <Button
