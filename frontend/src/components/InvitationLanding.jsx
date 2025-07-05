@@ -1,5 +1,6 @@
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, Snackbar, Alert } from '@mui/material';
 import { useAuthContext } from '../contexts/AuthContext';
+import { submitRSVP } from '../api/guest';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getGuestList } from '../api/guest';
@@ -11,6 +12,34 @@ export default function InvitationLanding() {
   const navigate = useNavigate();
   const [rsvpCount, setRsvpCount] = useState(0);
   const [featuredComments, setFeaturedComments] = useState([]);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
+
+  const handleRSVP = async (attending) => {
+    try {
+      await submitRSVP({ 
+        attending,
+        name: username // Assuming username from JWT is the guest's name
+      });
+      setSnackbar({
+        open: true,
+        message: `Thank you for your RSVP! We've noted you'll ${attending ? '' : 'not '}be attending.`,
+        severity: 'success'
+      });
+      // Refresh counts
+      const guests = await getGuestList();
+      setRsvpCount(guests.length);
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: 'Failed to submit RSVP. Please try again.',
+        severity: 'error'
+      });
+    }
+  };
   const { token } = useAuthContext();
   const [username, setUsername] = useState('');
 
@@ -131,31 +160,43 @@ export default function InvitationLanding() {
           </Box>
         )}
         
-        <Box sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: 3,
-          justifyContent: 'center',
-          mt: 5
-        }}>
-          <Button
-            variant="outlined"
-            onClick={() => navigate('/rsvp')}
-            sx={{
-              px: 6,
-              py: 2,
-              fontSize: '1rem',
-              color: '#333',
-              borderColor: '#333',
-              borderRadius: '6px',
-              '&:hover': {
-                backgroundColor: 'rgba(0,0,0,0.04)',
-                borderColor: '#222'
-              }
-            }}
-          >
-            RSVP Now
-          </Button>
+        <Box sx={{ mt: 6, mb: 4 }}>
+          <Typography variant="h6" sx={{ mb: 3 }}>
+            Will you be attending?
+          </Typography>
+          <Box sx={{ 
+            display: 'flex', 
+            gap: 2,
+            justifyContent: 'center',
+            mb: 3
+          }}>
+            <Button
+              variant="contained"
+              color="success"
+              sx={{
+                px: 5,
+                py: 1.5,
+                borderRadius: '50px',
+                minWidth: '120px'
+              }}
+              onClick={() => handleRSVP(true)}
+            >
+              Yes
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              sx={{
+                px: 5,
+                py: 1.5,
+                borderRadius: '50px',
+                minWidth: '120px'
+              }}
+              onClick={() => handleRSVP(false)}
+            >
+              No
+            </Button>
+          </Box>
           
           <Button
             variant="outlined"
@@ -196,6 +237,16 @@ export default function InvitationLanding() {
           </Button>
         </Box>
       </Box>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar(prev => ({...prev, open: false}))}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
