@@ -173,11 +173,25 @@ export default function InvitationLanding() {
           </Typography>
 
           {rsvpStatus === null && (
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+            <Box sx={{ 
+              display: 'flex', 
+              gap: 2, 
+              justifyContent: 'center',
+              mb: 3
+            }}>
               <Button
                 variant="contained"
                 color="success"
-                sx={{ px: 5, py: 1.5, borderRadius: '50px', minWidth: '120px' }}
+                sx={{
+                  px: 5,
+                  py: 1.5,
+                  borderRadius: '50px',
+                  minWidth: '120px',
+                  ':hover': {
+                    transform: 'scale(1.05)',
+                    transition: 'transform 0.2s'
+                  }
+                }}
                 onClick={() => handleRSVP(true)}
               >
                 Yes
@@ -185,7 +199,16 @@ export default function InvitationLanding() {
               <Button
                 variant="contained"
                 color="error"
-                sx={{ px: 5, py: 1.5, borderRadius: '50px', minWidth: '120px' }}
+                sx={{
+                  px: 5,
+                  py: 1.5,
+                  borderRadius: '50px',
+                  minWidth: '120px',
+                  ':hover': {
+                    transform: 'scale(1.05)',
+                    transition: 'transform 0.2s'
+                  }
+                }}
                 onClick={() => handleRSVP(false)}
               >
                 No
