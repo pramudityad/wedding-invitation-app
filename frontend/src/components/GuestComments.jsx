@@ -127,7 +127,13 @@ export default function GuestComments() {
                 color: '#333',
                 mb: 1
               }}
-              secondary={`${comment.GuestName} - ${new Date(comment.CreatedAt).toLocaleString()}`}
+              secondary={`${comment.GuestName || 'Guest'} - ${new Intl.DateTimeFormat('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              }).format(new Date(comment.CreatedAt))}`}
               secondaryTypographyProps={{
                 color: '#666',
                 fontSize: '0.85rem'

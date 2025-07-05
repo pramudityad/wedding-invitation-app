@@ -8,11 +8,15 @@ export const submitComment = async (content) => {
       },
     });
     const comment = response.data.comment;
-    // Convert CreatedAt string to Date object for consistent handling
-    return {
-      ...comment,
-      CreatedAt: new Date(comment.CreatedAt)
+    // Ensure all required fields are present
+    const completeComment = {
+      ID: comment.ID,
+      Content: comment.Content,
+      CreatedAt: new Date(comment.CreatedAt),
+      GuestID: comment.GuestID,
+      GuestName: comment.GuestName || 'Guest' // Fallback if name is missing
     };
+    return completeComment;
   } catch (error) {
     console.error('Comment submission failed:', error);
     throw error;
