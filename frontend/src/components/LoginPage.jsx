@@ -16,8 +16,7 @@ export default function LoginPage() {
 
     try {
       const response = await login(name);
-      localStorage.setItem('weddingToken', response.token);
-      navigate('/');
+      navigate('/', { replace: true });
     } catch (err) {
       setError('Invalid name. Please try again.');
       setIsLoading(false);

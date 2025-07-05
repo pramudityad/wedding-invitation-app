@@ -2,8 +2,21 @@ import api from './axiosConfig';
 
 export const submitComment = async (content) => {
   try {
-    const response = await api.post('/comments', { content });
-    return response.data;
+    const response = await api.post('/comments', { content }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const comment = response.data.comment;
+    // Ensure all required fields are present
+    const completeComment = {
+      ID: comment.ID,
+      Content: comment.Content,
+      CreatedAt: new Date(comment.CreatedAt),
+      GuestID: comment.GuestID,
+      GuestName: comment.GuestName || 'Guest' // Fallback if name is missing
+    };
+    return completeComment;
   } catch (error) {
     console.error('Comment submission failed:', error);
     throw error;

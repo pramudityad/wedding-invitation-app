@@ -191,8 +191,11 @@ func handleGetAllRSVPs(c *gin.Context) {
 }
 
 func handleCommentSubmission(c *gin.Context) {
-	var comment models.Comment
-	if err := c.ShouldBindJSON(&comment); err != nil {
+	type commentRequest struct {
+		Content string `json:"content" binding:"required"`
+	}
+	var request commentRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
 		log.Printf("Invalid comment data: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
 		return
@@ -212,7 +215,24 @@ func handleCommentSubmission(c *gin.Context) {
 		return
 	}
 
-	comment.GuestID = guest.ID
+	// Check existing comment count
+	count, err := models.GetCommentCountByGuestID(database.DB, guest.ID)
+	if err != nil {
+		log.Printf("Error checking comment count: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check comment quota"})
+		return
+	}
+
+	if count >= 2 {
+		log.Printf("Guest %s has reached comment limit (2)", guest.Name)
+		c.JSON(http.StatusForbidden, gin.H{"error": "Maximum of 2 comments allowed per guest"})
+		return
+	}
+
+	comment := models.Comment{
+		GuestID: guest.ID,
+		Content: request.Content,
+	}
 	if err := comment.Create(database.DB); err != nil {
 		log.Printf("Failed to create comment: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create comment"})
@@ -220,9 +240,24 @@ func handleCommentSubmission(c *gin.Context) {
 	}
 
 	log.Printf("Successfully created comment for guest %s", username)
+
+	// Get guest name for the response
+	guest, err = models.GetGuestByName(database.DB, username)
+	if err != nil {
+		log.Printf("Error getting guest for comment response: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get guest info"})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Comment created successfully",
-		"comment": comment,
+		"comment": gin.H{
+			"ID":        comment.ID,
+			"Content":   comment.Content,
+			"CreatedAt": comment.CreatedAt,
+			"GuestID":   comment.GuestID,
+			"GuestName": guest.Name,
+		},
 	})
 }
 
