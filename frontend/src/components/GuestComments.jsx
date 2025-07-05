@@ -32,7 +32,13 @@ export default function GuestComments() {
       const response = await submitComment(newComment);
       setComments([response, ...comments]);
       setNewComment('');
+      setError(null);
     } catch (error) {
+      if (error.response?.data?.error?.includes('Maximum of 2 comments')) {
+        setError('You can only post 2 comments maximum');
+      } else {
+        setError('Failed to post comment. Please try again.');
+      }
       console.error('Failed to post comment:', error);
     }
   };
