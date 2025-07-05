@@ -242,7 +242,7 @@ func handleCommentSubmission(c *gin.Context) {
 	log.Printf("Successfully created comment for guest %s", username)
 
 	// Get guest name for the response
-	guest, err := models.GetGuestByID(database.DB, comment.GuestID)
+	guest, err = models.GetGuestByName(database.DB, username)
 	if err != nil {
 		log.Printf("Error getting guest for comment response: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get guest info"})
