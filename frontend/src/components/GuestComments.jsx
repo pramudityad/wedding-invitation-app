@@ -6,14 +6,17 @@ export default function GuestComments() {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
         const response = await getAllComments();
         setComments(response.comments);
+        setError(null);
       } catch (error) {
         console.error('Error fetching comments:', error);
+        setError('Failed to load comments');
       } finally {
         setLoading(false);
       }
@@ -21,22 +24,29 @@ export default function GuestComments() {
     fetchComments();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (newComment.trim()) {
-      // TODO: Implement actual API call to post comment
-      setComments([...comments, {
-        id: Date.now(),
-        content: newComment,
-        guest_name: 'You',
-        created_at: new Date().toISOString()
-      }]);
+    if (!newComment.trim()) return;
+    
+    try {
+      const response = await submitComment(newComment);
+      setComments([response.comment, ...comments]);
       setNewComment('');
+    } catch (error) {
+      console.error('Failed to post comment:', error);
     }
   };
 
   if (loading) {
     return <Typography>Loading comments...</Typography>;
+  }
+
+  if (error) {
+    return (
+      <Typography color="error" sx={{ textAlign: 'center', mt: 4 }}>
+        {error}
+      </Typography>
+    );
   }
 
   return (
