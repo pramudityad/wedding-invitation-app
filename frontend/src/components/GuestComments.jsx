@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, List, ListItem, ListItemText } from '@mui/material';
-import { getAllComments } from '../api/comments';
+import { getAllComments, submitComment } from '../api/comments';
 
 export default function GuestComments() {
   const [comments, setComments] = useState([]);
@@ -29,8 +29,8 @@ export default function GuestComments() {
     if (!newComment.trim()) return;
     
     try {
-      const response = await submitComment(newComment);
-      setComments([response.comment, ...comments]);
+      const response = await submitComment({content: newComment});
+      setComments([response, ...comments]);
       setNewComment('');
     } catch (error) {
       console.error('Failed to post comment:', error);
