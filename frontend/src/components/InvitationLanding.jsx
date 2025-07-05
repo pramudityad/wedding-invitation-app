@@ -12,14 +12,25 @@ export default function InvitationLanding() {
   const [rsvpCount, setRsvpCount] = useState(0);
   const [featuredComments, setFeaturedComments] = useState([]);
   const { token } = useAuthContext();
-  const [protectedData, setProtectedData] = useState(null);
-
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
     if (!token) {
       navigate('/login');
       return;
     }
+
+    // Parse username from JWT
+    const parseJwt = (token) => {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch (e) {
+        return null;
+      }
+    };
+    
+    const jwtData = parseJwt(token);
+    setUsername(jwtData?.username || '');
 
     const fetchData = async () => {
       try {
@@ -82,7 +93,7 @@ export default function InvitationLanding() {
         >
           Join us as we celebrate our love and begin our new journey together
           <br />
-          {protectedData ? `Welcome, ${protectedData.name}!` : 'Loading welcome message...'}
+          {username ? `Welcome, ${username}!` : 'Loading welcome message...'}
           <br />
           {rsvpCount > 0 && `${rsvpCount} guests have RSVP'd so far!`}
         </Typography>
