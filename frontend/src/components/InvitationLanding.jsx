@@ -1,4 +1,5 @@
 import { Box, Typography, Button } from '@mui/material';
+import { useAuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getGuestList } from '../api/guest';
@@ -10,23 +11,9 @@ export default function InvitationLanding() {
   const navigate = useNavigate();
   const [rsvpCount, setRsvpCount] = useState(0);
   const [featuredComments, setFeaturedComments] = useState([]);
-  const [token, setToken] = useState(null);
+  const { token } = useAuthContext();
   const [protectedData, setProtectedData] = useState(null);
 
-  const fetchProtectedData = async (token) => {
-    try {
-      console.log('Making protected request with token:', token);
-      const response = await axios.get('/protected', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      console.log('Protected endpoint response:', response.data);
-      setProtectedData({ name: response.data.message });
-      return response.data;
-    } catch (error) {
-      console.error('Failed to fetch protected data:', error);
-      throw error;
-    }
-  };
 
   useEffect(() => {
     if (!token) {
