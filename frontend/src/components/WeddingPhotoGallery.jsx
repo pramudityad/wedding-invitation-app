@@ -22,35 +22,43 @@ export default function WeddingPhotoGallery() {
     title: 'Couple Walking',
   },
   {
-    img: 'https://images.unsplash.com/photo-1587909339189-58d6e6820116?auto=format&fit=crop&w=400&h=300&q=80',
+    id: 2,
+    url: 'https://images.unsplash.com/photo-1587909339189-58d6e6820116?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'Wedding Rings',
   },
   {
-    img: 'https://images.unsplash.com/photo-1598877369878-4660c0839551?auto=format&fit=crop&w=400&h=300&q=80',
+    id: 3,
+    url: 'https://images.unsplash.com/photo-1598877369878-4660c0839551?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'Ceremony Setup',
   },
   {
-    img: 'https://images.unsplash.com/photo-1605297335903-c731f23920d8?auto=format&fit=crop&w=400&h=300&q=80',
+    id: 4,
+    url: 'https://images.unsplash.com/photo-1605297335903-c731f23920d8?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'Wedding Cake',
   },
   {
-    img: 'https://images.unsplash.com/photo-1592913680861-4350b5e3e570?auto=format&fit=crop&w=400&h=300&q=80',
+    id: 5,
+    url: 'https://images.unsplash.com/photo-1592913680861-4350b5e3e570?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'First Dance',
   },
    {
-    img: 'https://images.unsplash.com/photo-1518833387770-d7f64318f02e?auto=format&fit=crop&w=400&h=300&q=80',
+    id: 6,
+    url: 'https://images.unsplash.com/photo-1518833387770-d7f64318f02e?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'Bouquet',
   },
   {
-    img: 'https://images.unsplash.com/photo-1546019085-e6456f336a74?auto=format&fit=crop&w=400&h=300&q=80',
+    id: 7,
+    url: 'https://images.unsplash.com/photo-1546019085-e6456f336a74?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'Table Setting',
   },
    {
-    img: 'https://images.unsplash.com/photo-1562779010-e2de5211e24c?auto=format&fit=crop&w=400&h=300&q=80',
+    id: 8,
+    url: 'https://images.unsplash.com/photo-1562779010-e2de5211e24c?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'Wedding Dress Details',
   },
    {
-    img: 'https://images.unsplash.com/photo-1596854100863-ed9958cf48b6?auto=format&fit=crop&w=400&h=300&q=80',
+    id: 9,
+    url: 'https://images.unsplash.com/photo-1596854100863-ed9958cf48b6?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'Couple Kissing',
   },
 ];
