@@ -4,6 +4,7 @@ import VenueMap from '../components/VenueMap';
 import GuestComments from '../components/GuestComments';
 import MusicPlayer from '../components/MusicPlayer';
 import LoginPage from '../components/LoginPage';
+import WeddingPhotoGallery from '../components/WeddingPhotoGallery';
 
 export default function AppRoutes() {
   return (
@@ -13,6 +14,7 @@ export default function AppRoutes() {
       <Route path="/venue" element={<VenueMap />} />
       <Route path="/comments" element={<GuestComments />} />
       <Route path="/music" element={<MusicPlayer />} />
+      <Route path="/gallery" element={<WeddingPhotoGallery />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
