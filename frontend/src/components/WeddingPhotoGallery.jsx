@@ -24,43 +24,28 @@ export default function WeddingPhotoGallery() {
   },
   {
     id: 2,
-    url: 'https://images.unsplash.com/photo-1587909339189-58d6e6820116?auto=format&fit=crop&w=400&h=300&q=80',
+    url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'Wedding Rings',
   },
   {
     id: 3,
-    url: 'https://images.unsplash.com/photo-1598877369878-4660c0839551?auto=format&fit=crop&w=400&h=300&q=80',
+    url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'Ceremony Setup',
   },
   {
     id: 4,
-    url: 'https://images.unsplash.com/photo-1605297335903-c731f23920d8?auto=format&fit=crop&w=400&h=300&q=80',
+    url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'Wedding Cake',
   },
   {
     id: 5,
-    url: 'https://images.unsplash.com/photo-1592913680861-4350b5e3e570?auto=format&fit=crop&w=400&h=300&q=80',
+    url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'First Dance',
   },
    {
     id: 6,
-    url: 'https://images.unsplash.com/photo-1518833387770-d7f64318f02e?auto=format&fit=crop&w=400&h=300&q=80',
+    url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'Bouquet',
-  },
-  {
-    id: 7,
-    url: 'https://images.unsplash.com/photo-1546019085-e6456f336a74?auto=format&fit=crop&w=400&h=300&q=80',
-    title: 'Table Setting',
-  },
-   {
-    id: 8,
-    url: 'https://images.unsplash.com/photo-1562779010-e2de5211e24c?auto=format&fit=crop&w=400&h=300&q=80',
-    title: 'Wedding Dress Details',
-  },
-   {
-    id: 9,
-    url: 'https://images.unsplash.com/photo-1596854100863-ed9958cf48b6?auto=format&fit=crop&w=400&h=300&q=80',
-    title: 'Couple Kissing',
   },
 ];
     
