@@ -116,7 +116,7 @@ export default function WeddingPhotoGallery() {
         }}
         cols={3}
         rowHeight={180}
-        gap={8}
+        gap={12}
       >
         {photos.map((photo) => (
           <ImageListItem key={photo.id}>
