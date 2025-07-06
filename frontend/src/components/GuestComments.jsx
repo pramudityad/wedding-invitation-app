@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, TextField, Button, List, ListItem, ListItemText } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, Typography, TextField, Button, List, ListItem, ListItemText, IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { getAllComments, submitComment } from '../api/comments';
 
 export default function GuestComments() {
@@ -73,6 +75,17 @@ export default function GuestComments() {
           color: '#333'
         }}
       >
+        <IconButton 
+          onClick={() => navigate('/')}
+          sx={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            color: 'inherit'
+          }}
+        >
+          <ArrowBackIcon />
+        </IconButton>
         Guest Comments
       </Typography>
       <form onSubmit={handleSubmit}>
