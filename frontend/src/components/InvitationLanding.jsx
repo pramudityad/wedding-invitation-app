@@ -220,7 +220,13 @@ export default function InvitationLanding() {
         {featuredComments.length > 0 && (
           <Box sx={{ mt: 5, mb: 5, textAlign: 'left' }}>
             {/* Comments Title */}
-            <Typography variant="h6" sx={{ mb: 3, fontFamily: "'Playfair Display', serif", fontWeight: 400, color: '#333' }}>
+            <Typography variant="h6" sx={{ 
+              mb: 3, 
+              fontFamily: "'Playfair Display', serif", 
+              fontWeight: 400, 
+              color: '#333',
+              textAlign: 'center' 
+            }}>
               Messages of Love
             </Typography>
             {/* List of Featured Comments */}
