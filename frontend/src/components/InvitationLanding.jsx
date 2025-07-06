@@ -1,6 +1,6 @@
 import { Box, Typography, Button, Snackbar, Alert } from '@mui/material';
 import { useAuthContext } from '../contexts/AuthContext';
-import { submitRSVP, getGuestList, getGuestByName } from '../api/guest';
+import { submitRSVP, getGuestByName } from '../api/guest';
 import { getAllComments } from '../api/comments';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -11,7 +11,6 @@ export default function InvitationLanding() {
 
   const [username, setUsername] = useState('');
   const [rsvpStatus, setRsvpStatus] = useState(null);
-  const [rsvpCount, setRsvpCount] = useState(0);
   const [featuredComments, setFeaturedComments] = useState([]);
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -39,10 +38,9 @@ export default function InvitationLanding() {
 
     const fetchData = async () => {
       try {
-        const [guestData, commentsData, guests] = await Promise.all([
+        const [guestData, commentsData] = await Promise.all([
           username ? getGuestByName(username) : Promise.resolve(null),
           getAllComments(),
-          getGuestList(),
         ]);
 
         if (guestData) {
@@ -72,8 +70,6 @@ export default function InvitationLanding() {
         severity: 'success',
       });
 
-      const guests = await getGuestList();
-      setRsvpCount(guests.length);
     } catch {
       setSnackbar({
         open: true,
@@ -131,8 +127,6 @@ export default function InvitationLanding() {
           Join us as we celebrate our love and begin our new journey together
           <br />
           {username ? `Welcome, ${username}!` : 'Loading welcome message...'}
-          <br />
-          {rsvpCount > 0 && `${rsvpCount} guests have RSVP'd so far!`}
         </Typography>
 
         {featuredComments.length > 0 && (
