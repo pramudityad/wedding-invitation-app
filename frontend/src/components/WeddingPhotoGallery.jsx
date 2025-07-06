@@ -15,10 +15,11 @@ export default function WeddingPhotoGallery() {
 
   // TODO: Replace with actual API call when backend is ready
   useEffect(() => {
-    // Mock photos data - same as your example
+    // Mock photos data - using 'url' field instead of 'img' to match component
     const mockPhotos = [
   {
-    img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=400&h=300&q=80',
+    id: 1,
+    url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=400&h=300&q=80',
     title: 'Couple Walking',
   },
   {
