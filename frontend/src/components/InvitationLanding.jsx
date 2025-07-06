@@ -375,7 +375,7 @@ export default function InvitationLanding() {
           >
             Venue Map
           </Button>
-           {/* Guest Comments Button */}
+          {/* Guest Comments Button */}
           <Button
             variant="outlined"
             onClick={() => navigate('/comments')}
@@ -392,6 +392,24 @@ export default function InvitationLanding() {
             }}
           >
             Guest Comments
+          </Button>
+          {/* Gallery Button */}
+          <Button
+            variant="outlined"
+            onClick={() => navigate('/gallery')}
+            sx={{
+              px: 3, py: 1,
+              borderRadius: '8px', // Consistent border radius
+              color: '#666', // Grey text
+              borderColor: '#666', // Grey border
+              '&:hover': {
+                borderColor: '#333',
+                color: '#333',
+                backgroundColor: 'rgba(0,0,0,0.04)', // Light hover effect
+              },
+            }}
+          >
+            Photo Gallery
           </Button>
         </Box>
       </Box>
