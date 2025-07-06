@@ -1,0 +1,111 @@
+import { useState, useEffect } from 'react';
+import {
+  Box,
+  Typography,
+  ImageList,
+  ImageListItem,
+  CircularProgress,
+  Alert
+} from '@mui/material';
+
+export default function WeddingPhotoGallery() {
+  const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // TODO: Replace with actual API call when backend is ready
+  useEffect(() => {
+    // Mock photos data - same as your example
+    const mockPhotos = [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=400&h=300&q=80',
+        title: 'Couple Walking'
+      },
+      // Add all other photo objects from your mock here
+    ];
+    
+    setTimeout(() => {
+      setPhotos(mockPhotos);
+      setLoading(false);
+    }, 500); // Simulate network delay
+  }, []);
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" mt={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box p={2}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    );
+  }
+
+  return (
+    <Box
+      sx={{
+        p: { xs: 2, md: 4 },
+        backgroundColor: '#f9f9f7',
+        borderRadius: '12px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+        maxWidth: '1000px',
+        mx: 'auto',
+        mt: 4,
+        mb: 4,
+        textAlign: 'center',
+      }}
+    >
+      <Typography
+        variant="h5"
+        sx={{
+          mb: 2,
+          fontFamily: "'Playfair Display', serif",
+          fontWeight: 400,
+          color: '#333',
+        }}
+      >
+        Our Special Moments
+      </Typography>
+
+      <Typography
+        variant="body1"
+        sx={{
+          mb: 4,
+          color: '#555',
+          fontFamily: "'Montserrat', sans-serif",
+          fontSize: '1rem',
+        }}
+      >
+        Browse through some highlights from our journey and the wedding day!
+      </Typography>
+
+      <ImageList
+        sx={{
+          width: '100%',
+          borderRadius: '8px',
+        }}
+        cols={3}
+        rowHeight={180}
+        gap={8}
+      >
+        {photos.map((photo) => (
+          <ImageListItem key={photo.id}>
+            <img
+              srcSet={`${photo.url}?w=180&h=180&fit=crop&auto=format&dpr=2 2x`}
+              src={`${photo.url}?w=180&h=180&fit=crop&auto=format`}
+              alt={photo.title}
+              loading="lazy"
+              style={{ borderRadius: '4px' }}
+            />
+          </ImageListItem>
+        ))}
+      </ImageList>
+    </Box>
+  );
+}
