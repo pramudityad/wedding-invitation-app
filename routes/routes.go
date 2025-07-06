@@ -68,13 +68,9 @@ func SetupRoutes(r *gin.Engine) {
 			})
 		})
 
-		protected.GET("/admin/rsvps", handleGetAllRSVPs)
-
 		// Guest management routes
-		guestRoutes := protected.Group("/admin/guests")
-		{
-			guestRoutes.GET("", handleGetGuestByName)
-		}
+		protected.GET("/admin/rsvps", handleGetAllRSVPs)
+		protected.GET("/guests", handleGetGuestByName)
 
 		// Comment routes
 		protected.POST("/comments", handleCommentSubmission)
