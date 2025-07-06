@@ -46,11 +46,14 @@ export default function InvitationLanding() {
         ]);
 
         if (guestData) {
-          setRsvpStatus(guestData.attending);
+          setRsvpStatus(guestData.Attending);
         }
 
         setRsvpCount(guests.length);
-        setFeaturedComments(commentsData.comments.slice(0, 3));
+
+        if (commentsData && commentsData.comments) {
+          setFeaturedComments(commentsData.comments.slice(0, 3));
+        }
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
