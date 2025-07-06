@@ -47,10 +47,10 @@ export default function InvitationLanding() {
           setRsvpStatus(guestData.Attending);
         }
 
-        setRsvpCount(guests.length);
-
-        if (commentsData && commentsData.comments) {
+        if (commentsData?.comments) {
           setFeaturedComments(commentsData.comments.slice(0, 3));
+        } else {
+          setFeaturedComments([]);
         }
       } catch (error) {
         console.error('Failed to fetch data:', error);
