@@ -6,6 +6,7 @@ import { MapContainer as Map, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 export default function VenueMap() {
+  const navigate = useNavigate();
   const venuePosition = [-6.1754, 106.8272]; // Monas, Jakarta
   
   return (
@@ -30,7 +31,7 @@ export default function VenueMap() {
           sx={{
             position: 'absolute',
             top: 16,
-            right: 16,
+            left: 16,
             color: 'inherit'
           }}
         >

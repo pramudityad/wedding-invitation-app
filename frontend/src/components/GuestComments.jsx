@@ -80,7 +80,7 @@ export default function GuestComments() {
           sx={{
             position: 'absolute',
             top: 16,
-            right: 16,
+            left: 16,
             color: 'inherit'
           }}
         >
