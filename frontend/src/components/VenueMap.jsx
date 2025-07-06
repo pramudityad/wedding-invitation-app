@@ -1,9 +1,12 @@
 import './fix-leaflet-icons';
-import { Box, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, Typography, IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { MapContainer as Map, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 export default function VenueMap() {
+  const navigate = useNavigate();
   const venuePosition = [-6.1754, 106.8272]; // Monas, Jakarta
   
   return (
@@ -23,6 +26,17 @@ export default function VenueMap() {
           color: '#333'
         }}
       >
+        <IconButton 
+          onClick={() => navigate('/')}
+          sx={{
+            position: 'absolute',
+            top: 16,
+            left: 16,
+            color: 'inherit'
+          }}
+        >
+          <ArrowBackIcon />
+        </IconButton>
         Wedding Venue Location
       </Typography>
       <Map

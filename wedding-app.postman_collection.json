@@ -30,7 +30,45 @@
               "path": ["login"]
             }
           },
-          "response": []
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"John Doe\",\n  \"attending\": true,\n  \"plus_ones\": 2,\n  \"dietary_restrictions\": \"None\"\n}"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "json": [
+                {
+                  "message": "RSVP recorded successfully",
+                  "guest": {
+                    "id": 1,
+                    "name": "John Doe",
+                    "attending": true,
+                    "plus_ones": 2,
+                    "dietary_restrictions": "None",
+                    "created_at": "2023-07-06T12:34:56Z",
+                    "updated_at": "2023-07-06T12:34:56Z"
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
           "name": "Test Protected Route",
@@ -68,7 +106,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"John Doe\",\n  \"attending\": true,\n  \"guests\": 2,\n  \"message\": \"Looking forward to it!\"\n}"
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"attending\": true,\n  \"plus_ones\": 2,\n  \"dietary_restrictions\": \"None\"\n}"
             },
             "url": {
               "raw": "http://localhost:8080/rsvp",
@@ -152,7 +190,17 @@
               "path": ["admin", "guests", "bulk"]
             }
           },
-          "response": []
+          "response": [
+            {
+              "name": "Success Response",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "json": {
+                "message": "Successfully uploaded 5 guests"
+              }
+            }
+          ]
         },
         {
           "name": "Bulk Update Guests (JSON)",

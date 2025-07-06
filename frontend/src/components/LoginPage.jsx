@@ -1,13 +1,14 @@
 import { Box, TextField, Button, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../api/auth';
+import { useAuthContext } from '../contexts/AuthContext';
 
 export default function LoginPage() {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuthContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +16,7 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await login(name);
+      await login(name);
       navigate('/', { replace: true });
     } catch (err) {
       setError('Invalid name. Please try again.');
