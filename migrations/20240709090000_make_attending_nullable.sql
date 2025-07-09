@@ -1,6 +1,5 @@
-PRAGMA foreign_keys=off;
-
 BEGIN TRANSACTION;
+PRAGMA foreign_keys=off;
 
 -- Backup existing guests table
 CREATE TEMPORARY TABLE guests_backup AS SELECT * FROM guests;
@@ -25,6 +24,5 @@ INSERT INTO guests SELECT * FROM guests_backup;
 -- Cleanup temporary table
 DROP TABLE guests_backup;
 
-COMMIT;
-
 PRAGMA foreign_keys=on;
+COMMIT;
