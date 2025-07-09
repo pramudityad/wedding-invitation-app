@@ -9,7 +9,7 @@ import (
 type Guest struct {
 	ID                  int64
 	Name                string
-	Attending           bool
+	Attending           sql.NullBool
 	PlusOnes            int
 	DietaryRestrictions sql.NullString
 	CreatedAt           time.Time
