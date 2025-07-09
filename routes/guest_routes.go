@@ -70,7 +70,14 @@ func parseGuestCSV(f io.Reader) ([]models.Guest, error) {
 			return nil, fmt.Errorf("invalid plus_ones value on line %d: %v", i+1, err)
 		}
 
-		attending := strings.ToLower(record[1]) == "true"
+		var attending sql.NullBool
+		if record[1] != "" {
+			val := strings.ToLower(record[1]) == "true"
+			attending = sql.NullBool{
+				Bool: val,
+				Valid: true,
+			}
+		}
 
 		guest := models.Guest{
 			Name:                record[0],
