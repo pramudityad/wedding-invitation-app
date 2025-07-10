@@ -1,5 +1,5 @@
 name,attending,plus_ones,dietary_restrictions
 John Doe,true,2,Vegetarian
 Jane Smith,false,0,
-Alex Brown,,,
-Maria Garcia,,,
+Alex Brown,true,1,Gluten-free
+Maria Garcia,false,0,Keto

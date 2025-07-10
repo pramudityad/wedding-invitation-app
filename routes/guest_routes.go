@@ -68,9 +68,15 @@ func parseGuestCSV(f io.Reader) ([]models.Guest, error) {
 			continue
 		}
 
-		plusOnes, err := strconv.Atoi(record[2])
-		if err != nil {
-			return nil, fmt.Errorf("invalid plus_ones value on line %d: %v", i+1, err)
+		var plusOnes int
+		if record[2] == "" {
+			plusOnes = 0
+		} else {
+			val, err := strconv.Atoi(record[2])
+			if err != nil {
+				return nil, fmt.Errorf("invalid plus_ones value on line %d: %v", i+1, err)
+			}
+			plusOnes = val
 		}
 
 		var attending sql.NullBool
