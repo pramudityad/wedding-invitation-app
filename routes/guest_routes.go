@@ -17,8 +17,11 @@ import (
 
 func SetupGuestRoutes(r *gin.RouterGroup) {
 	// Bulk guest operations
-	r.POST("/bulk", handleBulkGuestUpload)
-	r.PUT("/bulk", handleBulkGuestUpdate)
+	guestGroup := r.Group("/guests")
+	{
+		guestGroup.POST("/bulk", handleBulkGuestUpload)
+		guestGroup.PUT("/bulk", handleBulkGuestUpdate)
+	}
 }
 
 func handleBulkGuestUpload(c *gin.Context) {
@@ -65,12 +68,25 @@ func parseGuestCSV(f io.Reader) ([]models.Guest, error) {
 			continue
 		}
 
-		plusOnes, err := strconv.Atoi(record[2])
-		if err != nil {
-			return nil, fmt.Errorf("invalid plus_ones value on line %d: %v", i+1, err)
+		var plusOnes int
+		if record[2] == "" {
+			plusOnes = 0
+		} else {
+			val, err := strconv.Atoi(record[2])
+			if err != nil {
+				return nil, fmt.Errorf("invalid plus_ones value on line %d: %v", i+1, err)
+			}
+			plusOnes = val
 		}
 
-		attending := strings.ToLower(record[1]) == "true"
+		var attending sql.NullBool
+		if record[1] != "" {
+			val := strings.ToLower(record[1]) == "true"
+			attending = sql.NullBool{
+				Bool: val,
+				Valid: true,
+			}
+		}
 
 		guest := models.Guest{
 			Name:                record[0],

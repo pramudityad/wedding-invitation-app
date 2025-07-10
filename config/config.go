@@ -9,4 +9,5 @@ const (
 	SpotifyClientSecret = ""               // TODO: Set in production
 	SpotifyRedirectURI  = "http://localhost:8080/spotify/callback"
 	SpotifyCacheSeconds = 300 // 5 minutes cache duration
+	AdminAPIKey         = "admin-api-key"  // TODO: Change to a strong key in production
 )

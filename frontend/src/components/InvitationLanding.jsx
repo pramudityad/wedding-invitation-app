@@ -57,11 +57,11 @@ export default function InvitationLanding() {
         ]);
 
         // Update RSVP status if guest data is found
-        if (guestData && guestData.Attending !== undefined) { // Check if Attending property exists
-           // Convert potential string "true"/"false" from API to boolean if necessary
-           setRsvpStatus(guestData.Attending === true || guestData.Attending === 'true');
+        if (guestData?.Attending?.Valid) {
+           // Use the boolean value if it's valid
+           setRsvpStatus(guestData.Attending.Bool);
         } else {
-           setRsvpStatus(null); // Guest data not found or Attending status missing, assume not responded
+           setRsvpStatus(null); // No valid RSVP response yet
         }
 
 
