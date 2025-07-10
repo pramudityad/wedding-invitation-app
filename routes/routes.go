@@ -70,7 +70,6 @@ func SetupRoutes(r *gin.Engine) {
 		})
 
 		// Guest management routes
-		protected.GET("/admin/rsvps", handleGetAllRSVPs)
 		protected.GET("/guests", handleGetGuestByName)
 
 		// Comment routes
@@ -135,6 +134,7 @@ func SetupRoutes(r *gin.Engine) {
 	admin := r.Group("/admin")
 	admin.Use(apikey.APIKeyMiddleware())
 	SetupGuestRoutes(admin)
+	admin.GET("/rsvps", handleGetAllRSVPs)
 }
 
 func handleRSVPSubmission(c *gin.Context) {
