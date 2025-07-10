@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"wedding-invitation-backend/database"
+	"wedding-invitation-backend/middleware/apikey"
 	"wedding-invitation-backend/middleware/auth"
 	"wedding-invitation-backend/models"
 	"wedding-invitation-backend/spotify"
@@ -128,9 +129,12 @@ func SetupRoutes(r *gin.Engine) {
 			c.JSON(http.StatusOK, gin.H{"status": "playback paused"})
 		})
 
-		// Add guest bulk operations
-		SetupGuestRoutes(protected)
 	}
+
+	// Admin routes with API key authentication
+	admin := r.Group("/admin")
+	admin.Use(apikey.APIKeyMiddleware())
+	SetupGuestRoutes(admin)
 }
 
 func handleRSVPSubmission(c *gin.Context) {
