@@ -17,8 +17,11 @@ import (
 
 func SetupGuestRoutes(r *gin.RouterGroup) {
 	// Bulk guest operations
-	r.POST("/bulk", handleBulkGuestUpload)
-	r.PUT("/bulk", handleBulkGuestUpdate)
+	guestGroup := r.Group("/guests")
+	{
+		guestGroup.POST("/bulk", handleBulkGuestUpload)
+		guestGroup.PUT("/bulk", handleBulkGuestUpdate)
+	}
 }
 
 func handleBulkGuestUpload(c *gin.Context) {

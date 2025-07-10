@@ -127,6 +127,9 @@ func SetupRoutes(r *gin.Engine) {
 
 			c.JSON(http.StatusOK, gin.H{"status": "playback paused"})
 		})
+
+		// Add guest bulk operations
+		SetupGuestRoutes(protected)
 	}
 }
 
