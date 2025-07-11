@@ -65,6 +65,12 @@ export default function InvitationLanding() {
         }
 
         setFeaturedComments(commentsData?.comments || []);
+
+        // Mark invitation opened if not already marked
+        if (guestData && guestData.first_opened_at === null && !hasMarkedOpened) {
+          markInvitationOpened();
+          setHasMarkedOpened(true);
+        }
       } catch (error) {
         console.error('Failed to fetch data:', error);
         // Optionally set an error state to display to the user, though Snackbar covers it

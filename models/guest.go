@@ -14,6 +14,7 @@ type Guest struct {
 	DietaryRestrictions sql.NullString
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
+	FirstOpenedAt       sql.NullTime
 }
 
 func (g *Guest) Create(db *sql.DB) error {
@@ -71,6 +72,7 @@ func GetGuestByName(db *sql.DB, name string) (*Guest, error) {
 		&guest.DietaryRestrictions,
 		&guest.CreatedAt,
 		&guest.UpdatedAt,
+		&guest.FirstOpenedAt,
 	)
 
 	if err == sql.ErrNoRows {
