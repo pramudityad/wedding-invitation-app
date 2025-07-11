@@ -21,9 +21,10 @@ export default function GuestComments() {
       try {
         // Assuming getAllComments is imported correctly
         const response = await getAllComments();
-        // Sort comments by creation date, newest first (assuming response items have a CreatedAt or similar field)
-        // If your API returns them in a specific order, you might not need this sort.
-        const sortedComments = response.comments.sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt));
+        // Handle null comments array from backend (treat as empty array)
+        const commentsArray = response.comments || [];
+        // Sort comments by creation date, newest first
+        const sortedComments = commentsArray.sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt));
         setComments(sortedComments);
       } catch (error) {
         console.error('Error fetching comments:', error);
