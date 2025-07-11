@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"strconv"
 	"wedding-invitation-backend/database"
 	"wedding-invitation-backend/middleware/apikey"
 	"wedding-invitation-backend/middleware/auth"
@@ -313,14 +314,22 @@ func handleGetMyComments(c *gin.Context) {
 }
 
 func handleGetAllComments(c *gin.Context) {
-	comments, err := models.GetAllCommentsWithGuests(database.DB)
+	// Parse limit from query, default 20, max 100
+	limitStr := c.DefaultQuery("limit", "20")
+	cursor := c.Query("cursor")
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit < 1 {
+		limit = 20
+	} else if limit > 100 {
+		limit = 100
+	}
+
+	paginatedComments, err := models.GetAllCommentsWithGuests(database.DB, limit, cursor)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch comments"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"count":    len(comments),
-		"comments": comments,
-	})
+	c.JSON(http.StatusOK, paginatedComments)
 }
