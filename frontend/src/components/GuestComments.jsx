@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Box, Typography, TextField, Button, List, ListItem, ListItemText, CircularProgress, Alert } from '@mui/material'; // Added CircularProgress, Alert
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined'; // Added icon for the button
 import { getAllComments, submitComment } from '../api/comments'; // Assuming these are correctly imported
@@ -7,38 +7,39 @@ import { getAllComments, submitComment } from '../api/comments'; // Assuming the
 export default function GuestComments() {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false); // New state for submit button loading
+  const [nextCursor, setNextCursor] = useState(null);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
-  const [submitError, setSubmitError] = useState(null); // New state for submit-specific errors
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+  const lastCommentRef = useRef(null);
 
   // Removed: const navigate = useNavigate(); // No back button here
 
   useEffect(() => {
-    const fetchComments = async () => {
-      setLoading(true);
-      setError(null); // Clear previous errors
+    const fetchFirstPage = async () => {
+      setInitialLoading(true);
+      setError(null);
       try {
-        // Assuming getAllComments is imported correctly
-        const response = await getAllComments();
-        // Handle null comments array from backend (treat as empty array)
+        const response = await getAllComments({ limit: 10 }); // Get first page
         const commentsArray = response.comments || [];
-        // Sort comments by creation date, newest first
-        const sortedComments = commentsArray.sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt));
-        setComments(sortedComments);
+        setComments(commentsArray);
+        setNextCursor(response.next_cursor || null);
       } catch (error) {
         console.error('Error fetching comments:', error);
         setError('Failed to load comments. Please try refreshing.');
       } finally {
-        setLoading(false);
+        setInitialLoading(false);
       }
     };
-    fetchComments();
+    
+    fetchFirstPage();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitError(null); // Clear previous submit errors
+    setSubmitError(null);
 
     const trimmedComment = newComment.trim();
     if (!trimmedComment) {
@@ -46,14 +47,13 @@ export default function GuestComments() {
       return;
     }
 
-    setSubmitting(true); // Disable button and show loading
+    setSubmitting(true);
     try {
-      // Assuming submitComment is imported correctly
       const response = await submitComment(trimmedComment);
-      // Add the new comment to the top of the list
+      // Prepend new comment to existing comments
       setComments([response, ...comments]);
-      setNewComment(''); // Clear the input field
-      setSubmitError(null); // Ensure submit error is cleared on success
+      setNewComment('');
+      setSubmitError(null);
     } catch (error) {
       console.error('Failed to post comment:', error);
       if (error.response?.data?.error?.includes('Maximum of 2 comments')) {
@@ -62,12 +62,54 @@ export default function GuestComments() {
         setSubmitError('Failed to post comment. Please try again.');
       }
     } finally {
-      setSubmitting(false); // Re-enable button
+      setSubmitting(false);
     }
   };
 
+  // Function to load more comments when scrolling
+  const loadMoreComments = useCallback(async () => {
+    if (!nextCursor || loadingMore) return;
+    
+    setLoadingMore(true);
+    setError(null);
+    
+    try {
+      const response = await getAllComments({ limit: 10, cursor: nextCursor });
+      const newComments = response.comments || [];
+      setComments(prev => [...prev, ...newComments]);
+      setNextCursor(response.next_cursor || null);
+    } catch (error) {
+      console.error('Error loading more comments:', error);
+      setError('Failed to load more comments. Please try again.');
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [nextCursor, loadingMore]);
+
+  useEffect(() => {
+    // Setup IntersectionObserver to detect when last comment is visible
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMoreComments();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (lastCommentRef.current) {
+      observer.observe(lastCommentRef.current);
+    }
+
+    return () => {
+      if (lastCommentRef.current) {
+        observer.unobserve(lastCommentRef.current);
+      }
+    };
+  }, [loadMoreComments]);
+
   // Display loading or initial fetch error state prominently
-  if (loading) {
+  if (initialLoading) {
     return (
       <Box sx={{ textAlign: 'center', p: 4 }}>
         <CircularProgress size={40} />
@@ -175,10 +217,11 @@ export default function GuestComments() {
                 No comments yet. Be the first to leave a message!
             </Typography>
         ) : (
-            comments.map(comment => (
+            comments.map((comment, index) => (
               <ListItem
-                key={comment.ID} // Use unique ID from comment object
-                disableGutters // Remove default list item padding
+                ref={index === comments.length - 1 ? lastCommentRef : null}
+                key={comment.ID}
+                disableGutters
                 sx={{
                   p: 3, // Padding inside the comment box
                   mb: 3, // More space between comments
@@ -233,6 +276,12 @@ export default function GuestComments() {
             ))
         )}
       </List>
+      {loadingMore && (
+        <Box sx={{ textAlign: 'center', p: 4 }}>
+          <CircularProgress size={40} />
+          <Typography sx={{ mt: 2, color: '#666' }}>Loading more comments...</Typography>
+        </Box>
+      )}
     </Box>
   );
 }
