@@ -33,12 +33,12 @@ export const getUserComments = async () => {
   }
 };
 
-export const getAllComments = async () => {
+export const getAllComments = async (params = {}) => {
   try {
-    const response = await api.get('/comments');
+    const response = await api.get('/comments', { params });
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch all comments:', error);
+    console.error('Failed to fetch comments:', error);
     throw error;
   }
 };

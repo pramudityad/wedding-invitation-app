@@ -53,7 +53,7 @@ export default function InvitationLanding() {
         // Fetch guest data by username and comments concurrently
         const [guestData, commentsData] = await Promise.all([
           currentUsername ? getGuestByName(currentUsername) : Promise.resolve(null),
-          getAllComments(),
+          getAllComments({ limit: 3 }) // Request first 3 newest comments
         ]);
 
         // Update RSVP status if guest data is found
@@ -64,15 +64,7 @@ export default function InvitationLanding() {
            setRsvpStatus(null); // No valid RSVP response yet
         }
 
-
-        // Update featured comments (take first 3, sort by date)
-        if (commentsData?.comments) {
-           // Sort comments by creation date descending (newest first)
-           const sortedComments = commentsData.comments.sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt));
-           setFeaturedComments(sortedComments.slice(0, 3)); // Take top 3 after sorting
-        } else {
-          setFeaturedComments([]); // No comments found
-        }
+        setFeaturedComments(commentsData?.comments || []);
       } catch (error) {
         console.error('Failed to fetch data:', error);
         // Optionally set an error state to display to the user, though Snackbar covers it
