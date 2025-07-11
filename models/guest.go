@@ -58,7 +58,7 @@ func (g *Guest) Create(db *sql.DB) error {
 func GetGuestByName(db *sql.DB, name string) (*Guest, error) {
 	stmt := `SELECT
 		id, name, attending, plus_ones,
-		dietary_restrictions, created_at, updated_at
+		dietary_restrictions, created_at, updated_at, first_opened_at
 		FROM guests WHERE name = ?`
 
 	log.Printf("Querying guest with name: %s", name)
@@ -226,7 +226,7 @@ func BulkUpdate(db *sql.DB, guests []Guest) error {
 func GetAllGuests(db *sql.DB) ([]Guest, error) {
 	stmt := `SELECT
 		id, name, attending, plus_ones,
-		dietary_restrictions, created_at, updated_at
+		dietary_restrictions, created_at, updated_at, first_opened_at
 		FROM guests`
 
 	rows, err := db.Query(stmt)
@@ -246,6 +246,7 @@ func GetAllGuests(db *sql.DB) ([]Guest, error) {
 			&guest.DietaryRestrictions,
 			&guest.CreatedAt,
 			&guest.UpdatedAt,
+			&guest.FirstOpenedAt,
 		)
 		if err != nil {
 			return nil, err
