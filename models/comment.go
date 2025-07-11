@@ -63,36 +63,6 @@ type CommentWithGuest struct {
 	GuestName string
 }
 
-func GetAllComments(db *sql.DB) ([]Comment, error) {
-	stmt := `SELECT
-		id, guest_id, content, created_at
-		FROM comments
-		ORDER BY created_at DESC`
-
-	rows, err := db.Query(stmt)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var comments []Comment
-	for rows.Next() {
-		var comment Comment
-		err := rows.Scan(
-			&comment.ID,
-			&comment.GuestID,
-			&comment.Content,
-			&comment.CreatedAt,
-		)
-		if err != nil {
-			return nil, err
-		}
-		comments = append(comments, comment)
-	}
-
-	return comments, nil
-}
-
 func GetCommentCountByGuestID(db *sql.DB, guestID int64) (int, error) {
 	var count int
 	row := db.QueryRow("SELECT COUNT(*) FROM comments WHERE guest_id = ?", guestID)
