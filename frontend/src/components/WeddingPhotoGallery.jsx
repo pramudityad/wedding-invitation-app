@@ -65,13 +65,12 @@ const mockPhotos = [
   },
 ];
 
-// Define styles as constants (slightly updated for better appearance and hover effects)
+// Define styles as constants (refined for elegant, minimalist look)
 const styles = {
   outerContainer: {
     p: { xs: 2, md: 4 },
-    backgroundColor: '#ffffff', // Using white for a cleaner look
+    backgroundColor: 'transparent', // Removed opaque background
     borderRadius: '12px',
-    boxShadow: '0 6px 16px rgba(0,0,0,0.15)', // Slightly stronger shadow
     maxWidth: '1000px',
     mx: 'auto',
     mt: 4,
@@ -80,47 +79,44 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    border: '1px solid #eee', // Subtle border
+    // Removed border and shadow for cleaner look
   },
   title: {
     mb: 2,
     fontFamily: "'Playfair Display', serif",
-    fontWeight: 700, // Bolder title
-    color: '#4a148c', // A deep purple accent color
-    fontSize: { xs: '1.8rem', md: '2.5rem' } // Responsive font size
+    fontWeight: 700, 
+    color: '#1a1a1a', // Sleeker dark grey
+    fontSize: { xs: '1.8rem', md: '2.5rem' },
+    letterSpacing: '0.03em', // Added letter spacing
   },
   introText: {
     mb: 4,
-    color: '#5a5a5a', // Slightly darker grey for readability
+    color: '#666', // Softer dark grey
     fontFamily: "'Montserrat', sans-serif",
-    fontSize: { xs: '0.95rem', md: '1.1rem' }, // Responsive font size
+    fontWeight: 300, // Lighter weight for elegance
+    fontSize: { xs: '0.95rem', md: '1.1rem' },
     maxWidth: '700px',
     lineHeight: 1.6,
+    letterSpacing: '0.015em', // Added letter spacing
   },
   imageList: {
     width: '100%',
     borderRadius: '8px',
-    // Adding a subtle background or border to the image list if needed,
-    // but keeping it simple works well too.
+    backgroundColor: 'transparent', // Ensure transparent background
   },
   imageListItem: {
-    cursor: 'pointer', // Indicate clickability
-    overflow: 'hidden', // Hide overflow from scale transformation
-    borderRadius: '8px', // Rounded corners for list items
-    boxShadow: '0 2px 5px rgba(0,0,0,0.08)', // Small shadow per image
-    transition: 'transform 0.3s ease-in-out', // Smooth transition for hover
+    cursor: 'pointer',
+    overflow: 'hidden',
+    borderRadius: '8px',
+    transition: 'transform 0.3s ease-in-out, border-color 0.3s ease-in-out', // Added border transition
+    border: '1px solid #f0f0f0', // Replaced shadow with thin border
     '&:hover': {
-      transform: 'scale(1.03)', // Slight zoom on hover
-      boxShadow: '0 5px 15px rgba(0,0,0,0.15)', // Enhance shadow on hover
+      transform: 'scale(1.03)',
+      borderColor: '#cdcdcd', // Subtle hover effect
     },
-    // Target the img element inside for transition
     '& img': {
       transition: 'transform 0.3s ease-in-out',
     },
-    // Example if you wanted hover zoom on image specifically
-    // '&:hover img': {
-    //   transform: 'scale(1.05)',
-    // },
   },
   imageItem: {
     display: 'block',
@@ -130,11 +126,11 @@ const styles = {
   },
   loadingContainer: {
     textAlign: 'center',
-    py: 6, // Padding top/bottom
+    py: 6,
   },
   loadingText: {
     mt: 2,
-    color: '#757575', // Muted grey
+    color: '#757575',
     fontFamily: "'Montserrat', sans-serif",
     fontSize: '1rem',
   },
@@ -147,20 +143,21 @@ const styles = {
   dialogImage: {
     maxWidth: '100%',
     height: 'auto',
-    maxHeight: '65vh', // Limit maximum height in the dialog
+    maxHeight: '65vh',
     borderRadius: '8px',
-    objectFit: 'contain', // Ensure the whole image is visible
-    margin: '0 auto', // Center the image
-    display: 'block', // Required for auto margins
+    objectFit: 'contain',
+    margin: '0 auto',
+    display: 'block',
   },
   dialogCaption: {
     mt: 3,
-    color: '#4a4a4a', // Darker grey for caption readability
+    color: '#4a4a4a',
     fontFamily: "'Montserrat', sans-serif",
+    fontWeight: 300, // Lighter weight for better readability
     fontSize: '1rem',
-    lineHeight: 1.7, // Increased line height for long text
-    textAlign: 'justify', // Justify text for a block look (optional, can be 'left')
-    px: { xs: 1, md: 3 } // Horizontal padding for caption inside dialog
+    lineHeight: 1.7,
+    textAlign: 'justify',
+    px: { xs: 1, md: 3 }
   }
 };
 
@@ -271,13 +268,18 @@ export default function WeddingPhotoGallery() {
       <Dialog
         open={isModalOpen}
         onClose={handleCloseModal}
-        maxWidth="md" // Adjust max width as needed (sm, md, lg, xl)
-        fullWidth // Dialog takes full width up to maxWidth
-        TransitionProps={{ // Optional: Add transition effect
-           timeout: 300
+        maxWidth="md" 
+        fullWidth 
+        TransitionProps={{ 
+           timeout: 300 
         }}
-        PaperProps={{ // Optional: Style the dialog paper
-          sx: { borderRadius: '12px', overflowY: 'visible' }
+        PaperProps={{
+          sx: {
+            borderRadius: '12px',
+            overflowY: 'visible',
+            border: '1px solid #f0f0f0',  // Added border
+            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.08)', // Refined shadow
+          }
         }}
       >
         {selectedPhoto && ( // Only render content if a photo is selected
