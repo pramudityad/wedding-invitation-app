@@ -29,3 +29,11 @@ export const getGuestList = async () => {
     throw error;
   }
 };
+
+export const markInvitationOpened = async () => {
+  try {
+    await api.post('/mark-opened');
+  } catch (error) {
+    console.error('Failed to track invitation opening:', error);
+  }
+};

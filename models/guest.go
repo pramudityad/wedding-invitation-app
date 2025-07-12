@@ -14,6 +14,7 @@ type Guest struct {
 	DietaryRestrictions sql.NullString
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
+	FirstOpenedAt       sql.NullTime
 }
 
 func (g *Guest) Create(db *sql.DB) error {
@@ -57,7 +58,7 @@ func (g *Guest) Create(db *sql.DB) error {
 func GetGuestByName(db *sql.DB, name string) (*Guest, error) {
 	stmt := `SELECT
 		id, name, attending, plus_ones,
-		dietary_restrictions, created_at, updated_at
+		dietary_restrictions, created_at, updated_at, first_opened_at
 		FROM guests WHERE name = ?`
 
 	log.Printf("Querying guest with name: %s", name)
@@ -71,6 +72,7 @@ func GetGuestByName(db *sql.DB, name string) (*Guest, error) {
 		&guest.DietaryRestrictions,
 		&guest.CreatedAt,
 		&guest.UpdatedAt,
+		&guest.FirstOpenedAt,
 	)
 
 	if err == sql.ErrNoRows {
@@ -224,7 +226,7 @@ func BulkUpdate(db *sql.DB, guests []Guest) error {
 func GetAllGuests(db *sql.DB) ([]Guest, error) {
 	stmt := `SELECT
 		id, name, attending, plus_ones,
-		dietary_restrictions, created_at, updated_at
+		dietary_restrictions, created_at, updated_at, first_opened_at
 		FROM guests`
 
 	rows, err := db.Query(stmt)
@@ -244,6 +246,7 @@ func GetAllGuests(db *sql.DB) ([]Guest, error) {
 			&guest.DietaryRestrictions,
 			&guest.CreatedAt,
 			&guest.UpdatedAt,
+			&guest.FirstOpenedAt,
 		)
 		if err != nil {
 			return nil, err
@@ -252,4 +255,23 @@ func GetAllGuests(db *sql.DB) ([]Guest, error) {
 	}
 
 	return guests, nil
+}
+
+func MarkInvitationOpened(db *sql.DB, name string) error {
+	stmt := `UPDATE guests SET first_opened_at = CURRENT_TIMESTAMP WHERE name = ? AND first_opened_at IS NULL`
+	
+	result, err := db.Exec(stmt, name)
+	if err != nil {
+		return err
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rows > 0 {
+		log.Printf("Marked invitation opened for %s", name)
+	}
+	return nil
 }

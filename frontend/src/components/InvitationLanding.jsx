@@ -1,7 +1,6 @@
 import { Box, Typography, Button, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { useAuthContext } from '../contexts/AuthContext';
-// Assuming these API functions are correctly imported
-import { submitRSVP, getGuestByName } from '../api/guest';
+import { submitRSVP, getGuestByName, markInvitationOpened } from '../api/guest';
 import { getAllComments } from '../api/comments';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -17,6 +16,7 @@ export default function InvitationLanding() {
   const [rsvpStatus, setRsvpStatus] = useState(null); // null: hasn't responded, true: attending, false: not attending
   const [featuredComments, setFeaturedComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Loading state for initial data fetch
+  const [hasMarkedOpened, setHasMarkedOpened] = useState(false); // Track if we've marked invitation opened
   // State for Snackbar notifications
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -65,6 +65,12 @@ export default function InvitationLanding() {
         }
 
         setFeaturedComments(commentsData?.comments || []);
+
+        // Mark invitation opened if not already marked
+        if (guestData && !guestData.FirstOpenedAt?.Valid && !hasMarkedOpened) {
+          markInvitationOpened();
+          setHasMarkedOpened(true);
+        }
       } catch (error) {
         console.error('Failed to fetch data:', error);
         // Optionally set an error state to display to the user, though Snackbar covers it

@@ -129,6 +129,7 @@ func SetupRoutes(r *gin.Engine) {
 			c.JSON(http.StatusOK, gin.H{"status": "playback paused"})
 		})
 
+		protected.POST("/mark-opened", handleMarkOpened)
 	}
 
 	// Admin routes with API key authentication
@@ -218,6 +219,19 @@ func handleGetAllRSVPs(c *gin.Context) {
 	})
 }
 
+func handleMarkOpened(c *gin.Context) {
+	username := c.MustGet("username").(string)
+	
+	if err := models.MarkInvitationOpened(database.DB, username); err != nil {
+		log.Printf("Error marking invitation opened: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to track opening"})
+		return
+	}
+	
+	log.Printf("Successfully recorded invitation opening for: %s", username)
+	c.JSON(http.StatusOK, gin.H{"status": "Invitation opening recorded"})
+}
+
 func handleCommentSubmission(c *gin.Context) {
 	type commentRequest struct {
 		Content string `json:"content" binding:"required"`
@@ -268,14 +282,6 @@ func handleCommentSubmission(c *gin.Context) {
 	}
 
 	log.Printf("Successfully created comment for guest %s", username)
-
-	// Get guest name for the response
-	guest, err = models.GetGuestByName(database.DB, username)
-	if err != nil {
-		log.Printf("Error getting guest for comment response: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get guest info"})
-		return
-	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Comment created successfully",

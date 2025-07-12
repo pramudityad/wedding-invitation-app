@@ -41,7 +41,8 @@ func InitDB() error {
 			plus_ones INTEGER DEFAULT 0,
 			dietary_restrictions TEXT,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			first_opened_at TIMESTAMP DEFAULT NULL
 		);
 
 		-- Create comments table to maintain foreign key
