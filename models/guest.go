@@ -256,3 +256,22 @@ func GetAllGuests(db *sql.DB) ([]Guest, error) {
 
 	return guests, nil
 }
+
+func MarkInvitationOpened(db *sql.DB, name string) error {
+	stmt := `UPDATE guests SET first_opened_at = CURRENT_TIMESTAMP WHERE name = ? AND first_opened_at IS NULL`
+	
+	result, err := db.Exec(stmt, name)
+	if err != nil {
+		return err
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rows > 0 {
+		log.Printf("Marked invitation opened for %s", name)
+	}
+	return nil
+}
