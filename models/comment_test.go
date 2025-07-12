@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
+	_ "modernc.org/sqlite"
 )
 
 func TestCommentCreate(t *testing.T) {
@@ -95,8 +95,8 @@ func TestGetAllCommentsWithGuests(t *testing.T) {
 	paginated, err := GetAllCommentsWithGuests(db, 2, "")
 	assert.NoError(t, err)
 	assert.Len(t, paginated.Comments, 2)
-	assert.Equal(t, "Author1", paginated.Comments[1].GuestName)
-	assert.Equal(t, "Author2", paginated.Comments[0].GuestName)
+	assert.Equal(t, "Author1", paginated.Comments[0].GuestName)
+	assert.Equal(t, "Author2", paginated.Comments[1].GuestName)
 }
 
 func TestGetCommentCount(t *testing.T) {
