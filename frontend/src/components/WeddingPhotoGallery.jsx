@@ -64,11 +64,9 @@ const styles = {
     mt: 4,
     mb: 4,
     textAlign: 'center',
-    minHeight: (loading, error) => loading || error ? '300px' : 'auto',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: (loading, error) => loading || error ? 'center' : 'flex-start',
   },
   title: {
     mb: 2,
@@ -128,7 +126,13 @@ export default function WeddingPhotoGallery() {
   }, []);
 
   return (
-    <Box sx={styles.outerContainer(loading, error)}>
+    <Box
+      sx={{
+        ...styles.outerContainer,
+        minHeight: loading || error ? '300px' : 'auto',
+        justifyContent: loading || error ? 'center' : 'flex-start'
+      }}
+    >
       {loading ? (
         <Box sx={styles.loadingContainer}>
           <CircularProgress size={60} sx={{ color: '#a7a7a3' }} />
