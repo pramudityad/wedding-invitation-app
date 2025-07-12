@@ -293,7 +293,7 @@ export default function InvitationLanding() {
             {isLoading ? ( // Show loading indicator and text while RSVP is being submitted or initially loaded
                <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
                   <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
-                  {rsvpStatus === null ? 'Checking your RSVP...' : 'Updating your RSVP...'}
+                  Loading...
                </Box>
             ) : rsvpStatus === null ? ( // If not loading and status is null, ask the question
               'Will you be attending?'
