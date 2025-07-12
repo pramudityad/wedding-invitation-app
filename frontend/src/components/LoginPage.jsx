@@ -1,25 +1,80 @@
-import { Box, TextField, Button, Typography, CircularProgress, Alert } from '@mui/material'; // Added CircularProgress, Alert
-import { useState } from 'react'; // Keep useState
-import { useNavigate } from 'react-router-dom'; // Keep useNavigate
-import { useAuthContext } from '../contexts/AuthContext'; // Keep useAuthContext
+import { Box, TextField, Button, Typography, CircularProgress, Alert } from '@mui/material';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../contexts/AuthContext';
+
+// Define styles as constants
+const styles = {
+  outerContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+    p: 4,
+    backgroundColor: '#f9f9f7'
+  },
+  innerCard: {
+    maxWidth: 400,
+    width: '100%',
+    p: { xs: 3, md: 4 },
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    backgroundColor: '#ffffff',
+    border: '1px solid #e0e0e0'
+  },
+  title: {
+    fontFamily: "'Playfair Display', serif",
+    fontWeight: 400,
+    color: '#333',
+    mb: 4,
+    textAlign: 'center'
+  },
+  textField: {
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '8px',
+      backgroundColor: '#fdfdfd',
+      '& fieldset': {
+        borderColor: '#e0e0e0'
+      },
+      '&:hover fieldset': {
+        borderColor: '#b0b0b0'
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#999'
+      }
+    }
+  },
+  buttonStatic: {
+    py: 1.5,
+    fontSize: '1rem',
+    borderRadius: '8px',
+    backgroundColor: '#a7a7a3',
+    color: '#ffffff',
+    '&:hover': {
+      backgroundColor: '#999990',
+      boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+    },
+    '&:disabled': {
+      backgroundColor: '#cccccc',
+      color: '#666666'
+    }
+  }
+};
 
 export default function LoginPage() {
-  // State for the input field, error message, and loading indicator
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Hook for navigation and context
   const navigate = useNavigate();
-  const { login } = useAuthContext(); // Assuming useAuthContext provides a login function
+  const { login } = useAuthContext();
 
-  // Handler for form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form refresh
-    setIsLoading(true); // Start loading
-    setError(''); // Clear previous errors
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
 
-    // Basic validation
     if (!name.trim()) {
       setError('Please enter your name.');
       setIsLoading(false);
@@ -27,132 +82,54 @@ export default function LoginPage() {
     }
 
     try {
-      // Call the login function from context
       await login(name);
-      // Navigate to the home page on success, replace history entry
       navigate('/', { replace: true });
     } catch (err) {
-      // Handle login errors
-      console.error("Login failed:", err); // Log error for debugging
-      setError('Could not verify your name. Please try again.'); // User-friendly error message
-      setIsLoading(false); // Stop loading
+      console.error("Login failed:", err);
+      setError('Could not verify your name. Please try again.');
+      setIsLoading(false);
     }
   };
 
   return (
-    // Outer container for centering and background
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh', // Full viewport height
-        p: 4, // Padding
-        backgroundColor: '#f9f9f7', // Soft background color consistent with other components
-        // Optionally add a subtle pattern or texture if desired
-        // background: 'url(/path/to/subtle-pattern.png)',
-        // backgroundRepeat: 'repeat',
-      }}
-    >
-      {/* Inner box for the login form, styled as an elegant card */}
-      <Box
-        sx={{
-          maxWidth: 400, // Max width for the form box
-          width: '100%', // Take full width on smaller screens
-          p: { xs: 3, md: 4 }, // Responsive padding
-          borderRadius: '12px', // Rounded corners
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)', // Softer, more prominent shadow
-          backgroundColor: '#ffffff', // White background
-          border: '1px solid #e0e0e0', // Subtle border
-        }}
-      >
-        {/* Title */}
-        <Typography
-          variant="h5" // Slightly smaller than h4, feels less imposing
-          component="h1" // Still semantically h1
-          gutterBottom // Add bottom margin
-          align="center" // Center text
-          sx={{
-            fontFamily: "'Playfair Display', serif", // Elegant font
-            fontWeight: 400, // Standard or slightly bolder for headers
-            color: '#333', // Dark grey text
-            mb: 4, // Increased margin below title
-          }}
-        >
+    <Box sx={styles.outerContainer}>
+      <Box sx={styles.innerCard}>
+        <Typography variant="h5" component="h1" gutterBottom sx={styles.title}>
           Welcome, Please Log In
         </Typography>
 
-        {/* Login Form */}
         <form onSubmit={handleSubmit}>
           <TextField
-            label="Your Name" // Descriptive label
-            variant="outlined" // Outlined style is clean
-            fullWidth // Takes full width
-            margin="normal" // Standard margin spacing
-            value={name} // Controlled component value
-            onChange={(e) => setName(e.target.value)} // Update state on change
-            required // HTML required attribute
-            disabled={isLoading} // Disable input while loading
-            sx={{
-              // Custom styling for the TextField appearance
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '8px', // Match box border radius
-                backgroundColor: '#fdfdfd', // Very slight off-white background
-                '& fieldset': {
-                  borderColor: '#e0e0e0', // Light border
-                },
-                '&:hover fieldset': {
-                  borderColor: '#b0b0b0', // Slightly darker on hover
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#999', // Subtle focus color
-                },
-              },
-            }}
+            label="Your Name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            disabled={isLoading}
+            sx={styles.textField}
           />
 
-          {/* Error Message */}
           {error && (
-             // Use Alert for better styling of error messages
             <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
               {error}
             </Alert>
           )}
 
-          {/* Submit Button */}
           <Button
-            type="submit" // Submit the form
-            variant="contained" // Contained variant stands out as primary action
-            fullWidth // Takes full width
-            sx={{
-              mt: error ? 0 : 3, // Adjust margin top based on whether an error is shown above
-              py: 1.5, // Vertical padding for button size
-              fontSize: '1rem', // Font size
-              borderRadius: '8px', // Match surrounding elements
-              // Custom elegant button colors (adjust these to fit your wedding theme)
-              backgroundColor: '#a7a7a3', // Example: A subtle taupe/grey
-              color: '#ffffff', // White text for contrast
-              '&:hover': {
-                backgroundColor: '#999990', // Slightly darker on hover
-                boxShadow: '0 2px 6px rgba(0,0,0,0.1)', // Subtle hover shadow
-              },
-              '&:disabled': {
-                 // Style for disabled state
-                 backgroundColor: '#cccccc', // Lighter background
-                 color: '#666666', // Darker text
-              }
-            }}
-            disabled={isLoading || name.trim() === ''} // Disable when loading or input is empty
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{ ...styles.buttonStatic, mt: error ? 0 : 3 }}
+            disabled={isLoading || name.trim() === ''}
           >
             {isLoading ? (
-              // Show spinner and text when loading
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} /> Logging in...
               </Box>
             ) : (
-              // Show regular text when not loading
-              'Continue' // More welcoming button text
+              'Continue'
             )}
           </Button>
         </form>
