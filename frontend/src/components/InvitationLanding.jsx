@@ -1,44 +1,106 @@
-import { Box, Typography, Button, Snackbar, Alert, CircularProgress } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Box, Typography, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { useAuthContext } from '../contexts/AuthContext';
 import { submitRSVP, getGuestByName, markInvitationOpened } from '../api/guest';
 import { getAllComments } from '../api/comments';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import GuestCommentsSection from './GuestCommentsSection';
+import RsvpSection from './RsvpSection';
+import NavigationButtons from './NavigationButtons';
+
+const StyledInvitationContainer = styled(Box)(({ theme }) => ({
+  minHeight: '100vh',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: '#f9f9f7',
+  padding: theme.spacing(2, 4),
+  textAlign: 'center',
+}));
+
+const StyledCard = styled(Box)(({ theme }) => ({
+  maxWidth: 800,
+  width: '100%',
+  padding: theme.spacing(4, 6),
+  borderRadius: '12px',
+  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+  backgroundColor: '#ffffff',
+  border: '1px solid #e0e0e0',
+}));
+
+const StyledWeddingTitle = styled(Typography)(({ theme }) => ({
+  fontFamily: "'Playfair Display', serif",
+  fontWeight: 400,
+  color: '#333',
+  marginBottom: theme.spacing(2),
+  fontSize: theme.typography.pxToRem(32),
+  [theme.breakpoints.up('sm')]: {
+    fontSize: theme.typography.pxToRem(40),
+  },
+  [theme.breakpoints.up('md')]: {
+    fontSize: theme.typography.pxToRem(48),
+  },
+}));
+
+const StyledCoupleNames = styled(Typography)(({ theme }) => ({
+  fontFamily: "'Playfair Display', serif",
+  fontWeight: 600,
+  color: '#5a4c4d',
+  marginBottom: theme.spacing(4),
+  fontSize: theme.typography.pxToRem(28),
+  [theme.breakpoints.up('sm')]: {
+    fontSize: theme.typography.pxToRem(32),
+  },
+  [theme.breakpoints.up('md')]: {
+    fontSize: theme.typography.pxToRem(40),
+  },
+}));
+
+const StyledWelcomeMessage = styled(Typography)(({ theme }) => ({
+  fontFamily: "'Montserrat', sans-serif",
+  fontWeight: 300,
+  color: '#555',
+  marginBottom: theme.spacing(5),
+  fontSize: theme.typography.pxToRem(16),
+  [theme.breakpoints.up('sm')]: {
+    fontSize: theme.typography.pxToRem(18),
+  },
+  [theme.breakpoints.up('md')]: {
+    fontSize: theme.typography.pxToRem(20),
+  },
+  lineHeight: 1.6,
+}));
 
 export default function InvitationLanding() {
-  // Hook for navigation
   const navigate = useNavigate();
-  // Access token from authentication context
   const { token } = useAuthContext();
 
-  // State for guest data and UI status
   const [username, setUsername] = useState('');
-  const [rsvpStatus, setRsvpStatus] = useState(null); // null: hasn't responded, true: attending, false: not attending
+  const [rsvpStatus, setRsvpStatus] = useState(null);
   const [featuredComments, setFeaturedComments] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Loading state for initial data fetch
-  const hasMarkedOpenedRef = useRef(false); // Use ref to track if we've marked invitation opened
-  // State for Snackbar notifications
+  const [isLoading, setIsLoading] = useState(true);
+  const hasMarkedOpenedRef = useRef(false);
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
-    severity: 'success', // or 'error'
+    severity: 'success',
   });
 
-  // Effect to check authentication and fetch initial data
   useEffect(() => {
-    // Helper function to parse JWT token
     const parseJwt = (token) => {
-      try {
-        return JSON.parse(atob(token.split('.')[1]));
-      } catch {
-        return null;
+      try { 
+        return JSON.parse(atob(token.split('.')[1])); 
+      } catch { 
+        return null; 
       }
     };
 
     const jwtData = parseJwt(token);
-    const currentUsername = jwtData?.username; // Use a different variable name to avoid confusion with state setter
-    
-    // Redirect to login if no token or username is found
+    const currentUsername = jwtData?.username;
+
     if (!token || !currentUsername) {
       navigate('/login');
       return;
@@ -46,388 +108,133 @@ export default function InvitationLanding() {
 
     setUsername(currentUsername || '');
 
-    // Create abort controller for cleanup
     const abortController = new AbortController();
-    const isMounted = true;
 
-    // Fetch guest data and comments
     const fetchData = async () => {
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       try {
-        // Fetch guest data by username and comments concurrently
         const [guestData, commentsData] = await Promise.all([
-          getGuestByName(currentUsername, { signal: abortController.signal }), 
-          getAllComments({ limit: 3 }, { signal: abortController.signal }) // Request first 3 newest comments
+          getGuestByName(currentUsername, { signal: abortController.signal }),
+          getAllComments({ limit: 3 }, { signal: abortController.signal })
         ]);
 
-        // If we got aborted, skip state update
         if (abortController.signal.aborted) return;
 
-        // Update RSVP status if guest data is found
         if (guestData?.Attending?.Valid) {
-           // Use the boolean value if it's valid
-           setRsvpStatus(guestData.Attending.Bool);
+          setRsvpStatus(guestData.Attending.Bool);
         } else {
-           setRsvpStatus(null); // No valid RSVP response yet
+          setRsvpStatus(null);
         }
 
         setFeaturedComments(commentsData?.comments || []);
 
-        // Mark invitation opened if not already marked
         if (guestData && !guestData.FirstOpenedAt?.Valid && !hasMarkedOpenedRef.current) {
-          // Mark only if not already marked
           hasMarkedOpenedRef.current = true;
           markInvitationOpened().catch(err => {
             console.error('Failed to mark invitation as opened:', err);
-            hasMarkedOpenedRef.current = false; // Reset to allow retry
+            hasMarkedOpenedRef.current = false;
           });
         }
       } catch (error) {
         if (abortController.signal.aborted) return;
         console.error('Failed to fetch data:', error);
-        setSnackbar({ // Show error message
+        setSnackbar({
           open: true,
           message: "Failed to load your data. Please refresh to try again.",
           severity: 'error',
         });
       } finally {
         if (abortController.signal.aborted) return;
-        setIsLoading(false); // Stop loading
+        setIsLoading(false);
       }
     };
 
-    fetchData(); // Execute the fetch
+    fetchData();
 
     return () => {
       abortController.abort();
     };
   }, [token, navigate]);
 
-  // Handler for submitting RSVP - memoized
   const handleRSVP = useCallback(async (attending) => {
-    // Prevent submission if username is missing, already responded, or submit in progress
     if (!username || rsvpStatus !== null || isLoading) return;
 
-    setIsLoading(true); // Show loading state during RSVP submission
+    setIsLoading(true);
     try {
-      // Submit the RSVP status
       await submitRSVP({ attending, name: username });
-      // Update local state immediately on success
       setRsvpStatus(attending);
-      setSnackbar({ // Show success message
+      setSnackbar({
         open: true,
-        message: attending 
-          ? "We're thrilled you'll be celebrating with us!" 
+        message: attending
+          ? "We're thrilled you'll be celebrating with us!"
           : "We'll miss you but thank you for letting us know.",
         severity: 'success',
       });
     } catch (error) {
       console.error('Failed to submit RSVP:', error);
-      setSnackbar({ // Show error message
+      setSnackbar({
         open: true,
         message: 'Failed to submit RSVP. Please try again later.',
         severity: 'error',
       });
     } finally {
-       setIsLoading(false); // Stop loading
+      setIsLoading(false);
     }
   }, [username, rsvpStatus, isLoading]);
-  
-  // Handle closing the Snackbar - memoized
+
   const handleCloseSnackbar = useCallback((event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+    if (reason === 'clickaway') return;
     setSnackbar(prev => ({ ...prev, open: false }));
   }, []);
 
-  // Display loading state if data is being fetched initially (before username is known or data loads)
   if (isLoading && !username) {
-     // Only show full screen loader on initial load before username is known or data arrives
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: '#f9f9f7' }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        minHeight: '100vh', 
+        backgroundColor: '#f9f9f7' 
+      }}>
         <CircularProgress size={60} />
-        <Typography sx={{ mt: 2, color: '#666', fontFamily: "'Montserrat', sans-serif" }}>Loading your invitation...</Typography>
+        <Typography sx={{ mt: 2, color: '#666', fontFamily: "'Montserrat', sans-serif" }}>
+          Loading your invitation...
+        </Typography>
       </Box>
     );
   }
 
-
   return (
-    // Outer container for centering and background
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f9f9f7', // Soft background color
-        p: { xs: 2, md: 4 }, // Responsive padding
-        textAlign: 'center',
-      }}
-    >
-      {/* Inner box for the invitation content, styled as an elegant card */}
-      <Box
-        sx={{
-          maxWidth: 800, // Max width for the content box
-          width: '100%', // Take full width on smaller screens
-          p: { xs: 4, md: 6 }, // Responsive padding inside the card
-          borderRadius: '12px', // Consistent rounded corners
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)', // Softer, elegant shadow
-          backgroundColor: '#ffffff', // White background
-          border: '1px solid #e0e0e0', // Subtle border
-        }}
-      >
-        {/* Wedding Title */}
-        <Typography
-          variant="h3" // Adjusted size for better hierarchy
-          sx={{
-            fontFamily: "'Playfair Display', serif",
-            fontWeight: 400, // Slightly bolder than 300
-            color: '#333', // Dark grey text
-            mb: 2, // Margin below title
-            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, // Responsive font size
-          }}
-        >
+    <StyledInvitationContainer>
+      <StyledCard>
+        <StyledWeddingTitle>
           You're Invited
-        </Typography>
+        </StyledWeddingTitle>
 
-         {/* Couple's Names Placeholder (Add your names here) */}
-         <Typography
-          variant="h4"
-          sx={{
-            fontFamily: "'Playfair Display', serif",
-            fontWeight: 600, // More prominent
-            color: '#5a4c4d', // Example: A soft, warm color for names
-            mb: 4, // Margin below names
-             fontSize: { xs: '1.8rem', sm: '2rem', md: '2.5rem' },
-          }}
-        >
+        <StyledCoupleNames>
           [Couple's Names]
-        </Typography>
+        </StyledCoupleNames>
 
-        {/* Welcome Message and Subtitle */}
-        <Typography
-          variant="h6" // Adjusted size
-          sx={{
-            fontFamily: "'Montserrat', sans-serif",
-            fontWeight: 300,
-            color: '#555',
-            mb: 5, // Margin below message
-            fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' }, // Responsive font size
-            lineHeight: 1.6, // Improved readability
-          }}
-        >
+        <StyledWelcomeMessage>
           We invite you to share in our joy as we unite in marriage.<br />
-          {username ? `A special welcome to ${username}!` : 'Loading welcome message...'} {/* Show username if available */}
-        </Typography>
+          {username ? `A special welcome to ${username}!` : 'Loading welcome message...'}
+        </StyledWelcomeMessage>
 
-        {/* Featured Comments Section */}
-        {featuredComments.length > 0 && (
-          <Box sx={{ mt: 5, mb: 5, textAlign: 'left' }}>
-            {/* Comments Title */}
-            <Typography variant="h6" sx={{ 
-              mb: 3, 
-              fontFamily: "'Playfair Display', serif", 
-              fontWeight: 400, 
-              color: '#333',
-              textAlign: 'center' 
-            }}>
-              Messages of Love
-            </Typography>
-            {/* List of Featured Comments */}
-            {featuredComments.map((comment) => (
-              <Box
-                key={comment.ID} // Use unique ID
-                sx={{
-                  mb: 3, // Space between comments
-                  p: 3, // Padding inside comment box
-                  backgroundColor: '#fefefe', // Slightly off-white background
-                  borderRadius: '8px', // Consistent border radius
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)', // Subtle shadow
-                  border: '1px solid #eee', // Very light border
-                  wordBreak: 'break-word', // Prevent overflow on long words
-                }}
-              >
-                {/* Comment Content */}
-                <Typography variant="body1" sx={{ fontStyle: 'italic', color: '#333', mb: 1, lineHeight: 1.5 }}>
-                  "{comment.Content}"
-                </Typography>
-                {/* Comment Attribution (Guest Name and Date) */}
-                <Typography
-                  variant="body2"
-                  sx={{ display: 'block', color: '#666', fontSize: '0.85rem' }}
-                >
-                  — {comment.GuestName || 'Guest'}
-                   <Typography
-                     component="span" // Use span to keep it inline
-                     variant="body2"
-                     sx={{ color: '#999', fontSize: '0.75rem', ml: 1 }} // Smaller, lighter, margin left
-                  >
-                      on {new Intl.DateTimeFormat('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                      }).format(new Date(comment.CreatedAt))}
-                  </Typography>
-                </Typography>
-              </Box>
-            ))}
-             {/* Link to all comments */}
-             <Box sx={{ textAlign: 'center', mt: 3 }}>
-                 <Button variant="text" onClick={() => navigate('/comments')}
-                    sx={{ color: '#666', '&:hover': { textDecoration: 'underline', backgroundColor: 'transparent' } }}
-                 >
-                     Read All Messages
-                 </Button>
-             </Box>
-          </Box>
-        )}
+        <GuestCommentsSection 
+          comments={featuredComments} 
+          navigate={navigate} 
+        />
 
-        {/* RSVP Section */}
-        <Box sx={{ mt: 6, mb: 4 }}>
-          {/* RSVP Status or Question */}
-          <Typography variant="h6" sx={{ mb: 3, fontFamily: "'Playfair Display', serif", fontWeight: 400, color: '#333' }}>
-            {/* Show different text based on RSVP status */}
-            {isLoading ? ( // Show loading indicator and text while RSVP is being submitted or initially loaded
-               <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-                  <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
-                  Loading...
-               </Box>
-            ) : rsvpStatus === null ? ( // If not loading and status is null, ask the question
-              'Will you be attending?'
-            ) : rsvpStatus === true ? ( // If not loading and status is true, show attending message
-              'Thank you for your RSVP! We look forward to celebrating with you.'
-            ) : ( // If not loading and status is false, show not attending message
-              'We\'ve received your RSVP. We understand if you cannot make it.'
-            )}
-          </Typography>
+        <RsvpSection 
+          rsvpStatus={rsvpStatus}
+          isLoading={isLoading}
+          handleRSVP={handleRSVP}
+        />
 
-          {/* RSVP Buttons (only shown if status is null AND not currently loading) */}
-          {!isLoading && rsvpStatus === null && (
-            <Box sx={{
-              display: 'flex',
-              gap: 3, // Increased gap between buttons
-              justifyContent: 'center',
-              mb: 3,
-              flexWrap: 'wrap', // Wrap buttons on small screens
-            }}>
-               {/* Yes Button */}
-              <Button
-                variant="contained"
-                 // Custom elegant color for Yes (e.g., a soft green or gold)
-                sx={{
-                  px: 5, // Horizontal padding
-                  py: 1.5, // Vertical padding
-                  borderRadius: '8px', // Consistent border radius
-                  minWidth: '140px', // Minimum width
-                  backgroundColor: '#669966', // Example: Soft Green - REPLACE WITH YOUR COLOR
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#558855', // Darker green on hover
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.1)', // Subtle shadow on hover
-                  },
-                  '&:disabled': {
-                     backgroundColor: '#cccccc',
-                     color: '#666666',
-                  }
-                }}
-                onClick={() => handleRSVP(true)}
-                disabled={isLoading} // Disable while submitting RSVP
-              >
-                 {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Yes, I will be there'} {/* Show loader if submitting */}
-              </Button>
-               {/* No Button */}
-              <Button
-                variant="contained"
-                // Custom elegant color for No (e.g., a soft grey or taupe)
-                sx={{
-                  px: 5,
-                  py: 1.5,
-                  borderRadius: '8px', // Consistent border radius
-                  minWidth: '140px',
-                  backgroundColor: '#a7a7a3', // Example: Soft Taupe - REPLACE WITH YOUR COLOR
-                  color: 'white', // Or '#333' if preferred for contrast
-                   '&:hover': {
-                    backgroundColor: '#999990', // Darker taupe on hover
-                     boxShadow: '0 2px 6px rgba(0,0,0,0.1)', // Subtle shadow on hover
-                  },
-                   '&:disabled': {
-                     backgroundColor: '#cccccc',
-                     color: '#666666',
-                  }
-                }}
-                onClick={() => handleRSVP(false)}
-                disabled={isLoading} // Disable while submitting RSVP
-              >
-                 {isLoading ? <CircularProgress size={24} color="inherit" /> : 'No, I cannot make it'} {/* Show loader if submitting */}
-              </Button>
-            </Box>
-          )}
-           {/* Removed "Change RSVP" button */}
-        </Box>
+        <NavigationButtons navigate={navigate} />
+      </StyledCard>
 
-        {/* Navigation Buttons */}
-        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap', mt: 4 }}>
-          {/* Venue Map Button */}
-          <Button
-            variant="outlined"
-            onClick={() => navigate('/venue')}
-            sx={{
-              px: 3, py: 1,
-              borderRadius: '8px', // Consistent border radius
-              color: '#666', // Grey text
-              borderColor: '#666', // Grey border
-              '&:hover': {
-                borderColor: '#333',
-                color: '#333',
-                backgroundColor: 'rgba(0,0,0,0.04)', // Light hover effect
-              },
-            }}
-          >
-            Venue Map
-          </Button>
-          {/* Guest Comments Button */}
-          <Button
-            variant="outlined"
-            onClick={() => navigate('/comments')}
-             sx={{
-              px: 3, py: 1,
-              borderRadius: '8px', // Consistent border radius
-              color: '#666', // Grey text
-              borderColor: '#666', // Grey border
-               '&:hover': {
-                borderColor: '#333',
-                color: '#333',
-                backgroundColor: 'rgba(0,0,0,0.04)', // Light hover effect
-              },
-            }}
-          >
-            Guest Comments
-          </Button>
-          {/* Gallery Button */}
-          <Button
-            variant="outlined"
-            onClick={() => navigate('/gallery')}
-            sx={{
-              px: 3, py: 1,
-              borderRadius: '8px', // Consistent border radius
-              color: '#666', // Grey text
-              borderColor: '#666', // Grey border
-              '&:hover': {
-                borderColor: '#333',
-                color: '#333',
-                backgroundColor: 'rgba(0,0,0,0.04)', // Light hover effect
-              },
-            }}
-          >
-            Photo Gallery
-          </Button>
-        </Box>
-      </Box>
-
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
@@ -438,6 +245,6 @@ export default function InvitationLanding() {
           {snackbar.message}
         </Alert>
       </Snackbar>
-    </Box>
+    </StyledInvitationContainer>
   );
 }
