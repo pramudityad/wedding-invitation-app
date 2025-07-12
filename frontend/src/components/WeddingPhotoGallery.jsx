@@ -12,42 +12,42 @@ import {
 const mockPhotos = [
   {
     id: 1,
-    url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87',
+    url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87', // Couple walking
     title: 'Happy Couple',
   },
   {
     id: 2,
-    url: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
+    url: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45', // Rings and bouquet
     title: 'The Rings',
   },
   {
     id: 3,
-    url: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
+    url: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62', // Ceremony setup
     title: 'Ceremony',
   },
   {
     id: 4,
-    url: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
+    url: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f', // Wedding cake with flowers
     title: 'Wedding Cake',
   },
   {
     id: 5,
-    url: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
+    url: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25', // First dance
     title: 'First Dance',
   },
    {
     id: 6,
-    url: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
+    url: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d', // Bouquet close-up
     title: 'Bouquet',
   },
    {
     id: 7,
-    url: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
+    url: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8', // Table setting (from original mock)
     title: 'Table Setting',
   },
    {
     id: 8,
-    url: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
+    url: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e', // Dress details (from original mock)
     title: 'Dress Detail',
   },
 ];
