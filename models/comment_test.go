@@ -1,8 +1,6 @@
 package models
 
 import (
-	"database/sql"
-	"log"
 	"testing"
 	"time"
 

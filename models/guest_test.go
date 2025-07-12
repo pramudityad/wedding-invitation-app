@@ -1,12 +1,8 @@
 package models
 
 import (
-	"context"
 	"database/sql"
-	"log"
-	"os"
 	"testing"
-	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
@@ -51,8 +47,8 @@ func TestGuestCreate(t *testing.T) {
 	defer db.Close()
 
 	guest := &Guest{
-		Name:      "John Doe",
-		PlusOnes:  2,
+		Name:     "John Doe",
+		PlusOnes: 2,
 	}
 
 	err := guest.Create(db)
