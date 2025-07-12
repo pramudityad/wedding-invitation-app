@@ -3,7 +3,7 @@ import { useAuthContext } from '../contexts/AuthContext';
 import { submitRSVP, getGuestByName, markInvitationOpened } from '../api/guest';
 import { getAllComments } from '../api/comments';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 export default function InvitationLanding() {
   // Hook for navigation
@@ -16,7 +16,7 @@ export default function InvitationLanding() {
   const [rsvpStatus, setRsvpStatus] = useState(null); // null: hasn't responded, true: attending, false: not attending
   const [featuredComments, setFeaturedComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Loading state for initial data fetch
-  const [hasMarkedOpened, setHasMarkedOpened] = useState(false); // Track if we've marked invitation opened
+  const hasMarkedOpenedRef = useRef(false); // Use ref to track if we've marked invitation opened
   // State for Snackbar notifications
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -26,12 +26,6 @@ export default function InvitationLanding() {
 
   // Effect to check authentication and fetch initial data
   useEffect(() => {
-    // Redirect to login if no token is found
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
     // Helper function to parse JWT token
     const parseJwt = (token) => {
       try {
@@ -41,10 +35,20 @@ export default function InvitationLanding() {
       }
     };
 
-    // Get username from token
     const jwtData = parseJwt(token);
     const currentUsername = jwtData?.username; // Use a different variable name to avoid confusion with state setter
+    
+    // Redirect to login if no token or username is found
+    if (!token || !currentUsername) {
+      navigate('/login');
+      return;
+    }
+
     setUsername(currentUsername || '');
+
+    // Create abort controller for cleanup
+    const abortController = new AbortController();
+    const isMounted = true;
 
     // Fetch guest data and comments
     const fetchData = async () => {
@@ -52,9 +56,12 @@ export default function InvitationLanding() {
       try {
         // Fetch guest data by username and comments concurrently
         const [guestData, commentsData] = await Promise.all([
-          currentUsername ? getGuestByName(currentUsername) : Promise.resolve(null),
-          getAllComments({ limit: 3 }) // Request first 3 newest comments
+          getGuestByName(currentUsername, { signal: abortController.signal }), 
+          getAllComments({ limit: 3 }, { signal: abortController.signal }) // Request first 3 newest comments
         ]);
+
+        // If we got aborted, skip state update
+        if (abortController.signal.aborted) return;
 
         // Update RSVP status if guest data is found
         if (guestData?.Attending?.Valid) {
@@ -67,36 +74,38 @@ export default function InvitationLanding() {
         setFeaturedComments(commentsData?.comments || []);
 
         // Mark invitation opened if not already marked
-        if (guestData && !guestData.FirstOpenedAt?.Valid && !hasMarkedOpened) {
-          markInvitationOpened();
-          setHasMarkedOpened(true);
+        if (guestData && !guestData.FirstOpenedAt?.Valid && !hasMarkedOpenedRef.current) {
+          // Mark only if not already marked
+          hasMarkedOpenedRef.current = true;
+          markInvitationOpened().catch(err => {
+            console.error('Failed to mark invitation as opened:', err);
+            hasMarkedOpenedRef.current = false; // Reset to allow retry
+          });
         }
       } catch (error) {
+        if (abortController.signal.aborted) return;
         console.error('Failed to fetch data:', error);
-        // Optionally set an error state to display to the user, though Snackbar covers it
+        setSnackbar({ // Show error message
+          open: true,
+          message: "Failed to load your data. Please refresh to try again.",
+          severity: 'error',
+        });
       } finally {
+        if (abortController.signal.aborted) return;
         setIsLoading(false); // Stop loading
       }
     };
 
-    // Fetch data only if username is available from token
-    if (currentUsername) {
-       fetchData(); // Execute the fetch
-    } else {
-        // If username couldn't be determined from token, redirect to login
-        navigate('/login');
-    }
+    fetchData(); // Execute the fetch
 
-
-    // Dependencies: token and navigate are needed for the effect.
-    // currentUsername is used inside, but won't change after mount if token is stable.
-    // Adding it to dependencies might cause re-fetch if token payload changes, which is usually not desired for a stable login.
-    // Keeping only token and navigate is standard for auth effects.
+    return () => {
+      abortController.abort();
+    };
   }, [token, navigate]);
 
-  // Handler for submitting RSVP
-  const handleRSVP = async (attending) => {
-    // Prevent submission if username is missing, already responded, or currently loading
+  // Handler for submitting RSVP - memoized
+  const handleRSVP = useCallback(async (attending) => {
+    // Prevent submission if username is missing, already responded, or submit in progress
     if (!username || rsvpStatus !== null || isLoading) return;
 
     setIsLoading(true); // Show loading state during RSVP submission
@@ -107,30 +116,30 @@ export default function InvitationLanding() {
       setRsvpStatus(attending);
       setSnackbar({ // Show success message
         open: true,
-        message: `Thank you for your RSVP! We've noted you'll ${attending ? '' : 'not '}be attending.`,
+        message: attending 
+          ? "We're thrilled you'll be celebrating with us!" 
+          : "We'll miss you but thank you for letting us know.",
         severity: 'success',
       });
     } catch (error) {
       console.error('Failed to submit RSVP:', error);
       setSnackbar({ // Show error message
         open: true,
-        message: 'Failed to submit RSVP. Please try again.',
+        message: 'Failed to submit RSVP. Please try again later.',
         severity: 'error',
       });
-       // Optionally, if submission fails, you might want to revert UI state
-       // setRsvpStatus(null); // Depends on desired UX on failure
     } finally {
        setIsLoading(false); // Stop loading
     }
-  };
-
-  // Handle closing the Snackbar
-  const handleCloseSnackbar = (event, reason) => {
+  }, [username, rsvpStatus, isLoading]);
+  
+  // Handle closing the Snackbar - memoized
+  const handleCloseSnackbar = useCallback((event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
     setSnackbar(prev => ({ ...prev, open: false }));
-  };
+  }, []);
 
   // Display loading state if data is being fetched initially (before username is known or data loads)
   if (isLoading && !username) {
