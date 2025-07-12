@@ -67,7 +67,7 @@ export default function InvitationLanding() {
         setFeaturedComments(commentsData?.comments || []);
 
         // Mark invitation opened if not already marked
-        if (guestData && !guestData.first_opened_at?.Valid && !hasMarkedOpened) {
+        if (guestData && !guestData.FirstOpenedAt?.Valid && !hasMarkedOpened) {
           markInvitationOpened();
           setHasMarkedOpened(true);
         }
