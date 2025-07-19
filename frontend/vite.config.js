@@ -9,6 +9,10 @@ export default defineConfig({
       '../**/*.go' // Watch Go files in backend
     ])
   ],
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true
+  },
   server: {
     port: 3000,
     host: true,
