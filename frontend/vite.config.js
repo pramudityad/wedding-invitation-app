@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import liveReload from 'vite-plugin-live-reload'
 
 export default defineConfig({
+  envDir: '../', // Look for .env in root directory
   plugins: [
     react(),
     liveReload([
