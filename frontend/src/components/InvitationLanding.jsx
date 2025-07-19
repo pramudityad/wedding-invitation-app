@@ -8,7 +8,6 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import GuestCommentsSection from './GuestCommentsSection';
 import RsvpSection from './RsvpSection';
 import NavigationButtons from './NavigationButtons';
-import { format } from 'date-fns';
 
 const StyledInvitationContainer = styled(Box)(({ theme }) => ({
   minHeight: '100vh',
