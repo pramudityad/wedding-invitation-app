@@ -6,8 +6,8 @@ import 'leaflet/dist/leaflet.css'; // Keep Leaflet CSS
 
 export default function VenueMap() {
   // Parse venue position from environment variables, with defaults
-  const venueLat = parseFloat(process.env.REACT_APP_VENUE_LAT || '-6.1754');
-  const venueLng = parseFloat(process.env.REACT_APP_VENUE_LNG || '106.8272');
+  const venueLat = parseFloat(import.meta.env.VITE_APP_VENUE_LAT || '-6.1754');
+  const venueLng = parseFloat(import.meta.env.VITE_APP_VENUE_LNG || '106.8272');
   const venuePosition = [venueLat, venueLng];
 
   // Combine into Google Maps directions URL

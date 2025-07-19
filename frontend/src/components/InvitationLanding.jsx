@@ -107,12 +107,12 @@ export default function InvitationLanding() {
 
   // Set up countdown timer
   useEffect(() => {
-    if (!process.env.REACT_APP_WEDDING_DATE) return;
+    if (!import.meta.env.VITE_APP_WEDDING_DATE) return;
 
-    const weddingDate = new Date(process.env.REACT_APP_WEDDING_DATE);
+    const weddingDate = new Date(import.meta.env.VITE_APP_WEDDING_DATE);
     // Clear interval if wedding date is not valid
     if (isNaN(weddingDate)) {
-      console.error('Invalid REACT_APP_WEDDING_DATE format. Use ISO-8601 format, e.g., 2024-10-05T17:00:00');
+      console.error('Invalid VITE_APP_WEDDING_DATE format. Use ISO-8601 format, e.g., 2024-10-05T17:00:00');
       return;
     }
 
