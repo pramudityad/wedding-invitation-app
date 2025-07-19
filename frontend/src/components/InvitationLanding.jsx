@@ -96,8 +96,12 @@ export default function InvitationLanding() {
   const [featuredComments, setFeaturedComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const hasMarkedOpenedRef = useRef(false);
-  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0 });
-  const [showCountdown, setShowCountdown] = useState(false);
+  const [countdown, setCountdown] = useState({ 
+    days: 0, 
+    hours: 0, 
+    minutes: 0,
+    timeLeft: 0  // milliseconds until wedding; negative if wedding has passed
+  });
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -119,20 +123,14 @@ export default function InvitationLanding() {
     const updateCountdown = () => {
       const now = new Date();
       const timeLeft = weddingDate - now;
-
-      // When timer expires, stop showing countdown
-      if (timeLeft <= 0) {
-        setShowCountdown(false);
-        return;
-      }
+      const absTimeLeft = Math.abs(timeLeft);
 
       // Convert to days, hours, minutes
-      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const days = Math.floor(absTimeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((absTimeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((absTimeLeft % (1000 * 60 * 60)) / (1000 * 60));
 
-      setCountdown({ days, hours, minutes });
-      setShowCountdown(true);
+      setCountdown({ days, hours, minutes, timeLeft });
     };
 
     // Calculate immediately on mount
@@ -270,21 +268,26 @@ export default function InvitationLanding() {
           [Couple's Names]
         </StyledCoupleNames>
 
-        {showCountdown && (
-          <StyledCountdownSection>
-            <Typography variant="h6" sx={{ 
-              mb: 1,
-              fontFamily: "'Playfair Display', serif",
-              fontWeight: 400,
-              color: '#333',
-            }}>
-              Countdown to Our Wedding
-            </Typography>
-            <StyledCountdownValue>
-              {countdown.days}d : {countdown.hours}h : {countdown.minutes}m
-            </StyledCountdownValue>
-          </StyledCountdownSection>
-        )}
+        <StyledCountdownSection>
+          <Typography variant="h6" sx={{ 
+            mb: 1,
+            fontFamily: "'Playfair Display', serif",
+            fontWeight: 400,
+            color: '#333',
+          }}>
+            {countdown.timeLeft > 0 ? "Countdown to Our Wedding" : "Our Wedding Was On"}
+          </Typography>
+          <StyledCountdownValue>
+            {countdown.timeLeft > 0 
+              ? `${countdown.days}d : ${countdown.hours}h : ${countdown.minutes}m`
+              : new Date(import.meta.env.VITE_APP_WEDDING_DATE).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })
+            }
+          </StyledCountdownValue>
+        </StyledCountdownSection>
 
         <StyledWelcomeMessage>
           We invite you to share in our joy as we unite in marriage.<br />
