@@ -19,10 +19,11 @@ type Claims struct {
 
 func GenerateToken(username string) (string, error) {
 	expirationTime := time.Now().Add(time.Duration(config.JWTExpiry) * time.Second)
+	expiresAt := jwt.NewNumericDate(expirationTime)
 	claims := &Claims{
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expirationTime),
+			ExpiresAt: expiresAt,
 		},
 	}
 

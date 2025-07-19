@@ -10,7 +10,7 @@ var (
 	JWTSecret           string
 	JWTExpiry           int
 	DBPath              string
-	SpotifyClientID     string
+	SpotifyClientId     string
 	SpotifyClientSecret string
 	SpotifyRedirectURI  string
 	SpotifyCacheSeconds int
@@ -23,7 +23,7 @@ func init() {
 	JWTSecret = getEnv("JWT_SECRET", "test-secret")
 	JWTExpiry = getEnvInt("JWT_EXPIRY", 24*60*60)
 	DBPath = getEnv("DB_PATH", "data/guests.db")
-	SpotifyClientID = getEnv("SPOTIFY_CLIENT_ID", "")
+	SpotifyClientId = getEnv("SPOTIFY_CLIENT_ID", "")
 	SpotifyClientSecret = getEnv("SPOTIFY_CLIENT_SECRET", "")
 	SpotifyRedirectURI = getEnv("SPOTIFY_REDIRECT_URI", "http://localhost:8080/spotify/callback")
 	SpotifyCacheSeconds = getEnvInt("SPOTIFY_CACHE_SECONDS", 300)

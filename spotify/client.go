@@ -16,7 +16,7 @@ var (
 
 func Init() {
 	authClient = spotifyauth.New(
-		spotifyauth.WithClientID(config.SpotifyClientID),
+		spotifyauth.WithClientID(config.SpotifyClientId),
 		spotifyauth.WithClientSecret(config.SpotifyClientSecret),
 		spotifyauth.WithRedirectURL(config.SpotifyRedirectURI),
 		spotifyauth.WithScopes(
