@@ -1,13 +1,29 @@
-# Build stage
+# Stage 1: Build the React/Vite application
 FROM node:18-alpine AS builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm install --production=false
-COPY . .
-RUN npm run build
-RUN ls -l /app/dist
 
-# Production stage
+# --- ADD THIS SECTION ---
+# Declare the build arguments passed from docker-compose.yml
+ARG VITE_APP_WEDDING_DATE
+ARG VITE_APP_VENUE_LAT
+ARG VITE_APP_VENUE_LNG
+
+# Set them as environment variables for the build process
+ENV VITE_APP_WEDDING_DATE=$VITE_APP_WEDDING_DATE
+ENV VITE_APP_VENUE_LAT=$VITE_APP_VENUE_LAT
+ENV VITE_APP_VENUE_LNG=$VITE_APP_VENUE_LNG
+# --- END OF ADDED SECTION ---
+
+COPY package*.json ./
+# Use 'npm ci' for faster, more reliable builds if you have package-lock.json
+RUN npm ci
+COPY . .
+
+# Now, when 'npm run build' runs, Vite will have access to the VITE_* variables
+RUN npm run build
+RUN ls -l /app/dist # Good for debugging
+
+# Stage 2: Serve the static files with NGINX
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
