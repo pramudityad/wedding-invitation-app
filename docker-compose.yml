@@ -5,26 +5,28 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    # Optional: Removed port mapping. It's more secure to only expose the backend
-    # to the internal Docker network, with NGINX as the single entry point.
-    # If you need to access the API directly during development, you can add it back:
     ports:
       - "8080:8080"
     volumes:
-      - ./database:/app/database
+      - ./database:/app/database # Note: Be careful with this in production
+    # Loads variables from the .env file at RUNTIME for the Go application.
+    # Your Go app can access these with os.Getenv("ADMIN_API_KEY").
+    env_file:
+      - .env
     restart: unless-stopped
 
   frontend:
-    # This service builds the frontend assets and then runs NGINX
-    # to serve them and act as a reverse proxy for the backend.
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      # Passes VITE_* variables as arguments at BUILD TIME.
+      # Docker Compose reads the root .env file and substitutes the values here.
+      args:
+        - VITE_APP_WEDDING_DATE=${VITE_APP_WEDDING_DATE}
+        - VITE_APP_VENUE_LAT=${VITE_APP_VENUE_LAT}
+        - VITE_APP_VENUE_LNG=${VITE_APP_VENUE_LNG}
     ports:
-      - "80:80" # Expose NGINX to the world on port 80
+      - "80:80"
     depends_on:
-      - backend # The frontend/proxy needs the backend to be available
+      - backend
     restart: unless-stopped
-
-# The original 'nginx' service is removed because the 'frontend' service
-# already builds and runs a configured NGINX container.
