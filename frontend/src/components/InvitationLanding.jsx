@@ -58,6 +58,20 @@ const StyledCoupleNames = styled(Typography)(({ theme }) => ({
   },
 }));
 
+const StyledCountdownSection = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(5),
+}));
+
+const StyledCountdownValue = styled(Typography)(({ theme }) => ({
+  fontFamily: "'Playfair Display', serif",
+  fontWeight: 600,
+  color: '#5a4c4d',
+  fontSize: theme.typography.pxToRem(24),
+  [theme.breakpoints.up('sm')]: {
+    fontSize: theme.typography.pxToRem(28),
+  },
+}));
+
 const StyledWelcomeMessage = styled(Typography)(({ theme }) => ({
   fontFamily: "'Montserrat', sans-serif",
   fontWeight: 300,
@@ -82,12 +96,50 @@ export default function InvitationLanding() {
   const [featuredComments, setFeaturedComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const hasMarkedOpenedRef = useRef(false);
+  const [countdown, setCountdown] = useState({ 
+    days: 0, 
+    hours: 0, 
+    minutes: 0,
+    timeLeft: 0  // milliseconds until wedding; negative if wedding has passed
+  });
 
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success',
   });
+
+  // Set up countdown timer
+  useEffect(() => {
+    if (!import.meta.env.VITE_APP_WEDDING_DATE) return;
+
+    const weddingDate = new Date(import.meta.env.VITE_APP_WEDDING_DATE);
+    // Clear interval if wedding date is not valid
+    if (isNaN(weddingDate)) {
+      console.error('Invalid VITE_APP_WEDDING_DATE format. Use ISO-8601 format, e.g., 2024-10-05T17:00:00');
+      return;
+    }
+
+    const updateCountdown = () => {
+      const now = new Date();
+      const timeLeft = weddingDate - now;
+      const absTimeLeft = Math.abs(timeLeft);
+
+      // Convert to days, hours, minutes
+      const days = Math.floor(absTimeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((absTimeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((absTimeLeft % (1000 * 60 * 60)) / (1000 * 60));
+
+      setCountdown({ days, hours, minutes, timeLeft });
+    };
+
+    // Calculate immediately on mount
+    updateCountdown();
+
+    // Update every minute
+    const interval = setInterval(updateCountdown, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const parseJwt = (token) => {
@@ -215,6 +267,27 @@ export default function InvitationLanding() {
         <StyledCoupleNames>
           [Couple's Names]
         </StyledCoupleNames>
+
+        <StyledCountdownSection>
+          <Typography variant="h6" sx={{ 
+            mb: 1,
+            fontFamily: "'Playfair Display', serif",
+            fontWeight: 400,
+            color: '#333',
+          }}>
+            {countdown.timeLeft > 0 ? "Countdown to Our Wedding" : "Our Wedding Was On"}
+          </Typography>
+          <StyledCountdownValue>
+            {countdown.timeLeft > 0 
+              ? `${countdown.days}d : ${countdown.hours}h : ${countdown.minutes}m`
+              : new Date(import.meta.env.VITE_APP_WEDDING_DATE).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })
+            }
+          </StyledCountdownValue>
+        </StyledCountdownSection>
 
         <StyledWelcomeMessage>
           We invite you to share in our joy as we unite in marriage.<br />

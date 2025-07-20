@@ -1,17 +1,17 @@
 import './fix-leaflet-icons'; // Keep this fix
-// Removed: useNavigate, IconButton, ArrowBackIcon
-import { Box, Typography, Button } from '@mui/material'; // Added Button
-import MapOutlinedIcon from '@mui/icons-material/MapOutlined'; // Added icon for the button
-import { MapContainer as Map, TileLayer, Marker, Popup } from 'react-leaflet'; // Keep these
+import { Box, Typography, Button } from '@mui/material';
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+import { MapContainer as Map, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css'; // Keep Leaflet CSS
 
 export default function VenueMap() {
-  // Removed: const navigate = useNavigate();
-  const venuePosition = [-6.1754, 106.8272]; // Monas, Jakarta - Keep this
+  // Parse venue position from environment variables, with defaults
+  const venueLat = parseFloat(import.meta.env.VITE_APP_VENUE_LAT || '-6.1754');
+  const venueLng = parseFloat(import.meta.env.VITE_APP_VENUE_LNG || '106.8272');
+  const venuePosition = [venueLat, venueLng];
 
-  // Generate Google Maps URL for directions
-  // Using the 'dir' mode is good for getting directions from the user's location
-  const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${venuePosition[0]},${venuePosition[1]}&travelmode=driving`;
+  // Combine into Google Maps directions URL
+  const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${venueLat},${venueLng}&travelmode=driving`;
 
   return (
     // Outer Box styling: simpler height management, centered
