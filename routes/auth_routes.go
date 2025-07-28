@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"net/url"
 	"wedding-invitation-backend/database"
 	"wedding-invitation-backend/middleware/auth"
 	"wedding-invitation-backend/models"
@@ -18,17 +19,16 @@ func SetupAuthRoutes(r *gin.Engine) {
 	})
 
 	// Login endpoint
-	r.POST("/login", func(c *gin.Context) {
-		var login struct {
-			Name string `json:"name" binding:"required"`
-		}
-		if err := c.ShouldBindJSON(&login); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Name is required"})
+	r.GET("/login/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		decodedName, err := url.PathUnescape(name)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid name encoding"})
 			return
 		}
 
 		// Check if user is on guest list
-		guest, err := models.GetGuestByName(database.DB, login.Name)
+		guest, err := models.GetGuestByName(database.DB, decodedName)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": "Error checking guest list",

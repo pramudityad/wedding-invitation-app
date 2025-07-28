@@ -9,7 +9,8 @@ import WeddingPhotoGallery from '../components/WeddingPhotoGallery';
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/login/:name" element={<LoginPage />} />
+      <Route path="/login/*" element={<LoginPage />} />
       <Route path="/" element={<InvitationLanding />} />
       <Route path="/venue" element={<VenueMap />} />
       <Route path="/comments" element={<GuestComments />} />
