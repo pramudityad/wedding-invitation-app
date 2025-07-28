@@ -2,7 +2,8 @@ import api from './axiosConfig';
 
 export const login = async (name) => {
   try {
-    const response = await api.post('/login', { name });
+    const encodedName = encodeURIComponent(name);
+    const response = await api.get(`/login/${encodedName}`);
     return response.data;
   } catch (error) {
     console.error('Login failed:', error);

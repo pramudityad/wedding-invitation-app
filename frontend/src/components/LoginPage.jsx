@@ -1,5 +1,5 @@
-import { Box, TextField, Button, Typography, CircularProgress, Alert } from '@mui/material';
-import { useState } from 'react';
+import { Box, Typography, CircularProgress, Alert } from '@mui/material';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../contexts/AuthContext';
 
@@ -30,21 +30,6 @@ const styles = {
     mb: 4,
     textAlign: 'center'
   },
-  textField: {
-    '& .MuiOutlinedInput-root': {
-      borderRadius: '8px',
-      backgroundColor: '#fdfdfd',
-      '& fieldset': {
-        borderColor: '#e0e0e0'
-      },
-      '&:hover fieldset': {
-        borderColor: '#b0b0b0'
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#999'
-      }
-    }
-  },
   buttonStatic: {
     py: 1.5,
     fontSize: '1rem',
@@ -63,33 +48,43 @@ const styles = {
 };
 
 export default function LoginPage() {
-  const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const { login } = useAuthContext();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    const pathSegments = window.location.pathname.split('/');
+    const loginIndex = pathSegments.findIndex(segment => segment === 'login');
+    
+    if (loginIndex !== -1 && loginIndex < pathSegments.length - 1) {
+      const encodedName = pathSegments[loginIndex + 1];
+      try {
+        const name = decodeURIComponent(encodedName);
+        handleAutoLogin(name);
+      } catch (error) {
+        console.error('Error decoding name:', error);
+        setError('Invalid name format. Please check the URL.');
+      }
+    } else {
+      setError('Please provide your name in the URL path.');
+    }
+  }, []);
+
+  const handleAutoLogin = async (name) => {
     setIsLoading(true);
     setError('');
-
-    if (!name.trim()) {
-      setError('Please enter your name.');
-      setIsLoading(false);
-      return;
-    }
-
+    
     try {
-      await login(name);
-      navigate('/', { replace: true });
-    } catch (err) {
-      console.error("Login failed:", err);
-      setError('Could not verify your name. Please try again.');
-      setIsLoading(false);
+      await login(name)
+      navigate('/')
+    } catch (error) {
+      console.error('Login failed:', error)
+      setError('Could not verify your name. Please check the URL.')
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <Box sx={styles.outerContainer}>
@@ -98,41 +93,17 @@ export default function LoginPage() {
           Welcome, Please Log In
         </Typography>
 
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Your Name"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            disabled={isLoading}
-            sx={styles.textField}
-          />
+        {error && (
+          <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
+            {error}
+          </Alert>
+        )}
 
-          {error && (
-            <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            sx={{ ...styles.buttonStatic, mt: error ? 0 : 3 }}
-            disabled={isLoading || name.trim() === ''}
-          >
-            {isLoading ? (
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} /> Logging in...
-              </Box>
-            ) : (
-              'Continue'
-            )}
-          </Button>
-        </form>
+        {isLoading && (
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 3 }}>
+            <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} /> Logging in...
+          </Box>
+        )}
       </Box>
     </Box>
   );
