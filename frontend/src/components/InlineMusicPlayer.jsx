@@ -1,63 +1,49 @@
 import { styled } from '@mui/material/styles';
-import { Box, Typography, Alert } from '@mui/material';
-import { MusicNote } from '@mui/icons-material';
+import { Box, Typography, Alert, Collapse, IconButton } from '@mui/material';
+import { MusicNote, ExpandMore, ExpandLess } from '@mui/icons-material';
 import { useState } from 'react';
 
-const StyledMusicContainer = styled(Box)(({ theme }) => ({
-  minHeight: '100vh',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: '#f9f9f7',
-  padding: theme.spacing(2, 4),
-  textAlign: 'center',
+const StyledMusicSection = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(4),
+  marginBottom: theme.spacing(4),
 }));
 
-const StyledCard = styled(Box)(({ theme }) => ({
-  maxWidth: 900,
-  width: '100%',
-  padding: theme.spacing(4, 6),
-  borderRadius: '12px',
-  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-  backgroundColor: '#ffffff',
-  border: '1px solid #e0e0e0',
+const StyledMusicHeader = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginBottom: theme.spacing(2),
+  cursor: 'pointer',
+  padding: theme.spacing(1),
+  borderRadius: '8px',
+  transition: 'background-color 0.2s',
+  '&:hover': {
+    backgroundColor: 'rgba(90, 76, 77, 0.05)',
+  },
 }));
 
 const StyledMusicTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Playfair Display', serif",
   fontWeight: 400,
   color: '#5a4c4d',
-  marginBottom: theme.spacing(2),
-  fontSize: theme.typography.pxToRem(32),
+  fontSize: theme.typography.pxToRem(24),
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
   gap: theme.spacing(1),
   [theme.breakpoints.up('sm')]: {
-    fontSize: theme.typography.pxToRem(36),
-  },
-}));
-
-const StyledDescription = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Montserrat', sans-serif",
-  fontWeight: 300,
-  color: '#666',
-  marginBottom: theme.spacing(4),
-  fontSize: theme.typography.pxToRem(16),
-  [theme.breakpoints.up('sm')]: {
-    fontSize: theme.typography.pxToRem(18),
+    fontSize: theme.typography.pxToRem(28),
   },
 }));
 
 const StyledPlayerContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
-  paddingBottom: '56.25%', // 16:9 aspect ratio
+  paddingBottom: '300px', // Fixed height for compact player
   height: 0,
   overflow: 'hidden',
   borderRadius: '12px',
   boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
   border: '2px solid #e8e3d9',
+  backgroundColor: '#fff',
   '& iframe': {
     position: 'absolute',
     top: 0,
@@ -66,6 +52,16 @@ const StyledPlayerContainer = styled(Box)(({ theme }) => ({
     height: '100%',
     border: 'none',
   },
+}));
+
+const StyledDescription = styled(Typography)(({ theme }) => ({
+  fontFamily: "'Montserrat', sans-serif",
+  fontWeight: 300,
+  color: '#666',
+  fontSize: theme.typography.pxToRem(14),
+  textAlign: 'center',
+  marginBottom: theme.spacing(2),
+  fontStyle: 'italic',
 }));
 
 // Utility function to extract YouTube playlist ID from URL
@@ -94,49 +90,56 @@ const extractPlaylistId = (url) => {
   return null;
 };
 
-export default function MusicPlayer() {
+export default function InlineMusicPlayer() {
+  const [isExpanded, setIsExpanded] = useState(false);
   const [playerError, setPlayerError] = useState(false);
   
   // Get playlist URL from environment variable
   const playlistUrl = import.meta.env.VITE_YOUTUBE_PLAYLIST_URL;
   const playlistId = extractPlaylistId(playlistUrl);
 
+  const handleToggleExpanded = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   const handlePlayerError = () => {
     setPlayerError(true);
   };
 
+  // Don't render if no playlist URL is configured
   if (!playlistUrl || !playlistId) {
-    return (
-      <StyledMusicContainer>
-        <StyledCard>
-          <StyledMusicTitle>
-            <MusicNote sx={{ fontSize: 'inherit' }} />
-            Wedding Playlist
-          </StyledMusicTitle>
-          <Alert severity="info" sx={{ mt: 2 }}>
-            Music playlist is not configured yet. Please check back later!
-          </Alert>
-        </StyledCard>
-      </StyledMusicContainer>
-    );
+    return null;
   }
 
-  const embedUrl = `https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=0&controls=1&showinfo=1&rel=0&modestbranding=1`;
+  const embedUrl = `https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=0&controls=1&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3`;
 
   return (
-    <StyledMusicContainer>
-      <StyledCard>
+    <StyledMusicSection>
+      <StyledMusicHeader onClick={handleToggleExpanded}>
         <StyledMusicTitle>
           <MusicNote sx={{ fontSize: 'inherit' }} />
           Wedding Playlist
         </StyledMusicTitle>
-        
+        <IconButton 
+          size="small" 
+          sx={{ 
+            ml: 1, 
+            color: '#5a4c4d',
+            transition: 'transform 0.2s',
+            transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+          }}
+        >
+          <ExpandMore />
+        </IconButton>
+      </StyledMusicHeader>
+
+      <Collapse in={isExpanded}>
         <StyledDescription>
-          Enjoy our carefully curated wedding songs while you browse the invitation
+          Enjoy our carefully selected wedding songs while you browse
         </StyledDescription>
 
         {playerError ? (
-          <Alert severity="warning" sx={{ mt: 2 }}>
+          <Alert severity="warning" sx={{ borderRadius: '12px' }}>
             Unable to load the music playlist. Please check your internet connection or try again later.
           </Alert>
         ) : (
@@ -154,15 +157,17 @@ export default function MusicPlayer() {
         <Typography 
           variant="body2" 
           sx={{ 
-            mt: 3, 
+            mt: 2, 
             color: '#999', 
             fontStyle: 'italic',
+            textAlign: 'center',
+            fontSize: '0.8rem',
             fontFamily: "'Montserrat', sans-serif"
           }}
         >
-          Click on any song to start playing • Use the controls to adjust volume
+          Click any song to play • Use YouTube controls for volume
         </Typography>
-      </StyledCard>
-    </StyledMusicContainer>
+      </Collapse>
+    </StyledMusicSection>
   );
 }
