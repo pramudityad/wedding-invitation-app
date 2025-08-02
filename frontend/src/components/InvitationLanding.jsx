@@ -8,6 +8,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import GuestCommentsSection from './GuestCommentsSection';
 import RsvpSection from './RsvpSection';
 import GiftBox from './GiftBox';
+import InlineMusicPlayer from './InlineMusicPlayer';
 import NavigationButtons from './NavigationButtons';
 
 const StyledInvitationContainer = styled(Box)(({ theme }) => ({
@@ -299,6 +300,8 @@ export default function InvitationLanding() {
           comments={featuredComments} 
           navigate={navigate} 
         />
+
+        <InlineMusicPlayer />
 
         <RsvpSection 
           rsvpStatus={rsvpStatus}
