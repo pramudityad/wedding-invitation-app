@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import GuestCommentsSection from './GuestCommentsSection';
 import RsvpSection from './RsvpSection';
+import GiftBox from './GiftBox';
 import NavigationButtons from './NavigationButtons';
 
 const StyledInvitationContainer = styled(Box)(({ theme }) => ({
@@ -304,6 +305,8 @@ export default function InvitationLanding() {
           isLoading={isLoading}
           handleRSVP={handleRSVP}
         />
+
+        <GiftBox />
 
         <NavigationButtons navigate={navigate} />
       </StyledCard>
