@@ -4,8 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"wedding-invitation-backend/database"
-	"wedding-invitation-backend/models"
+	"wedding-invitation-backend/container"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,47 +14,63 @@ type rsvpRequest struct {
 	Attending bool   `json:"attending"`
 }
 
-func SetupRSVPRoutes(r *gin.RouterGroup) {
-	r.POST("/rsvp", handleRSVPSubmission)
+func SetupRSVPRoutes(r *gin.RouterGroup, c *container.Container) {
+	r.POST("/rsvp", handleRSVPSubmission(c))
 }
 
-func handleRSVPSubmission(c *gin.Context) {
-	var request rsvpRequest
-	if err := c.ShouldBindJSON(&request); err != nil {
-		log.Printf("Invalid request data: %v", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
-		return
+func handleRSVPSubmission(container *container.Container) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var request rsvpRequest
+		if err := c.ShouldBindJSON(&request); err != nil {
+			log.Printf("Invalid request data: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Please provide valid RSVP information.",
+			})
+			return
+		}
+
+		log.Printf("Processing RSVP for %s", request.Name)
+
+		// Check if guest exists using service
+		existingGuest, err := container.GuestService.GetGuestByName(request.Name)
+		if err != nil {
+			log.Printf("Database error checking guest: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "We're having trouble processing your RSVP. Please try again.",
+			})
+			return
+		}
+
+		if existingGuest == nil {
+			log.Printf("Guest %s not found in database", request.Name)
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": "We couldn't find your guest information. Please contact support.",
+			})
+			return
+		}
+
+		// Update only the attending status
+		existingGuest.Attending = sql.NullBool{Bool: request.Attending, Valid: true}
+		log.Printf("Updating RSVP for %s to %t", request.Name, request.Attending)
+		if err := container.GuestService.UpdateGuest(existingGuest); err != nil {
+			log.Printf("Failed to update RSVP: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Unable to save your RSVP. Please try again.",
+			})
+			return
+		}
+		log.Printf("Successfully updated RSVP for %s", request.Name)
+
+		var statusMessage string
+		if request.Attending {
+			statusMessage = "Thank you for confirming your attendance! We can't wait to celebrate with you."
+		} else {
+			statusMessage = "Thank you for letting us know. We'll miss you but understand."
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": statusMessage,
+			"guest":   existingGuest,
+		})
 	}
-
-	log.Printf("Processing RSVP for %s", request.Name)
-
-	// Check if guest exists
-	existingGuest, err := models.GetGuestByName(database.DB, request.Name)
-	if err != nil && err != sql.ErrNoRows {
-		log.Printf("Database error checking guest: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
-		return
-	}
-
-	if existingGuest == nil {
-		// Guest doesn't exist - not expecting this since login requires guest to exist
-		log.Printf("Guest %s not found in database", request.Name)
-		c.JSON(http.StatusNotFound, gin.H{"error": "Guest not found"})
-		return
-	}
-
-	// Update only the attending status
-	existingGuest.Attending = sql.NullBool{Bool: request.Attending, Valid: true}
-	log.Printf("Updating RSVP for %s to %t", request.Name, request.Attending)
-	if err := existingGuest.Update(database.DB); err != nil {
-		log.Printf("Failed to update RSVP: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update RSVP"})
-		return
-	}
-	log.Printf("Successfully updated RSVP for %s", request.Name)
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "RSVP recorded successfully",
-		"guest":   existingGuest,
-	})
 }

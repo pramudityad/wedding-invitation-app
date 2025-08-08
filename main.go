@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"wedding-invitation-backend/config"
+	"wedding-invitation-backend/container"
 	"wedding-invitation-backend/database"
 	"wedding-invitation-backend/routes"
 	"wedding-invitation-backend/spotify"
@@ -19,11 +20,18 @@ func main() {
 		log.Print("Warning: .env file not found, using environment variables")
 	}
 
+	// Validate configuration
+	config.ValidateConfig()
+
 	// Initialize database
 	if err := database.InitDB(); err != nil {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
 	defer database.DB.Close()
+
+	// Initialize dependency injection container
+	appContainer := container.NewContainer(database.DB)
+	log.Println("Dependency injection container initialized with caching enabled")
 
 	// Initialize Spotify client
 	spotify.Init()
@@ -40,8 +48,8 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// Setup routes
-	routes.SetupRoutes(r)
+	// Setup routes with dependency injection
+	routes.SetupRoutes(r, appContainer)
 
 	// Start server
 	if err := r.Run(config.ServerPort); err != nil {

@@ -2,33 +2,40 @@ package routes
 
 import (
 	"net/http"
-	"wedding-invitation-backend/database"
-	"wedding-invitation-backend/models"
+	"wedding-invitation-backend/container"
 
 	"github.com/gin-gonic/gin"
 )
 
-func SetupGuestManagementRoutes(r *gin.RouterGroup) {
-	r.GET("/guests", handleGetGuestByName)
+func SetupGuestManagementRoutes(r *gin.RouterGroup, c *container.Container) {
+	r.GET("/guests", handleGetGuestByName(c))
 }
 
-func handleGetGuestByName(c *gin.Context) {
-	name := c.Query("name")
-	if name == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Name parameter is required"})
-		return
-	}
+func handleGetGuestByName(container *container.Container) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		name := c.Query("name")
+		if name == "" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Please provide a guest name to search for.",
+			})
+			return
+		}
 
-	guest, err := models.GetGuestByName(database.DB, name)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch guest"})
-		return
-	}
+		guest, err := container.GuestService.GetGuestByName(name)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "We're having trouble accessing guest information right now. Please try again.",
+			})
+			return
+		}
 
-	if guest == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Guest not found"})
-		return
-	}
+		if guest == nil {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": "No guest found with that name. Please check the spelling and try again.",
+			})
+			return
+		}
 
-	c.JSON(http.StatusOK, guest)
+		c.JSON(http.StatusOK, guest)
+	}
 }

@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 )
 
@@ -13,6 +14,16 @@ type Comment struct {
 }
 
 func (c *Comment) Create(db *sql.DB) error {
+	// Check if guest already has 2 comments
+	count, err := GetCommentCountByGuestID(db, c.GuestID)
+	if err != nil {
+		return err
+	}
+	
+	if count >= 2 {
+		return errors.New("maximum comment limit reached: each guest can only have 2 comments")
+	}
+
 	stmt := `INSERT INTO comments 
 		(guest_id, content)
 		VALUES (?, ?)`
@@ -147,4 +158,35 @@ func GetCommentCount(db *sql.DB) (int, error) {
 	row := db.QueryRow("SELECT COUNT(*) FROM comments")
 	err := row.Scan(&count)
 	return count, err
+}
+
+// GetAllComments retrieves all comments
+func GetAllComments(db *sql.DB) ([]Comment, error) {
+	stmt := `SELECT 
+		id, guest_id, content, created_at
+		FROM comments
+		ORDER BY created_at DESC`
+
+	rows, err := db.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var comments []Comment
+	for rows.Next() {
+		var comment Comment
+		err := rows.Scan(
+			&comment.ID,
+			&comment.GuestID,
+			&comment.Content,
+			&comment.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		comments = append(comments, comment)
+	}
+
+	return comments, nil
 }

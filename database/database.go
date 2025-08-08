@@ -53,6 +53,12 @@ func InitDB() error {
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			FOREIGN KEY (guest_id) REFERENCES guests(id)
 		);
+
+		-- Create indexes for performance optimization
+		CREATE INDEX IF NOT EXISTS idx_guests_name ON guests(name);
+		CREATE INDEX IF NOT EXISTS idx_comments_guest_id ON comments(guest_id);
+		CREATE INDEX IF NOT EXISTS idx_guests_attending ON guests(attending);
+		CREATE INDEX IF NOT EXISTS idx_comments_guest_created ON comments(guest_id, created_at DESC);
 	`)
 	if err != nil {
 		return err
