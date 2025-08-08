@@ -2,6 +2,7 @@ import { styled } from '@mui/material/styles';
 import { Box, IconButton, Typography, Tooltip, Collapse, Alert } from '@mui/material';
 import { MusicNote, Close, ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useMusicContext } from '../contexts/MusicContext';
+import { memo, useCallback } from 'react';
 
 const StyledPlayerContainer = styled(Box)(({ theme }) => ({
   position: 'fixed',
@@ -82,7 +83,7 @@ const StyledMiniPlayerText = styled(Typography)(({ theme }) => ({
   fontWeight: 500,
 }));
 
-export default function PersistentMusicPlayer() {
+function PersistentMusicPlayer() {
   const {
     isPlayerVisible,
     isPlayerExpanded,
@@ -99,9 +100,9 @@ export default function PersistentMusicPlayer() {
     return null;
   }
 
-  const handlePlayerError = () => {
+  const handlePlayerError = useCallback(() => {
     onPlayerError();
-  };
+  }, [onPlayerError]);
 
   return (
     <StyledPlayerContainer>
@@ -202,3 +203,6 @@ export default function PersistentMusicPlayer() {
     </StyledPlayerContainer>
   );
 }
+
+// Wrap with memo to prevent unnecessary iframe re-renders
+export default memo(PersistentMusicPlayer);
