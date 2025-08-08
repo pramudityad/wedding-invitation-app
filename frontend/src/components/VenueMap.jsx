@@ -3,6 +3,7 @@ import { Box, Typography, Button } from '@mui/material';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import { MapContainer as Map, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css'; // Keep Leaflet CSS
+import BackButton from './BackButton';
 
 export default function VenueMap() {
   // Parse venue position from environment variables, with defaults
@@ -25,6 +26,7 @@ export default function VenueMap() {
       mt: 4, // Margin top for spacing if not used at top of page
       mb: 4, // Margin bottom
     }}>
+      <BackButton />
       {/* Title: Centered, slightly bolder font weight */}
       <Typography
         variant="h5"

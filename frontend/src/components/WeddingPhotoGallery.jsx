@@ -12,6 +12,7 @@ import {
   IconButton, // Import IconButton
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'; // Import an icon for closing the dialog
+import BackButton from './BackButton';
 
 // Mock photos data with captions/stories
 const mockPhotos = [
@@ -223,6 +224,7 @@ export default function WeddingPhotoGallery() {
       {/* Content State (Loaded) */}
       {!loading && !error && (
         <>
+          <BackButton />
           <Typography variant="h4" component="h2" sx={styles.title}> {/* Use h4 but render as h2 for semantics */}
             Our Cherished Moments
           </Typography>

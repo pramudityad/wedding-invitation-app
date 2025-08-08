@@ -105,6 +105,44 @@ export default function PersistentMusicPlayer() {
 
   return (
     <StyledPlayerContainer>
+      {/* Always render the iframe to keep music playing, hidden when minimized */}
+      <Box 
+        sx={{ 
+          position: 'absolute',
+          top: '-9999px',
+          left: '-9999px',
+          width: '1px',
+          height: '1px',
+          opacity: 0,
+          pointerEvents: 'none',
+          ...(isPlayerExpanded && {
+            position: 'relative',
+            top: 'auto',
+            left: 'auto',
+            width: 'auto',
+            height: 'auto',
+            opacity: 1,
+            pointerEvents: 'auto'
+          })
+        }}
+      >
+        {hasError ? (
+          <Alert severity="warning" sx={{ m: 1 }}>
+            Unable to load playlist. Please check your connection.
+          </Alert>
+        ) : (
+          <StyledIframeContainer>
+            <iframe
+              src={embedUrl}
+              title="Wedding Playlist"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              onError={handlePlayerError}
+            />
+          </StyledIframeContainer>
+        )}
+      </Box>
+
       {!isPlayerExpanded ? (
         // Mini Player
         <StyledMiniPlayer onClick={togglePlayerExpanded}>
@@ -145,36 +183,19 @@ export default function PersistentMusicPlayer() {
           </StyledPlayerHeader>
 
           <Box sx={{ p: 1 }}>
-            {hasError ? (
-              <Alert severity="warning" sx={{ m: 1 }}>
-                Unable to load playlist. Please check your connection.
-              </Alert>
-            ) : (
-              <>
-                <StyledIframeContainer>
-                  <iframe
-                    src={embedUrl}
-                    title="Wedding Playlist"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    onError={handlePlayerError}
-                  />
-                </StyledIframeContainer>
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
-                    display: 'block',
-                    textAlign: 'center',
-                    color: '#666',
-                    mt: 1,
-                    fontStyle: 'italic',
-                    fontFamily: "'Montserrat', sans-serif"
-                  }}
-                >
-                  Enjoy our wedding playlist while browsing
-                </Typography>
-              </>
-            )}
+            <Typography 
+              variant="caption" 
+              sx={{ 
+                display: 'block',
+                textAlign: 'center',
+                color: '#666',
+                mt: 1,
+                fontStyle: 'italic',
+                fontFamily: "'Montserrat', sans-serif"
+              }}
+            >
+              Enjoy our wedding playlist while browsing
+            </Typography>
           </Box>
         </StyledExpandedPlayer>
       )}
