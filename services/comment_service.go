@@ -24,7 +24,7 @@ func NewCommentService(commentRepo repositories.CommentRepository, guestService 
 }
 
 // CreateComment creates a new comment
-func (cs *CommentService) CreateComment(guestName, content string) (*models.Comment, error) {
+func (cs *CommentService) CreateComment(guestName, content string) (*models.CommentWithGuest, error) {
 	// Validate guest exists
 	guest, err := cs.guestService.GetGuestByName(guestName)
 	if err != nil {
@@ -49,7 +49,13 @@ func (cs *CommentService) CreateComment(guestName, content string) (*models.Comm
 	// Invalidate comment caches
 	cs.commentCache.Clear()
 	
-	return comment, nil
+	// Return comment with guest name
+	commentWithGuest := &models.CommentWithGuest{
+		Comment:   *comment,
+		GuestName: guest.Name,
+	}
+	
+	return commentWithGuest, nil
 }
 
 // GetCommentsByGuest retrieves comments for a specific guest (cached)
@@ -101,6 +107,32 @@ func (cs *CommentService) GetAllComments() ([]models.Comment, error) {
 	
 	// Cache the result
 	cs.commentCache.Set("all_comments", comments)
+	
+	return comments, nil
+}
+
+// GetAllCommentsWithGuests retrieves all comments with guest names (cached)
+func (cs *CommentService) GetAllCommentsWithGuests(limit int, cursor string) (*models.PaginatedComments, error) {
+	// Try cache first for first page (no cursor)
+	cacheKey := "all_comments_with_guests"
+	if cursor == "" {
+		if cached, found := cs.commentCache.Get(cacheKey); found {
+			if comments, ok := cached.(*models.PaginatedComments); ok {
+				return comments, nil
+			}
+		}
+	}
+	
+	// Cache miss or paginated request, get from repository
+	comments, err := cs.commentRepo.GetAllWithGuests(limit, cursor)
+	if err != nil {
+		return nil, err
+	}
+	
+	// Cache the result only for first page
+	if cursor == "" {
+		cs.commentCache.Set(cacheKey, comments)
+	}
 	
 	return comments, nil
 }

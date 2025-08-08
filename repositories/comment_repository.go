@@ -10,6 +10,7 @@ type CommentRepository interface {
 	Create(comment *models.Comment) error
 	GetByGuestID(guestID int64) ([]models.Comment, error)
 	GetAll() ([]models.Comment, error)
+	GetAllWithGuests(limit int, cursor string) (*models.PaginatedComments, error)
 }
 
 // SQLCommentRepository implements CommentRepository using SQL database
@@ -32,4 +33,8 @@ func (r *SQLCommentRepository) GetByGuestID(guestID int64) ([]models.Comment, er
 
 func (r *SQLCommentRepository) GetAll() ([]models.Comment, error) {
 	return models.GetAllComments(r.db)
+}
+
+func (r *SQLCommentRepository) GetAllWithGuests(limit int, cursor string) (*models.PaginatedComments, error) {
+	return models.GetAllCommentsWithGuests(r.db, limit, cursor)
 }

@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 	"wedding-invitation-backend/container"
 	"wedding-invitation-backend/middleware/auth"
@@ -105,10 +106,19 @@ func SetupCommentRoutes(r *gin.RouterGroup, c *container.Container) {
 		})
 	})
 
-	// GET /comments - Get all comments
+	// GET /comments - Get all comments with pagination support
 	r.GET("/comments", func(ctx *gin.Context) {
-		// Get all comments using the service
-		comments, err := c.CommentService.GetAllComments()
+		// Parse query parameters
+		limitStr := ctx.DefaultQuery("limit", "10")
+		cursor := ctx.Query("cursor")
+		
+		limit, err := strconv.Atoi(limitStr)
+		if err != nil || limit <= 0 || limit > 100 {
+			limit = 10 // Default limit
+		}
+		
+		// Get all comments with guest names using the service
+		result, err := c.CommentService.GetAllCommentsWithGuests(limit, cursor)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
 				"error": "Error retrieving comments",
@@ -117,8 +127,6 @@ func SetupCommentRoutes(r *gin.RouterGroup, c *container.Container) {
 			return
 		}
 
-		ctx.JSON(http.StatusOK, gin.H{
-			"comments": comments,
-		})
+		ctx.JSON(http.StatusOK, result)
 	})
 }

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo } from 'react';
 
 const MusicContext = createContext();
 
@@ -87,7 +87,7 @@ export function MusicProvider({ children }) {
     ? `https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=0&controls=1&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1&origin=${window.location.origin}`
     : null;
 
-  const value = {
+  const value = useMemo(() => ({
     // State
     isPlayerVisible,
     isPlayerExpanded,
@@ -104,7 +104,21 @@ export function MusicProvider({ children }) {
     togglePlayerExpanded,
     onPlayerReady,
     onPlayerError,
-  };
+  }), [
+    isPlayerVisible,
+    isPlayerExpanded,
+    isPlayerReady,
+    hasError,
+    isInitialized,
+    isMusicAvailable,
+    playlistId,
+    embedUrl,
+    showPlayer,
+    hidePlayer,
+    togglePlayerExpanded,
+    onPlayerReady,
+    onPlayerError,
+  ]);
 
   return (
     <MusicContext.Provider value={value}>

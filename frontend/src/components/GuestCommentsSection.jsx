@@ -48,7 +48,9 @@ export default function GuestCommentsSection({ comments, navigate }) {
               on {new Intl.DateTimeFormat('en-US', {
                 year: 'numeric',
                 month: 'short',
-                day: 'numeric'
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
               }).format(new Date(comment.CreatedAt))}
             </Typography>
           </Typography>

@@ -4,15 +4,21 @@ import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import { MapContainer as Map, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css'; // Keep Leaflet CSS
 import BackButton from './BackButton';
+import { memo, useMemo } from 'react';
 
-export default function VenueMap() {
-  // Parse venue position from environment variables, with defaults
-  const venueLat = parseFloat(import.meta.env.VITE_APP_VENUE_LAT || '-6.1754');
-  const venueLng = parseFloat(import.meta.env.VITE_APP_VENUE_LNG || '106.8272');
-  const venuePosition = [venueLat, venueLng];
-
-  // Combine into Google Maps directions URL
-  const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${venueLat},${venueLng}&travelmode=driving`;
+function VenueMap() {
+  // Memoize venue position and URLs to prevent recalculation on re-renders
+  const { venuePosition, googleMapsUrl } = useMemo(() => {
+    const venueLat = parseFloat(import.meta.env.VITE_APP_VENUE_LAT || '-6.1754');
+    const venueLng = parseFloat(import.meta.env.VITE_APP_VENUE_LNG || '106.8272');
+    const position = [venueLat, venueLng];
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${venueLat},${venueLng}&travelmode=driving`;
+    
+    return {
+      venuePosition: position,
+      googleMapsUrl: mapsUrl
+    };
+  }, []);
 
   return (
     // Outer Box styling: simpler height management, centered
@@ -83,3 +89,6 @@ export default function VenueMap() {
     </Box>
   );
 }
+
+// Wrap with memo to prevent Leaflet re-initialization on parent re-renders
+export default memo(VenueMap);

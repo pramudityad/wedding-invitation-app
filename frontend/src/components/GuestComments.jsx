@@ -59,6 +59,12 @@ export default function GuestComments() {
       console.error('Failed to post comment:', error);
       if (error.response?.data?.error?.includes('Maximum of 2 comments')) {
         setSubmitError('You have reached the maximum limit of 2 comments.');
+      } else if (error.response?.data?.error) {
+        setSubmitError(`Error: ${error.response.data.details}`);
+      } else if (error.response?.status) {
+        setSubmitError(`Failed to post comment (HTTP ${error.response.status}): ${error.message || 'Unknown error'}`);
+      } else if (error.message) {
+        setSubmitError(`Failed to post comment: ${error.message}`);
       } else {
         setSubmitError('Failed to post comment. Please try again.');
       }

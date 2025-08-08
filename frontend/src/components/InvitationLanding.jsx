@@ -4,7 +4,7 @@ import { useAuthContext } from '../contexts/AuthContext';
 import { submitRSVP, getGuestByName, markInvitationOpened } from '../api/guest';
 import { getAllComments } from '../api/comments';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo, memo } from 'react';
 import GuestCommentsSection from './GuestCommentsSection';
 import RsvpSection from './RsvpSection';
 import GiftBox from './GiftBox';
@@ -89,7 +89,16 @@ const StyledWelcomeMessage = styled(Typography)(({ theme }) => ({
   lineHeight: 1.6,
 }));
 
-export default function InvitationLanding() {
+// Memoize JWT parsing function to avoid recreation on every render
+const parseJwt = (token) => {
+  try { 
+    return JSON.parse(atob(token.split('.')[1])); 
+  } catch { 
+    return null; 
+  }
+};
+
+function InvitationLanding() {
   const navigate = useNavigate();
   const { token } = useAuthContext();
 
@@ -111,29 +120,37 @@ export default function InvitationLanding() {
     severity: 'success',
   });
 
+  // Memoize wedding date to avoid recreation on every render
+  const weddingDate = useMemo(() => {
+    const dateStr = import.meta.env.VITE_APP_WEDDING_DATE;
+    if (!dateStr) return null;
+    const date = new Date(dateStr);
+    if (isNaN(date)) {
+      console.error('Invalid VITE_APP_WEDDING_DATE format. Use ISO-8601 format, e.g., 2024-10-05T17:00:00');
+      return null;
+    }
+    return date;
+  }, []);
+
+  // Memoize countdown calculation function
+  const updateCountdown = useCallback(() => {
+    if (!weddingDate) return;
+    
+    const now = new Date();
+    const timeLeft = weddingDate - now;
+    const absTimeLeft = Math.abs(timeLeft);
+
+    // Convert to days, hours, minutes
+    const days = Math.floor(absTimeLeft / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((absTimeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((absTimeLeft % (1000 * 60 * 60)) / (1000 * 60));
+
+    setCountdown({ days, hours, minutes, timeLeft });
+  }, [weddingDate]);
+
   // Set up countdown timer
   useEffect(() => {
-    if (!import.meta.env.VITE_APP_WEDDING_DATE) return;
-
-    const weddingDate = new Date(import.meta.env.VITE_APP_WEDDING_DATE);
-    // Clear interval if wedding date is not valid
-    if (isNaN(weddingDate)) {
-      console.error('Invalid VITE_APP_WEDDING_DATE format. Use ISO-8601 format, e.g., 2024-10-05T17:00:00');
-      return;
-    }
-
-    const updateCountdown = () => {
-      const now = new Date();
-      const timeLeft = weddingDate - now;
-      const absTimeLeft = Math.abs(timeLeft);
-
-      // Convert to days, hours, minutes
-      const days = Math.floor(absTimeLeft / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((absTimeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((absTimeLeft % (1000 * 60 * 60)) / (1000 * 60));
-
-      setCountdown({ days, hours, minutes, timeLeft });
-    };
+    if (!weddingDate) return;
 
     // Calculate immediately on mount
     updateCountdown();
@@ -141,20 +158,13 @@ export default function InvitationLanding() {
     // Update every minute
     const interval = setInterval(updateCountdown, 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [weddingDate, updateCountdown]);
+
+  // Memoize JWT data to avoid parsing on every render
+  const jwtData = useMemo(() => parseJwt(token), [token]);
+  const currentUsername = jwtData?.username;
 
   useEffect(() => {
-    const parseJwt = (token) => {
-      try { 
-        return JSON.parse(atob(token.split('.')[1])); 
-      } catch { 
-        return null; 
-      }
-    };
-
-    const jwtData = parseJwt(token);
-    const currentUsername = jwtData?.username;
-
     if (!token || !currentUsername) {
       navigate('/login');
       return;
@@ -208,7 +218,7 @@ export default function InvitationLanding() {
     return () => {
       abortController.abort();
     };
-  }, [token, navigate]);
+  }, [token, currentUsername, navigate]);
 
   const handleRSVP = useCallback(async (attending) => {
     if (!username || rsvpStatus !== null || isLoading) return;
@@ -282,7 +292,7 @@ export default function InvitationLanding() {
           <StyledCountdownValue>
             {countdown.timeLeft > 0 
               ? `${countdown.days}d : ${countdown.hours}h : ${countdown.minutes}m`
-              : new Date(import.meta.env.VITE_APP_WEDDING_DATE).toLocaleDateString('en-US', {
+              : weddingDate?.toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
@@ -327,3 +337,6 @@ export default function InvitationLanding() {
     </StyledInvitationContainer>
   );
 }
+
+// Wrap with memo to prevent unnecessary re-renders
+export default memo(InvitationLanding);
