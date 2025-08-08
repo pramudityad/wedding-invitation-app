@@ -3,35 +3,15 @@ package auth
 import (
 	"net/http"
 	"strings"
-	"time"
 	"wedding-invitation-backend/config"
-	"wedding-invitation-backend/database"
-	"wedding-invitation-backend/models"
+	"wedding-invitation-backend/services"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type Claims struct {
-	Username string `json:"username"`
-	jwt.RegisteredClaims
-}
-
-func GenerateToken(username string) (string, error) {
-	expirationTime := time.Now().Add(time.Duration(config.JWTExpiry) * time.Second)
-	expiresAt := jwt.NewNumericDate(expirationTime)
-	claims := &Claims{
-		Username: username,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: expiresAt,
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(config.JWTSecret))
-}
-
-func JWTMiddleware() gin.HandlerFunc {
+// JWTMiddlewareWithService creates JWT middleware that uses the guest service for validation
+func JWTMiddlewareWithService(guestService *services.GuestService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
@@ -51,31 +31,32 @@ func JWTMiddleware() gin.HandlerFunc {
 
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error":   "Invalid token",
-				"details": err.Error(),
+				"error": "We're having trouble verifying your login. Please try logging in again.",
 			})
 			return
 		}
 
 		if !token.Valid {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "Your session has expired. Please log in again.",
+			})
 			return
 		}
 
 		c.Set("username", claims.Username)
 
-		// Check if user is on guest list
-		guest, err := models.GetGuestByName(database.DB, claims.Username)
+		// Check if user is on guest list using cached service
+		guest, err := guestService.ValidateGuestAccess(claims.Username)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"error": "Error checking guest list",
+				"error": "We're having trouble verifying your access. Please try again.",
 			})
 			return
 		}
 
 		if guest == nil {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-				"error": "You are not on the guest list",
+				"error": "Your access has been revoked. Please contact support if you believe this is an error.",
 			})
 			return
 		}

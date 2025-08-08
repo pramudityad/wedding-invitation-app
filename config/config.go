@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 	"strconv"
 )
@@ -45,4 +46,48 @@ func getEnvInt(key string, defaultValue int) int {
 		}
 	}
 	return defaultValue
+}
+
+// ValidateConfig checks critical configuration and logs warnings for missing values
+func ValidateConfig() {
+	var warnings []string
+	var errors []string
+
+	// Critical validations
+	if JWTSecret == "test-secret" {
+		warnings = append(warnings, "JWT_SECRET is using default value - this is insecure for production")
+	}
+
+	if AdminAPIKey == "admin-api-key" {
+		warnings = append(warnings, "ADMIN_API_KEY is using default value - this is insecure for production")
+	}
+
+	// Optional but recommended validations
+	if SpotifyClientId == "" {
+		warnings = append(warnings, "SPOTIFY_CLIENT_ID not set - Spotify features will be disabled")
+	}
+
+	if SpotifyClientSecret == "" && SpotifyClientId != "" {
+		errors = append(errors, "SPOTIFY_CLIENT_SECRET is required when SPOTIFY_CLIENT_ID is set")
+	}
+
+	// Log warnings
+	for _, warning := range warnings {
+		log.Printf("CONFIG WARNING: %s", warning)
+	}
+
+	// Log errors and potentially exit
+	for _, error := range errors {
+		log.Printf("CONFIG ERROR: %s", error)
+	}
+
+	if len(errors) > 0 {
+		log.Fatal("Configuration validation failed - please fix the above errors")
+	}
+
+	if len(warnings) == 0 && len(errors) == 0 {
+		log.Println("Configuration validation passed")
+	} else {
+		log.Printf("Configuration loaded with %d warnings", len(warnings))
+	}
 }

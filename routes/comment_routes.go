@@ -1,125 +1,124 @@
 package routes
 
 import (
-	"log"
 	"net/http"
-	"strconv"
-	"wedding-invitation-backend/database"
-	"wedding-invitation-backend/models"
+	"strings"
+	"wedding-invitation-backend/container"
+	"wedding-invitation-backend/middleware/auth"
 
 	"github.com/gin-gonic/gin"
 )
 
-func SetupCommentRoutes(r *gin.RouterGroup) {
-	r.POST("/comments", handleCommentSubmission)
-	r.GET("/comments/me", handleGetMyComments)
-	r.GET("/comments", handleGetAllComments)
+type CreateCommentRequest struct {
+	Content string `json:"content" binding:"required,min=1,max=1000"`
 }
 
-func handleCommentSubmission(c *gin.Context) {
-	type commentRequest struct {
-		Content string `json:"content" binding:"required"`
-	}
-	var request commentRequest
-	if err := c.ShouldBindJSON(&request); err != nil {
-		log.Printf("Invalid comment data: %v", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
-		return
-	}
+func SetupCommentRoutes(r *gin.RouterGroup, c *container.Container) {
+	// Protected routes that require authentication
+	authenticated := r.Group("")
+	authenticated.Use(auth.JWTMiddleware())
 
-	// Get guest ID from JWT claims
-	username := c.MustGet("username").(string)
-	guest, err := models.GetGuestByName(database.DB, username)
-	if err != nil {
-		log.Printf("Error finding guest %s: %v", username, err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find guest"})
-		return
-	}
-	if guest == nil {
-		log.Printf("No guest found with name %s", username)
-		c.JSON(http.StatusNotFound, gin.H{"error": "Guest not found"})
-		return
-	}
+	// POST /comments - Create a new comment
+	authenticated.POST("/comments", func(ctx *gin.Context) {
+		var req CreateCommentRequest
+		if err := ctx.ShouldBindJSON(&req); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": "Invalid request data",
+				"details": err.Error(),
+			})
+			return
+		}
 
-	// Check existing comment count
-	count, err := models.GetCommentCountByGuestID(database.DB, guest.ID)
-	if err != nil {
-		log.Printf("Error checking comment count: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check comment quota"})
-		return
-	}
+		// Sanitize content
+		content := strings.TrimSpace(req.Content)
+		if len(content) == 0 {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": "Comment content cannot be empty",
+			})
+			return
+		}
 
-	if count >= 2 {
-		log.Printf("Guest %s has reached comment limit (2)", guest.Name)
-		c.JSON(http.StatusForbidden, gin.H{"error": "Maximum of 2 comments allowed per guest"})
-		return
-	}
+		username, exists := ctx.Get("username")
+		if !exists {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+			return
+		}
 
-	comment := models.Comment{
-		GuestID: guest.ID,
-		Content: request.Content,
-	}
-	if err := comment.Create(database.DB); err != nil {
-		log.Printf("Failed to create comment: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create comment"})
-		return
-	}
+		// Create comment using the service
+		comment, err := c.CommentService.CreateComment(username.(string), content)
+		if err != nil {
+			// Check for specific maximum comment limit error
+			if strings.Contains(err.Error(), "maximum comment limit reached") {
+				ctx.JSON(http.StatusBadRequest, gin.H{
+					"error": "Maximum comment limit reached",
+					"details": "Each guest can only have 2 comments maximum",
+				})
+				return
+			}
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Error creating comment",
+				"details": err.Error(),
+			})
+			return
+		}
 
-	log.Printf("Successfully created comment for guest %s", username)
+		if comment == nil {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error": "Guest not found",
+			})
+			return
+		}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Comment created successfully",
-		"comment": gin.H{
-			"ID":        comment.ID,
-			"Content":   comment.Content,
-			"CreatedAt": comment.CreatedAt,
-			"GuestID":   comment.GuestID,
-			"GuestName": guest.Name,
-		},
+		ctx.JSON(http.StatusCreated, gin.H{
+			"message": "Comment created successfully",
+			"comment": comment,
+		})
 	})
-}
 
-func handleGetMyComments(c *gin.Context) {
-	username := c.MustGet("username").(string)
-	guest, err := models.GetGuestByName(database.DB, username)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find guest"})
-		return
-	}
-	if guest == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Guest not found"})
-		return
-	}
+	// GET /comments/me - Get comments for authenticated user
+	authenticated.GET("/comments/me", func(ctx *gin.Context) {
+		username, exists := ctx.Get("username")
+		if !exists {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+			return
+		}
 
-	comments, err := models.GetCommentsByGuestID(database.DB, guest.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch comments"})
-		return
-	}
+		// Get comments for this guest using the service
+		comments, err := c.CommentService.GetCommentsByGuest(username.(string))
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Error retrieving comments",
+				"details": err.Error(),
+			})
+			return
+		}
 
-	c.JSON(http.StatusOK, gin.H{
-		"count":    len(comments),
-		"comments": comments,
+		if comments == nil {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error": "Guest not found",
+			})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"comments": comments,
+		})
 	})
-}
 
-func handleGetAllComments(c *gin.Context) {
-	// Parse limit from query, default 20, max 100
-	limitStr := c.DefaultQuery("limit", "20")
-	cursor := c.Query("cursor")
+	// GET /comments - Get all comments
+	r.GET("/comments", func(ctx *gin.Context) {
+		// Get all comments using the service
+		comments, err := c.CommentService.GetAllComments()
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Error retrieving comments",
+				"details": err.Error(),
+			})
+			return
+		}
 
-	limit, err := strconv.Atoi(limitStr)
-	if err != nil || limit < 1 {
-		limit = 20
-	} else if limit > 100 {
-		limit = 100
-	}
-
-	paginatedComments, err := models.GetAllCommentsWithGuests(database.DB, limit, cursor)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch comments"})
-		return
-	}
-
-	c.JSON(http.StatusOK, paginatedComments)
+		ctx.JSON(http.StatusOK, gin.H{
+			"comments": comments,
+		})
+	})
 }

@@ -119,3 +119,34 @@ func TestGetCommentCount(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 1, count)
 }
+
+func TestCommentMaximumLimit(t *testing.T) {
+	db := setupDB(t)
+	defer db.Close()
+
+	// Create guest
+	g := &Guest{Name: "LimitTester"}
+	err := g.Create(db)
+	assert.NoError(t, err)
+
+	// Create first comment - should succeed
+	c1 := &Comment{GuestID: g.ID, Content: "First comment"}
+	err = c1.Create(db)
+	assert.NoError(t, err)
+
+	// Create second comment - should succeed
+	c2 := &Comment{GuestID: g.ID, Content: "Second comment"}
+	err = c2.Create(db)
+	assert.NoError(t, err)
+
+	// Create third comment - should fail with maximum limit error
+	c3 := &Comment{GuestID: g.ID, Content: "Third comment"}
+	err = c3.Create(db)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "maximum comment limit reached")
+
+	// Verify only 2 comments exist for this guest
+	count, err := GetCommentCountByGuestID(db, g.ID)
+	assert.NoError(t, err)
+	assert.Equal(t, 2, count)
+}
