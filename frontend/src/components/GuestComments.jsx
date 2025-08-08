@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Box, Typography, TextField, Button, List, ListItem, ListItemText, CircularProgress, Alert } from '@mui/material'; // Added CircularProgress, Alert
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined'; // Added icon for the button
 import { getAllComments, submitComment } from '../api/comments'; // Assuming these are correctly imported
+import BackButton from './BackButton';
 
 
 export default function GuestComments() {
@@ -138,6 +139,7 @@ export default function GuestComments() {
       mt: 4, // Margin top for spacing if not used at top of page
       mb: 4, // Margin bottom
     }}>
+      <BackButton />
       {/* Title: Centered, refined font */}
       <Typography
         variant="h5"
