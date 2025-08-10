@@ -3,6 +3,7 @@ import { Button, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const StyledBackButtonContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -25,6 +26,7 @@ const StyledBackButton = styled(Button)(({ theme }) => ({
 
 export default function BackButton() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <StyledBackButtonContainer>
@@ -33,7 +35,7 @@ export default function BackButton() {
         onClick={() => navigate('/')}
         startIcon={<ArrowBackIcon />}
       >
-        Back to Invitation
+        {t('navigation.backToInvitation')}
       </StyledBackButton>
     </StyledBackButtonContainer>
   );

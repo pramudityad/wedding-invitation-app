@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 const StyledNavigationButtonsContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -24,18 +25,20 @@ const StyledNavButton = styled(Button)(({ theme }) => ({
 }));
 
 export default function NavigationButtons({ navigate }) {
+  const { t } = useTranslation();
+  
   return (
     <StyledNavigationButtonsContainer>
       <StyledNavButton variant="outlined" onClick={() => navigate('/venue')}>
-        Venue Map
+        {t('navigation.venueMap')}
       </StyledNavButton>
       
       <StyledNavButton variant="outlined" onClick={() => navigate('/comments')}>
-        Guest Comments
+        {t('navigation.guestComments')}
       </StyledNavButton>
       
       <StyledNavButton variant="outlined" onClick={() => navigate('/gallery')}>
-        Photo Gallery
+        {t('navigation.photoGallery')}
       </StyledNavButton>
     </StyledNavigationButtonsContainer>
   );

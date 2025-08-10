@@ -1,7 +1,9 @@
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuthContext } from '../contexts/AuthContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 // Define styles as constants
 const styles = {
@@ -53,6 +55,7 @@ export default function LoginPage() {
 
   const navigate = useNavigate();
   const { login } = useAuthContext();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const pathSegments = window.location.pathname.split('/');
@@ -65,10 +68,10 @@ export default function LoginPage() {
         handleAutoLogin(name);
       } catch (error) {
         console.error('Error decoding name:', error);
-        setError('Invalid name format. Please check the URL.');
+        setError(t('login.invalidName'));
       }
     } else {
-      setError('Please provide your name in the URL path.');
+      setError(t('login.provideName'));
     }
   }, []);
 
@@ -81,16 +84,19 @@ export default function LoginPage() {
       navigate('/')
     } catch (error) {
       console.error('Login failed:', error)
-      setError('Could not verify your name. Please check the URL.')
+      setError(t('login.verificationFailed'))
       setIsLoading(false)
     }
   }
 
   return (
     <Box sx={styles.outerContainer}>
+      <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }}>
+        <LanguageSwitcher />
+      </Box>
       <Box sx={styles.innerCard}>
         <Typography variant="h5" component="h1" gutterBottom sx={styles.title}>
-          Welcome, Please Log In
+          {t('login.welcome')}
         </Typography>
 
         {error && (
@@ -101,7 +107,7 @@ export default function LoginPage() {
 
         {isLoading && (
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 3 }}>
-            <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} /> Logging in...
+            <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} /> {t('login.loggingIn')}
           </Box>
         )}
       </Box>

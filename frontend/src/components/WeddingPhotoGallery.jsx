@@ -6,13 +6,15 @@ import {
   ImageListItem,
   CircularProgress,
   Alert,
-  Dialog, // Import Dialog
-  DialogContent, // Import DialogContent
-  DialogTitle, // Import DialogTitle
-  IconButton, // Import IconButton
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close'; // Import an icon for closing the dialog
+import CloseIcon from '@mui/icons-material/Close';
+import { useTranslation } from 'react-i18next';
 import BackButton from './BackButton';
+import LanguageSwitcher from './LanguageSwitcher';
 
 // Mock photos data with captions/stories
 const mockPhotos = [
@@ -166,9 +168,9 @@ export default function WeddingPhotoGallery() {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // State for the dialog
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { t } = useTranslation();
 
   // Simulate fetching data
   useEffect(() => {
@@ -178,7 +180,7 @@ export default function WeddingPhotoGallery() {
         setError(null);
       } catch (err) {
         console.error("Failed to load mock photos:", err);
-        setError('Failed to load photos. Please try again.');
+        setError(t('gallery.loadError') || 'Failed to load photos. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -209,7 +211,7 @@ export default function WeddingPhotoGallery() {
         <Box sx={styles.loadingContainer}>
           <CircularProgress size={60} sx={{ color: styles.title.color }} /> {/* Use accent color */}
           <Typography sx={styles.loadingText}>
-            Gathering the moments...
+            {t('gallery.loading')}
           </Typography>
         </Box>
       )}
@@ -224,18 +226,21 @@ export default function WeddingPhotoGallery() {
       {/* Content State (Loaded) */}
       {!loading && !error && (
         <>
+          <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }}>
+            <LanguageSwitcher />
+          </Box>
           <BackButton />
-          <Typography variant="h4" component="h2" sx={styles.title}> {/* Use h4 but render as h2 for semantics */}
-            Our Cherished Moments
+          <Typography variant="h4" component="h2" sx={styles.title}>
+            {t('gallery.title')}
           </Typography>
 
           <Typography variant="body1" sx={styles.introText}>
-            Every picture tells a story. Step into our wedding day and relive some of the moments that made it truly unforgettable. Click on any photo to read its story.
+            {t('gallery.subtitle')}
           </Typography>
 
           {photos.length === 0 ? (
             <Typography sx={styles.noPhotosText}>
-              No photos available yet. Check back soon!
+              {t('gallery.noPhotos')}
             </Typography>
           ) : (
             <ImageList

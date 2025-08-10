@@ -1,0 +1,79 @@
+{
+  "login": {
+    "welcome": "Selamat Datang, Silakan Masuk",
+    "invalidName": "Format nama tidak valid. Silakan periksa URL.",
+    "provideName": "Silakan berikan nama Anda di path URL.",
+    "verificationFailed": "Tidak dapat memverifikasi nama Anda. Silakan periksa URL.",
+    "loggingIn": "Sedang masuk..."
+  },
+  "invitation": {
+    "title": "Anda Diundang",
+    "coupleNames": "[Nama Pasangan]",
+    "countdownActive": "Hitung Mundur ke Pernikahan Kami",
+    "countdownPast": "Pernikahan Kami Pada",
+    "welcomeMessage": "Kami mengundang Anda untuk berbagi kebahagiaan kami saat kami bersatu dalam pernikahan.",
+    "personalWelcome": "Sambutan khusus untuk {{username}}!",
+    "loading": "Memuat undangan Anda...",
+    "rsvpYesSuccess": "Kami sangat senang Anda akan merayakan bersama kami!",
+    "rsvpNoSuccess": "Kami akan merindukan Anda tetapi terima kasih telah memberi tahu kami.",
+    "loadError": "Gagal memuat data Anda. Silakan refresh untuk mencoba lagi.",
+    "rsvpError": "Gagal mengirim RSVP. Silakan coba lagi nanti."
+  },
+  "comments": {
+    "title": "Komentar Tamu",
+    "placeholder": "Tinggalkan komentar atau doa...",
+    "placeholderHint": "Bagikan pemikiran Anda... (Ctrl+Enter untuk kirim)",
+    "submitButton": "Kirim Komentar",
+    "loading": "Memuat komentar...",
+    "loadError": "Gagal memuat komentar. Silakan refresh.",
+    "emptyError": "Komentar tidak boleh kosong.",
+    "lengthError": "Komentar terlalu panjang. Maksimal {{max}} karakter diizinkan.",
+    "successMessage": "Komentar Anda berhasil dikirim!",
+    "limitReached": "Anda telah mencapai batas maksimal {{max}} komentar.",
+    "submitError": "Gagal mengirim komentar. Silakan coba lagi.",
+    "noComments": "Belum ada komentar. Jadilah yang pertama meninggalkan pesan!",
+    "loadingMore": "Memuat lebih banyak komentar...",
+    "endOfComments": "— Akhir komentar —",
+    "characterCount": "{{count}}/{{max}} karakter",
+    "charactersLeft": "{{remaining}} tersisa"
+  },
+  "gallery": {
+    "title": "Momen Berharga Kami",
+    "subtitle": "Setiap foto menceritakan kisah. Masuklah ke hari pernikahan kami dan hidupkan kembali beberapa momen yang membuatnya benar-benar tak terlupakan. Klik foto mana pun untuk membaca ceritanya.",
+    "loading": "Mengumpulkan momen...",
+    "loadError": "Gagal memuat foto. Silakan coba lagi.",
+    "noPhotos": "Belum ada foto tersedia. Periksa lagi segera!"
+  },
+  "navigation": {
+    "backToInvitation": "Kembali ke Undangan",
+    "venueMap": "Peta Lokasi",
+    "guestComments": "Komentar Tamu",
+    "photoGallery": "Galeri Foto"
+  },
+  "venue": {
+    "title": "Lokasi Venue Pernikahan",
+    "openInGoogleMaps": "Buka di Google Maps"
+  },
+  "rsvp": {
+    "question": "Apakah Anda akan hadir?",
+    "yesButton": "Ya, saya akan hadir",
+    "noButton": "Tidak, saya tidak bisa hadir",
+    "yesConfirmation": "Terima kasih atas RSVP Anda! Kami berharap dapat merayakan dengan Anda.",
+    "noConfirmation": "Kami telah menerima RSVP Anda. Kami memahami jika Anda tidak dapat hadir.",
+    "loading": "Memuat..."
+  },
+  "gift": {
+    "title": "Hadiah Pernikahan",
+    "message": "Kehadiran Anda adalah hadiah terbesar, tetapi jika Anda ingin memberikan sesuatu yang istimewa:",
+    "copySuccess": "Nomor rekening {{name}} berhasil disalin ke clipboard!",
+    "copyError": "Gagal menyalin ke clipboard"
+  },
+  "common": {
+    "loading": "Memuat...",
+    "error": "Kesalahan",
+    "retry": "Coba Lagi",
+    "refresh": "Refresh",
+    "close": "Tutup",
+    "copy": "Salin ke clipboard"
+  }
+}
