@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Box, Typography, Button } from '@mui/material';
 import { MusicNote, PlayArrow } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import { useMusicContext } from '../contexts/MusicContext';
 
 const StyledMusicSection = styled(Box)(({ theme }) => ({
@@ -40,6 +41,7 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
 
 export default function MusicLauncher() {
   const { isMusicAvailable, isPlayerVisible, showPlayer } = useMusicContext();
+  const { t } = useTranslation();
 
   // Don't render if music is not available or player is already visible
   if (!isMusicAvailable || isPlayerVisible) {
@@ -47,31 +49,14 @@ export default function MusicLauncher() {
   }
 
   return (
-    <StyledMusicSection>
-      <StyledDescription>
-        Enjoy our carefully curated wedding songs while you browse
-      </StyledDescription>
-      
+    <StyledMusicSection>      
       <StyledMusicButton
         startIcon={<PlayArrow />}
         onClick={showPlayer}
       >
         <MusicNote sx={{ mr: 1 }} />
-        Play Wedding Music
+        {t('music.playButton')}
       </StyledMusicButton>
-      
-      <Typography 
-        variant="caption" 
-        sx={{ 
-          display: 'block',
-          mt: 1,
-          color: '#999',
-          fontStyle: 'italic',
-          fontFamily: "'Montserrat', sans-serif"
-        }}
-      >
-        Music will continue playing as you explore the invitation
-      </Typography>
     </StyledMusicSection>
   );
 }

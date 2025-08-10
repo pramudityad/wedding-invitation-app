@@ -1,13 +1,16 @@
-import './fix-leaflet-icons'; // Keep this fix
+import './fix-leaflet-icons';
 import { Box, Typography, Button } from '@mui/material';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import { MapContainer as Map, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css'; // Keep Leaflet CSS
+import 'leaflet/dist/leaflet.css';
+import { useTranslation } from 'react-i18next';
 import BackButton from './BackButton';
+import LanguageSwitcher from './LanguageSwitcher';
 import { memo, useMemo } from 'react';
 
 function VenueMap() {
-  // Memoize venue position and URLs to prevent recalculation on re-renders
+  const { t } = useTranslation();
+  
   const { venuePosition, googleMapsUrl } = useMemo(() => {
     const venueLat = parseFloat(import.meta.env.VITE_APP_VENUE_LAT || '-6.1754');
     const venueLng = parseFloat(import.meta.env.VITE_APP_VENUE_LNG || '106.8272');
@@ -23,15 +26,18 @@ function VenueMap() {
   return (
     // Outer Box styling: simpler height management, centered
     <Box sx={{
-      p: { xs: 2, md: 4 }, // Responsive padding
+      p: { xs: 2, md: 4 },
       backgroundColor: '#f9f9f7',
       borderRadius: '12px',
       boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-      maxWidth: '800px', // Max width for better look on large screens
-      margin: 'auto', // Center the box
-      mt: 4, // Margin top for spacing if not used at top of page
-      mb: 4, // Margin bottom
+      maxWidth: '800px',
+      margin: 'auto',
+      mt: 4,
+      mb: 4,
     }}>
+      <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }}>
+        <LanguageSwitcher />
+      </Box>
       <BackButton />
       {/* Title: Centered, slightly bolder font weight */}
       <Typography
@@ -44,7 +50,7 @@ function VenueMap() {
           textAlign: 'center', // Center the text
         }}
       >
-        Wedding Venue Location
+        {t('venue.title')}
       </Typography>
 
       {/* Map Container */}
@@ -65,7 +71,7 @@ function VenueMap() {
         />
         {/* Venue Marker */}
         <Marker position={venuePosition}>
-          <Popup>Wedding Venue</Popup> {/* Simple popup */}
+          <Popup>{t('venue.title')}</Popup>
         </Marker>
       </Map>
 
@@ -84,7 +90,7 @@ function VenueMap() {
         }}
         startIcon={<MapOutlinedIcon />} // Add a map icon
       >
-        Get Directions on Google Maps
+        {t('venue.openInGoogleMaps')}
       </Button>
     </Box>
   );

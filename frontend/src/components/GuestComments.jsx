@@ -16,8 +16,10 @@ import {
 } from '@mui/material';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { useTranslation } from 'react-i18next';
 import { getAllComments, submitComment } from '../api/comments';
 import BackButton from './BackButton';
+import LanguageSwitcher from './LanguageSwitcher';
 
 
 const COMMENT_MAX_LENGTH = 500;
@@ -95,6 +97,7 @@ export default function GuestComments() {
   const lastCommentRef = useRef(null);
   const observerRef = useRef(null);
   const textFieldRef = useRef(null);
+  const { t } = useTranslation();
 
   const fetchComments = useCallback(async (isRefresh = false) => {
     if (isRefresh) {
@@ -113,7 +116,7 @@ export default function GuestComments() {
       setNextCursor(response.next_cursor || null);
     } catch (error) {
       console.error('Error fetching comments:', error);
-      setError('Failed to load comments. Please try refreshing.');
+      setError(t('comments.loadError'));
     } finally {
       setInitialLoading(false);
     }
@@ -129,12 +132,12 @@ export default function GuestComments() {
 
     const trimmedComment = newComment.trim();
     if (!trimmedComment) {
-      setSubmitError('Comment cannot be empty.');
+      setSubmitError(t('comments.emptyError'));
       return;
     }
 
     if (trimmedComment.length > COMMENT_MAX_LENGTH) {
-      setSubmitError(`Comment is too long. Maximum ${COMMENT_MAX_LENGTH} characters allowed.`);
+      setSubmitError(t('comments.lengthError', { max: COMMENT_MAX_LENGTH }));
       return;
     }
 
@@ -144,7 +147,7 @@ export default function GuestComments() {
       setComments([response, ...comments]);
       setNewComment('');
       setSubmitError(null);
-      setSuccessMessage('Your comment has been posted successfully!');
+      setSuccessMessage(t('comments.successMessage'));
       setShowSnackbar(true);
       
       if (textFieldRef.current) {
@@ -153,7 +156,7 @@ export default function GuestComments() {
     } catch (error) {
       console.error('Failed to post comment:', error);
       if (error.response?.data?.error?.includes('Maximum of 2 comments')) {
-        setSubmitError('You have reached the maximum limit of 2 comments.');
+        setSubmitError(t('comments.limitReached', { max: 2 }));
       } else if (error.response?.data?.error) {
         setSubmitError(`Error: ${error.response.data.details}`);
       } else if (error.response?.status) {
@@ -161,7 +164,7 @@ export default function GuestComments() {
       } else if (error.message) {
         setSubmitError(`Failed to post comment: ${error.message}`);
       } else {
-        setSubmitError('Failed to post comment. Please try again.');
+        setSubmitError(t('comments.submitError'));
       }
     } finally {
       setSubmitting(false);
@@ -191,7 +194,7 @@ export default function GuestComments() {
       setNextCursor(response.next_cursor || null);
     } catch (error) {
       console.error('Error loading more comments:', error);
-      setError('Failed to load more comments. Please try again.');
+      setError(t('comments.loadError'));
     } finally {
       setLoadingMore(false);
     }
@@ -226,7 +229,7 @@ export default function GuestComments() {
     return (
       <Box sx={{ textAlign: 'center', p: 4 }}>
         <CircularProgress size={40} />
-        <Typography sx={{ mt: 2, color: '#666' }}>Loading comments...</Typography>
+        <Typography sx={{ mt: 2, color: '#666' }}>{t('comments.loading')}</Typography>
       </Box>
     );
   }
@@ -243,17 +246,20 @@ export default function GuestComments() {
         mt: 4,
         mb: 4,
       }}>
+        <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }}>
+          <LanguageSwitcher />
+        </Box>
         <BackButton />
         <Alert 
           severity="error" 
           sx={{ mx: 'auto', maxWidth: '800px', mt: 4 }}
           action={
-            <Tooltip title="Refresh comments">
+            <Tooltip title={t('common.refreshComments')}>
               <IconButton
                 color="inherit"
                 size="small"
                 onClick={() => fetchComments(true)}
-                aria-label="Refresh comments"
+                aria-label={t('common.refreshComments')}
               >
                 <RefreshIcon />
               </IconButton>
@@ -290,13 +296,13 @@ export default function GuestComments() {
             textAlign: 'center',
           }}
         >
-          Guest Comments
+          {t('comments.title')}
         </Typography>
-        <Tooltip title="Refresh comments">
+        <Tooltip title={t('common.refreshComments')}>
           <IconButton
             onClick={() => fetchComments(true)}
             disabled={initialLoading}
-            aria-label="Refresh comments"
+            aria-label={t('common.refreshComments')}
             sx={{ ml: 2 }}
           >
             <RefreshIcon />
@@ -309,8 +315,8 @@ export default function GuestComments() {
           ref={textFieldRef}
           fullWidth
           variant="outlined"
-          label="Leave a comment or well wish..."
-          placeholder="Share your thoughts... (Ctrl+Enter to submit)"
+          label={t('comments.placeholder')}
+          placeholder={t('comments.placeholderHint')}
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -346,12 +352,12 @@ export default function GuestComments() {
             color={isOverLimit ? 'error' : 'textSecondary'}
             aria-live="polite"
           >
-            {characterCount}/{COMMENT_MAX_LENGTH} characters
+            {t('comments.characterCount', { count: characterCount, max: COMMENT_MAX_LENGTH })}
           </Typography>
           {characterCount > 0 && (
             <Chip
               size="small"
-              label={`${Math.max(0, COMMENT_MAX_LENGTH - characterCount)} left`}
+              label={t('comments.charactersLeft', { remaining: Math.max(0, COMMENT_MAX_LENGTH - characterCount) })}
               color={isOverLimit ? 'error' : characterCount > COMMENT_MAX_LENGTH * 0.8 ? 'warning' : 'default'}
               variant="outlined"
             />
@@ -378,7 +384,7 @@ export default function GuestComments() {
           }}
           startIcon={submitting ? null : <SendOutlinedIcon />}
         >
-          {submitting ? <CircularProgress size={24} color="inherit" /> : 'Post Comment'}
+          {submitting ? <CircularProgress size={24} color="inherit" /> : t('comments.submitButton')}
         </Button>
       </form>
 
@@ -408,11 +414,11 @@ export default function GuestComments() {
         </Alert>
       )}
 
-      <List sx={{ mt: 4, p: 0 }} role="list" aria-label="Guest comments">
+      <List sx={{ mt: 4, p: 0 }} role="list" aria-label={t('common.guestComments')}>
         {comments.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 6 }}>
             <Typography sx={{ color: '#666', fontStyle: 'italic', fontSize: '1.1rem' }}>
-              No comments yet. Be the first to leave a message!
+              {t('comments.noComments')}
             </Typography>
           </Box>
         ) : (
@@ -429,14 +435,14 @@ export default function GuestComments() {
       {loadingMore && (
         <Box sx={{ textAlign: 'center', p: 4 }} role="status" aria-live="polite">
           <CircularProgress size={40} />
-          <Typography sx={{ mt: 2, color: '#666' }}>Loading more comments...</Typography>
+          <Typography sx={{ mt: 2, color: '#666' }}>{t('comments.loadingMore')}</Typography>
         </Box>
       )}
       
       {!nextCursor && comments.length > 0 && (
         <Box sx={{ textAlign: 'center', pt: 4, pb: 2 }}>
           <Typography variant="caption" color="textSecondary">
-            — End of comments —
+            {t('comments.endOfComments')}
           </Typography>
         </Box>
       )}

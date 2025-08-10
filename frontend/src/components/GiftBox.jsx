@@ -2,6 +2,7 @@ import { styled } from '@mui/material/styles';
 import { Box, Typography, IconButton, Tooltip, Snackbar, Alert } from '@mui/material';
 import { ContentCopy, CardGiftcard } from '@mui/icons-material';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const StyledGiftBoxContainer = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(4),
@@ -93,6 +94,7 @@ export default function GiftBox() {
     open: false,
     message: '',
   });
+  const { t } = useTranslation();
 
   // Get bank account details from environment variables
   const accounts = [
@@ -111,13 +113,13 @@ export default function GiftBox() {
       await navigator.clipboard.writeText(accountNumber);
       setSnackbar({
         open: true,
-        message: `${accountName}'s account number copied to clipboard!`,
+        message: t('gift.copySuccess', { name: accountName }),
       });
     } catch (error) {
       console.error('Failed to copy to clipboard:', error);
       setSnackbar({
         open: true,
-        message: 'Failed to copy to clipboard',
+        message: t('gift.copyError'),
       });
     }
   };
@@ -137,11 +139,11 @@ export default function GiftBox() {
       <StyledGiftBox>
         <StyledGiftTitle>
           <CardGiftcard sx={{ fontSize: 'inherit' }} />
-          Wedding Gift
+          {t('gift.title')}
         </StyledGiftTitle>
 
         <StyledGiftMessage>
-          Your presence is the greatest gift, but if you wish to give something special:
+          {t('gift.message')}
         </StyledGiftMessage>
 
         <Box sx={{ mt: 3 }}>
@@ -154,7 +156,7 @@ export default function GiftBox() {
                 <StyledAccountNumberText>
                   {account.number}
                 </StyledAccountNumberText>
-                <Tooltip title="Copy to clipboard">
+                <Tooltip title={t('common.copy')}>
                   <IconButton
                     size="small"
                     onClick={() => handleCopyToClipboard(account.number, account.name)}

@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, Typography, Snackbar, Alert, CircularProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useAuthContext } from '../contexts/AuthContext';
 import { submitRSVP, getGuestByName, markInvitationOpened } from '../api/guest';
 import { getAllComments } from '../api/comments';
@@ -10,6 +11,7 @@ import RsvpSection from './RsvpSection';
 import GiftBox from './GiftBox';
 import MusicLauncher from './MusicLauncher';
 import NavigationButtons from './NavigationButtons';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const StyledInvitationContainer = styled(Box)(({ theme }) => ({
   minHeight: '100vh',
@@ -101,6 +103,7 @@ const parseJwt = (token) => {
 function InvitationLanding() {
   const navigate = useNavigate();
   const { token } = useAuthContext();
+  const { t } = useTranslation();
 
   const [username, setUsername] = useState('');
   const [rsvpStatus, setRsvpStatus] = useState(null);
@@ -204,7 +207,7 @@ function InvitationLanding() {
         console.error('Failed to fetch data:', error);
         setSnackbar({
           open: true,
-          message: "Failed to load your data. Please refresh to try again.",
+          message: t('invitation.loadError'),
           severity: 'error',
         });
       } finally {
@@ -230,15 +233,15 @@ function InvitationLanding() {
       setSnackbar({
         open: true,
         message: attending
-          ? "We're thrilled you'll be celebrating with us!"
-          : "We'll miss you but thank you for letting us know.",
+          ? t('invitation.rsvpYesSuccess')
+          : t('invitation.rsvpNoSuccess'),
         severity: 'success',
       });
     } catch (error) {
       console.error('Failed to submit RSVP:', error);
       setSnackbar({
         open: true,
-        message: 'Failed to submit RSVP. Please try again later.',
+        message: t('invitation.rsvpError'),
         severity: 'error',
       });
     } finally {
@@ -263,7 +266,7 @@ function InvitationLanding() {
       }}>
         <CircularProgress size={60} />
         <Typography sx={{ mt: 2, color: '#666', fontFamily: "'Montserrat', sans-serif" }}>
-          Loading your invitation...
+          {t('invitation.loading')}
         </Typography>
       </Box>
     );
@@ -271,13 +274,16 @@ function InvitationLanding() {
 
   return (
     <StyledInvitationContainer>
+      <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }}>
+        <LanguageSwitcher />
+      </Box>
       <StyledCard>
         <StyledWeddingTitle>
-          You're Invited
+          {t('invitation.title')}
         </StyledWeddingTitle>
 
         <StyledCoupleNames>
-          [Couple's Names]
+          {t('invitation.coupleNames')}
         </StyledCoupleNames>
 
         <StyledCountdownSection>
@@ -287,7 +293,7 @@ function InvitationLanding() {
             fontWeight: 400,
             color: '#333',
           }}>
-            {countdown.timeLeft > 0 ? "Countdown to Our Wedding" : "Our Wedding Was On"}
+            {countdown.timeLeft > 0 ? t('invitation.countdownActive') : t('invitation.countdownPast')}
           </Typography>
           <StyledCountdownValue>
             {countdown.timeLeft > 0 
@@ -302,8 +308,8 @@ function InvitationLanding() {
         </StyledCountdownSection>
 
         <StyledWelcomeMessage>
-          We invite you to share in our joy as we unite in marriage.<br />
-          {username ? `A special welcome to ${username}!` : 'Loading welcome message...'}
+          {t('invitation.welcomeMessage')}<br />
+          {username ? t('invitation.personalWelcome', { username }) : t('invitation.loading')}
         </StyledWelcomeMessage>
 
         <GuestCommentsSection 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 const StyledRSVPSection = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(6),
@@ -33,6 +34,8 @@ const StyledRSVPButton = styled(Button)(({ theme, colorKey }) => ({
 }));
 
 export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP }) {
+  const { t } = useTranslation();
+  
   return (
     <StyledRSVPSection>
       <Typography variant="h6" sx={{ 
@@ -44,14 +47,14 @@ export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP }) {
         {isLoading && rsvpStatus === null ? (
           <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
             <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
-            Loading...
+            {t('rsvp.loading')}
           </Box>
         ) : rsvpStatus === null ? (
-          'Will you be attending?'
+          t('rsvp.question')
         ) : rsvpStatus === true ? (
-          'Thank you for your RSVP! We look forward to celebrating with you.'
+          t('rsvp.yesConfirmation')
         ) : (
-          'We\'ve received your RSVP. We understand if you cannot make it.'
+          t('rsvp.noConfirmation')
         )}
       </Typography>
 
@@ -62,7 +65,7 @@ export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP }) {
             onClick={() => handleRSVP(true)} 
             disabled={isLoading}
           >
-            {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Yes, I will be there'}
+            {isLoading ? <CircularProgress size={24} color="inherit" /> : t('rsvp.yesButton')}
           </StyledRSVPButton>
           
           <StyledRSVPButton 
@@ -70,7 +73,7 @@ export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP }) {
             onClick={() => handleRSVP(false)} 
             disabled={isLoading}
           >
-            {isLoading ? <CircularProgress size={24} color="inherit" /> : 'No, I cannot make it'}
+            {isLoading ? <CircularProgress size={24} color="inherit" /> : t('rsvp.noButton')}
           </StyledRSVPButton>
         </StyledRSVPButtonsContainer>
       )}

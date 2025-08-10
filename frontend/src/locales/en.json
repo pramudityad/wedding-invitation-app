@@ -1,0 +1,100 @@
+{
+  "login": {
+    "welcome": "Welcome, Please Log In",
+    "invalidName": "Invalid name format. Please check the URL.",
+    "provideName": "Please provide your name in the URL path.",
+    "verificationFailed": "Could not verify your name. Please check the URL.",
+    "loggingIn": "Logging in..."
+  },
+  "invitation": {
+    "title": "You're Invited",
+    "coupleNames": "[Couple's Names]",
+    "countdownActive": "Countdown to Our Wedding",
+    "countdownPast": "Our Wedding Was On",
+    "welcomeMessage": "We invite you to share in our joy as we unite in marriage.",
+    "personalWelcome": "A special welcome to {{username}}!",
+    "loading": "Loading your invitation...",
+    "rsvpYesSuccess": "We're thrilled you'll be celebrating with us!",
+    "rsvpNoSuccess": "We'll miss you but thank you for letting us know.",
+    "loadError": "Failed to load your data. Please refresh to try again.",
+    "rsvpError": "Failed to submit RSVP. Please try again later."
+  },
+  "comments": {
+    "title": "Guest Comments",
+    "placeholder": "Leave a comment or well wish...",
+    "placeholderHint": "Share your thoughts... (Ctrl+Enter to submit)",
+    "submitButton": "Post Comment",
+    "loading": "Loading comments...",
+    "loadError": "Failed to load comments. Please try refreshing.",
+    "emptyError": "Comment cannot be empty.",
+    "lengthError": "Comment is too long. Maximum {{max}} characters allowed.",
+    "successMessage": "Your comment has been posted successfully!",
+    "limitReached": "You have reached the maximum limit of {{max}} comments.",
+    "submitError": "Failed to post comment. Please try again.",
+    "noComments": "No comments yet. Be the first to leave a message!",
+    "loadingMore": "Loading more comments...",
+    "endOfComments": "— End of comments —",
+    "characterCount": "{{count}}/{{max}} characters",
+    "charactersLeft": "{{remaining}} left"
+  },
+  "gallery": {
+    "title": "Our Cherished Moments",
+    "subtitle": "Every picture tells a story. Step into our wedding day and relive some of the moments that made it truly unforgettable. Click on any photo to read its story.",
+    "loading": "Gathering the moments...",
+    "loadError": "Failed to load photos. Please try again.",
+    "noPhotos": "No photos available yet. Check back soon!"
+  },
+  "navigation": {
+    "backToInvitation": "Back to Invitation",
+    "venueMap": "Venue Map",
+    "guestComments": "Guest Comments",
+    "photoGallery": "Photo Gallery"
+  },
+  "venue": {
+    "title": "Wedding Venue Location",
+    "openInGoogleMaps": "Open in Google Maps"
+  },
+  "rsvp": {
+    "question": "Will you be attending?",
+    "yesButton": "Yes, I will be there",
+    "noButton": "No, I cannot make it",
+    "yesConfirmation": "Thank you for your RSVP! We look forward to celebrating with you.",
+    "noConfirmation": "We've received your RSVP. We understand if you cannot make it.",
+    "loading": "Loading..."
+  },
+  "gift": {
+    "title": "Wedding Gift",
+    "message": "Your presence is the greatest gift, but if you wish to give something special:",
+    "copySuccess": "{{name}}'s account number copied to clipboard!",
+    "copyError": "Failed to copy to clipboard"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "refresh": "Refresh",
+    "close": "Close",
+    "copy": "Copy to clipboard",
+    "minimize": "Minimize",
+    "close": "Close",
+    "refreshComments": "Refresh comments",
+    "guestComments": "Guest comments",
+    "changeLanguage": "Change language"
+  },
+  "music": {
+    "playButton": "Play Wedding Music",
+    "playlistTitle": "Wedding Playlist",
+    "notConfigured": "Music playlist is not configured yet. Please check back later!",
+    "loadError": "Unable to load the music playlist. Please check your internet connection or try again later.",
+    "controls": "Click on any song to start playing • Use the controls to adjust volume",
+    "miniPlayerText": "Wedding Music",
+    "enjoyPlaylist": "Enjoy our wedding playlist while browsing",
+    "connectionError": "Unable to load playlist. Please check your connection."
+  },
+  "guestCommentsSection": {
+    "title": "Messages of Love",
+    "guestLabel": "Guest",
+    "datePrefix": "on",
+    "readAllButton": "Read All Messages"
+  }
+}

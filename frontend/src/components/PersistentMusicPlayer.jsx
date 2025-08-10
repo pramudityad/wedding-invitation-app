@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Box, IconButton, Typography, Tooltip, Collapse, Alert } from '@mui/material';
 import { MusicNote, Close, ExpandLess, ExpandMore } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import { useMusicContext } from '../contexts/MusicContext';
 import { memo, useCallback } from 'react';
 
@@ -94,15 +95,17 @@ function PersistentMusicPlayer() {
     togglePlayerExpanded,
     onPlayerError,
   } = useMusicContext();
+  const { t } = useTranslation();
+
+  // All hooks must be called before any conditional returns
+  const handlePlayerError = useCallback(() => {
+    onPlayerError();
+  }, [onPlayerError]);
 
   // Don't render if music is not available or player is not visible
   if (!isMusicAvailable || !isPlayerVisible) {
     return null;
   }
-
-  const handlePlayerError = useCallback(() => {
-    onPlayerError();
-  }, [onPlayerError]);
 
   return (
     <StyledPlayerContainer>
@@ -129,13 +132,13 @@ function PersistentMusicPlayer() {
       >
         {hasError ? (
           <Alert severity="warning" sx={{ m: 1 }}>
-            Unable to load playlist. Please check your connection.
+            {t('music.connectionError')}
           </Alert>
         ) : (
           <StyledIframeContainer>
             <iframe
               src={embedUrl}
-              title="Wedding Playlist"
+              title={t('music.playlistTitle')}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               onError={handlePlayerError}
@@ -149,7 +152,7 @@ function PersistentMusicPlayer() {
         <StyledMiniPlayer onClick={togglePlayerExpanded}>
           <MusicNote sx={{ color: 'white', fontSize: 24 }} />
           <StyledMiniPlayerText>
-            Wedding Music
+            {t('music.miniPlayerText')}
           </StyledMiniPlayerText>
           <ExpandLess sx={{ color: 'white', fontSize: 20 }} />
         </StyledMiniPlayer>
@@ -159,10 +162,10 @@ function PersistentMusicPlayer() {
           <StyledPlayerHeader>
             <StyledPlayerTitle>
               <MusicNote sx={{ fontSize: 'inherit' }} />
-              Wedding Playlist
+              {t('music.playlistTitle')}
             </StyledPlayerTitle>
             <Box>
-              <Tooltip title="Minimize">
+              <Tooltip title={t('common.minimize')}>
                 <IconButton 
                   size="small" 
                   onClick={togglePlayerExpanded}
@@ -171,7 +174,7 @@ function PersistentMusicPlayer() {
                   <ExpandMore />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Close">
+              <Tooltip title={t('common.close')}>
                 <IconButton 
                   size="small" 
                   onClick={hidePlayer}
@@ -195,7 +198,7 @@ function PersistentMusicPlayer() {
                 fontFamily: "'Montserrat', sans-serif"
               }}
             >
-              Enjoy our wedding playlist while browsing
+              {t('music.enjoyPlaylist')}
             </Typography>
           </Box>
         </StyledExpandedPlayer>
