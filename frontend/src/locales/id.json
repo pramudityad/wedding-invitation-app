@@ -74,6 +74,27 @@
     "retry": "Coba Lagi",
     "refresh": "Refresh",
     "close": "Tutup",
-    "copy": "Salin ke clipboard"
+    "copy": "Salin ke clipboard",
+    "minimize": "Minimalkan",
+    "close": "Tutup",
+    "refreshComments": "Segarkan komentar",
+    "guestComments": "Komentar tamu",
+    "changeLanguage": "Ubah bahasa"
+  },
+  "music": {
+    "playButton": "Putar Musik Pernikahan",
+    "playlistTitle": "Playlist Pernikahan",
+    "notConfigured": "Playlist musik belum dikonfigurasi. Silakan periksa kembali nanti!",
+    "loadError": "Tidak dapat memuat playlist musik. Silakan periksa koneksi internet atau coba lagi nanti.",
+    "controls": "Klik lagu mana pun untuk mulai memutar • Gunakan kontrol untuk mengatur volume",
+    "miniPlayerText": "Musik Pernikahan",
+    "enjoyPlaylist": "Nikmati playlist pernikahan kami sambil menjelajah",
+    "connectionError": "Tidak dapat memuat playlist. Silakan periksa koneksi Anda."
+  },
+  "guestCommentsSection": {
+    "title": "Pesan Kasih Sayang",
+    "guestLabel": "Tamu",
+    "datePrefix": "pada",
+    "readAllButton": "Baca Semua Pesan"
   }
 }

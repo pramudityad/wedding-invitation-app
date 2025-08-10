@@ -13,8 +13,11 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: '100vh',
+    width: '100vw',
     p: 4,
-    backgroundColor: '#f9f9f7'
+    backgroundColor: '#f9f9f7 !important',
+    background: '#f9f9f7',
+    position: 'relative'
   },
   innerCard: {
     maxWidth: 400,
@@ -91,7 +94,12 @@ export default function LoginPage() {
 
   return (
     <Box sx={styles.outerContainer}>
-      <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }}>
+      <Box sx={{ 
+        position: 'absolute', 
+        top: 24, 
+        right: 24, 
+        zIndex: 10
+      }}>
         <LanguageSwitcher />
       </Box>
       <Box sx={styles.innerCard}>

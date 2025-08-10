@@ -2,6 +2,8 @@ import { styled } from '@mui/material/styles';
 import { Box, Typography, Alert } from '@mui/material';
 import { MusicNote } from '@mui/icons-material';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const StyledMusicContainer = styled(Box)(({ theme }) => ({
   minHeight: '100vh',
@@ -96,6 +98,7 @@ const extractPlaylistId = (url) => {
 
 export default function MusicPlayer() {
   const [playerError, setPlayerError] = useState(false);
+  const { t } = useTranslation();
   
   // Get playlist URL from environment variable
   const playlistUrl = import.meta.env.VITE_YOUTUBE_PLAYLIST_URL;
@@ -108,13 +111,16 @@ export default function MusicPlayer() {
   if (!playlistUrl || !playlistId) {
     return (
       <StyledMusicContainer>
+        <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }}>
+          <LanguageSwitcher />
+        </Box>
         <StyledCard>
           <StyledMusicTitle>
             <MusicNote sx={{ fontSize: 'inherit' }} />
-            Wedding Playlist
+            {t('music.playlistTitle')}
           </StyledMusicTitle>
           <Alert severity="info" sx={{ mt: 2 }}>
-            Music playlist is not configured yet. Please check back later!
+            {t('music.notConfigured')}
           </Alert>
         </StyledCard>
       </StyledMusicContainer>
@@ -125,25 +131,24 @@ export default function MusicPlayer() {
 
   return (
     <StyledMusicContainer>
+      <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }}>
+        <LanguageSwitcher />
+      </Box>
       <StyledCard>
         <StyledMusicTitle>
           <MusicNote sx={{ fontSize: 'inherit' }} />
-          Wedding Playlist
+          {t('music.playlistTitle')}
         </StyledMusicTitle>
-        
-        <StyledDescription>
-          Enjoy our carefully curated wedding songs while you browse the invitation
-        </StyledDescription>
 
         {playerError ? (
           <Alert severity="warning" sx={{ mt: 2 }}>
-            Unable to load the music playlist. Please check your internet connection or try again later.
+            {t('music.loadError')}
           </Alert>
         ) : (
           <StyledPlayerContainer>
             <iframe
               src={embedUrl}
-              title="Wedding Playlist"
+              title={t('music.playlistTitle')}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               onError={handlePlayerError}
@@ -160,7 +165,7 @@ export default function MusicPlayer() {
             fontFamily: "'Montserrat', sans-serif"
           }}
         >
-          Click on any song to start playing • Use the controls to adjust volume
+          {t('music.controls')}
         </Typography>
       </StyledCard>
     </StyledMusicContainer>

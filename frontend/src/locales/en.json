@@ -74,6 +74,27 @@
     "retry": "Retry",
     "refresh": "Refresh",
     "close": "Close",
-    "copy": "Copy to clipboard"
+    "copy": "Copy to clipboard",
+    "minimize": "Minimize",
+    "close": "Close",
+    "refreshComments": "Refresh comments",
+    "guestComments": "Guest comments",
+    "changeLanguage": "Change language"
+  },
+  "music": {
+    "playButton": "Play Wedding Music",
+    "playlistTitle": "Wedding Playlist",
+    "notConfigured": "Music playlist is not configured yet. Please check back later!",
+    "loadError": "Unable to load the music playlist. Please check your internet connection or try again later.",
+    "controls": "Click on any song to start playing • Use the controls to adjust volume",
+    "miniPlayerText": "Wedding Music",
+    "enjoyPlaylist": "Enjoy our wedding playlist while browsing",
+    "connectionError": "Unable to load playlist. Please check your connection."
+  },
+  "guestCommentsSection": {
+    "title": "Messages of Love",
+    "guestLabel": "Guest",
+    "datePrefix": "on",
+    "readAllButton": "Read All Messages"
   }
 }

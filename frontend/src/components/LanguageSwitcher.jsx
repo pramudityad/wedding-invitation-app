@@ -26,8 +26,13 @@ const languages = [
 ];
 
 export default function LanguageSwitcher() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  
+  // Don't render if i18n is not ready
+  if (!i18n) {
+    return null;
+  }
   const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
@@ -39,11 +44,14 @@ export default function LanguageSwitcher() {
   };
 
   const handleLanguageChange = (languageCode) => {
-    i18n.changeLanguage(languageCode);
+    if (i18n && i18n.changeLanguage) {
+      i18n.changeLanguage(languageCode);
+    }
     handleClose();
   };
 
   const getCurrentLanguage = () => {
+    if (!i18n || !i18n.language) return languages[0];
     return languages.find(lang => lang.code === i18n.language) || languages[0];
   };
 
@@ -52,7 +60,7 @@ export default function LanguageSwitcher() {
       <StyledLanguageButton
         onClick={handleClick}
         size="small"
-        aria-label="Change language"
+        aria-label={t('common.changeLanguage') || 'Change language'}
         aria-controls={open ? 'language-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
@@ -81,7 +89,7 @@ export default function LanguageSwitcher() {
           <MenuItem
             key={language.code}
             onClick={() => handleLanguageChange(language.code)}
-            selected={i18n.language === language.code}
+            selected={i18n && i18n.language === language.code}
             sx={{
               fontSize: '0.9rem',
               '&.Mui-selected': {

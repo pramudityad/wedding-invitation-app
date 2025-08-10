@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 const StyledCommentsSection = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(5),
@@ -19,6 +20,8 @@ const StyledCommentBox = styled(Box)(({ theme }) => ({
 }));
 
 export default function GuestCommentsSection({ comments, navigate }) {
+  const { t } = useTranslation();
+  
   if (!comments || comments.length === 0) return null;
 
   return (
@@ -30,7 +33,7 @@ export default function GuestCommentsSection({ comments, navigate }) {
         color: '#333',
         textAlign: 'center'
       }}>
-        Messages of Love
+        {t('guestCommentsSection.title')}
       </Typography>
       
       {comments.map((comment) => (
@@ -39,13 +42,13 @@ export default function GuestCommentsSection({ comments, navigate }) {
             "{comment.Content}"
           </Typography>
           <Typography variant="body2" sx={{ display: 'block', color: '#666', fontSize: '0.85rem' }}>
-            — {comment.GuestName || 'Guest'}
+            — {comment.GuestName || t('guestCommentsSection.guestLabel')}
             <Typography
               component="span"
               variant="body2"
               sx={{ color: '#999', fontSize: '0.75rem', ml: 1 }}
             >
-              on {new Intl.DateTimeFormat('en-US', {
+              {t('guestCommentsSection.datePrefix')} {new Intl.DateTimeFormat('en-US', {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric',
@@ -69,7 +72,7 @@ export default function GuestCommentsSection({ comments, navigate }) {
             } 
           }}
         >
-          Read All Messages
+          {t('guestCommentsSection.readAllButton')}
         </Button>
       </Box>
     </StyledCommentsSection>

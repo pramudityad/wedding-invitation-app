@@ -254,12 +254,12 @@ export default function GuestComments() {
           severity="error" 
           sx={{ mx: 'auto', maxWidth: '800px', mt: 4 }}
           action={
-            <Tooltip title="Refresh comments">
+            <Tooltip title={t('common.refreshComments')}>
               <IconButton
                 color="inherit"
                 size="small"
                 onClick={() => fetchComments(true)}
-                aria-label="Refresh comments"
+                aria-label={t('common.refreshComments')}
               >
                 <RefreshIcon />
               </IconButton>
@@ -298,11 +298,11 @@ export default function GuestComments() {
         >
           {t('comments.title')}
         </Typography>
-        <Tooltip title="Refresh comments">
+        <Tooltip title={t('common.refreshComments')}>
           <IconButton
             onClick={() => fetchComments(true)}
             disabled={initialLoading}
-            aria-label="Refresh comments"
+            aria-label={t('common.refreshComments')}
             sx={{ ml: 2 }}
           >
             <RefreshIcon />
@@ -414,7 +414,7 @@ export default function GuestComments() {
         </Alert>
       )}
 
-      <List sx={{ mt: 4, p: 0 }} role="list" aria-label="Guest comments">
+      <List sx={{ mt: 4, p: 0 }} role="list" aria-label={t('common.guestComments')}>
         {comments.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 6 }}>
             <Typography sx={{ color: '#666', fontStyle: 'italic', fontSize: '1.1rem' }}>
