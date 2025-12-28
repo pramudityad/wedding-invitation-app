@@ -1,0 +1,52 @@
+# Traefik Static Configuration
+# This file configures Traefik's core behavior
+
+# API and Dashboard
+api:
+  dashboard: true  # Enable the dashboard
+  insecure: false  # Disable insecure access (dashboard via HTTPS only)
+
+# Entrypoints (ports where Traefik listens)
+entryPoints:
+  web:
+    address: ":80"
+    # Redirect all HTTP to HTTPS
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: letsencrypt
+
+# Docker provider configuration
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false  # Only expose containers with traefik.enable=true
+    network: web  # Use the 'web' network for communication
+
+# Certificate Resolvers (Let's Encrypt)
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: your-email@example.com  # CHANGE THIS to your email
+      storage: /letsencrypt/acme.json
+      # Use TLS challenge (requires ports 80 & 443 forwarded)
+      tlsChallenge: {}
+      # Uncomment below for HTTP challenge instead (only requires port 80)
+      # httpChallenge:
+      #   entryPoint: web
+
+# Logging
+log:
+  level: INFO  # Options: DEBUG, INFO, WARN, ERROR
+
+# Access logs (optional, uncomment to enable)
+# accessLog:
+#   filePath: "/var/log/traefik/access.log"
