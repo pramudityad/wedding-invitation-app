@@ -37,9 +37,17 @@ debug
 *.db
 *.sqlite
 *.sqlite3
+database/
+data/
+
+# Backup files
+*.backup
+*.bak
+backups/
 
 # Log files
 *.log
+logs/
 
 # OS generated files
 .DS_Store
@@ -74,3 +82,19 @@ dist-ssr/
 .aider*
 claude.md
 .claude
+
+# Deployment files
+letsencrypt/
+acme.json
+*.pem
+*.key
+*.crt
+*.csr
+
+# Docker volumes
+docker-compose.override.yml
+
+# Temporary files
+*.tmp
+tmp/
+temp/

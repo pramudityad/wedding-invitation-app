@@ -1,12 +1,44 @@
 version: '3.8'
 
+networks:
+  web:
+    external: false
+
 services:
+  # Traefik Reverse Proxy with Let's Encrypt SSL
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - web
+    ports:
+      - "80:80"     # HTTP
+      - "443:443"   # HTTPS
+      - "8081:8080" # Traefik Dashboard (access at http://YOUR_IP:8081)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Docker socket (read-only)
+      - ./traefik.yml:/traefik.yml:ro                 # Static configuration
+      - ./letsencrypt:/letsencrypt                    # SSL certificates storage
+    labels:
+      # Dashboard configuration (optional - comment out if not needed)
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      # Basic auth for dashboard (optional - generate with: echo $(htpasswd -nb admin password) | sed -e s/\\$/\\$\\$/g)
+      # - "traefik.http.routers.traefik-dashboard.middlewares=traefik-auth"
+      # - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$apr1$$..."
+
   backend:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    ports:
-      - "8080:8080"
+    networks:
+      - web
     volumes:
       - ./database:/app/database # Note: Be careful with this in production
     # Loads variables from the .env file at RUNTIME for the Go application.
@@ -14,6 +46,8 @@ services:
     env_file:
       - .env
     restart: unless-stopped
+    labels:
+      - "traefik.enable=false"  # Backend not directly exposed
 
   frontend:
     build:
@@ -30,8 +64,22 @@ services:
         - VITE_PARTNER2_ACCOUNT_NAME=${VITE_PARTNER2_ACCOUNT_NAME}
         - VITE_PARTNER2_ACCOUNT_NUMBER=${VITE_PARTNER2_ACCOUNT_NUMBER}
         - VITE_YOUTUBE_PLAYLIST_URL=${VITE_YOUTUBE_PLAYLIST_URL}
-    ports:
-      - "80:80"
+    networks:
+      - web
     depends_on:
       - backend
+      - traefik
     restart: unless-stopped
+    labels:
+      # Enable Traefik for this container
+      - "traefik.enable=true"
+      # HTTP Router
+      - "traefik.http.routers.wedding-app.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`)"
+      - "traefik.http.routers.wedding-app.entrypoints=websecure"
+      - "traefik.http.routers.wedding-app.tls.certresolver=letsencrypt"
+      # Service configuration
+      - "traefik.http.services.wedding-app.loadbalancer.server.port=80"
+      # Redirect www to non-www (optional)
+      - "traefik.http.middlewares.redirect-www.redirectregex.regex=^https://www\\.(.+)"
+      - "traefik.http.middlewares.redirect-www.redirectregex.replacement=https://$${1}"
+      - "traefik.http.middlewares.redirect-www.redirectregex.permanent=true"
