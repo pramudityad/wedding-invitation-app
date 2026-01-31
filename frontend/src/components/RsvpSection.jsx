@@ -10,26 +10,30 @@ const StyledRSVPSection = styled(Box)(({ theme }) => ({
 
 const StyledRSVPButtonsContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
-  gap: theme.spacing(3),
+  gap: theme.spacing(2),
   justifyContent: 'center',
-  marginBottom: theme.spacing(3),
+  marginBottom: theme.spacing(2),
   flexWrap: 'wrap',
 }));
 
 const StyledRSVPButton = styled(Button)(({ theme, colorKey }) => ({
-  px: theme.spacing(5),
+  px: theme.spacing(4),
   py: theme.spacing(1.5),
   borderRadius: '8px',
-  minWidth: '140px',
-  backgroundColor: colorKey === 'yes' ? '#669966' : '#a7a7a3',
+  minWidth: '150px',
+  fontSize: '1rem',
+  backgroundColor: colorKey === 'yes' ? '#C9A961' : '#6B5D54',
   color: 'white',
+  fontFamily: "'Cormorant Garamond', serif",
+  fontWeight: 500,
+  textTransform: 'none',
   '&:hover': {
-    backgroundColor: colorKey === 'yes' ? '#558855' : '#999990',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+    backgroundColor: colorKey === 'yes' ? '#b89850' : '#5a4e47',
+    boxShadow: '0 2px 8px rgba(107, 93, 84, 0.2)',
   },
   '&:disabled': {
-    backgroundColor: '#cccccc',
-    color: '#666666',
+    backgroundColor: '#8B7355',
+    color: '#a09085',
   },
 }));
 
@@ -40,9 +44,11 @@ export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP }) {
     <StyledRSVPSection>
       <Typography variant="h6" sx={{ 
         mb: 3, 
-        fontFamily: "'Playfair Display', serif", 
+        fontFamily: "'Cormorant Garamond', serif", 
         fontWeight: 400, 
-        color: '#333' 
+        color: '#6B5D54',
+        fontSize: '1.25rem',
+        fontStyle: 'italic',
       }}>
         {isLoading && rsvpStatus === null ? (
           <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>

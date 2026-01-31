@@ -15,12 +15,17 @@ const StyledNavButton = styled(Button)(({ theme }) => ({
   px: theme.spacing(3),
   py: theme.spacing(1),
   borderRadius: '8px',
-  color: '#666',
-  borderColor: '#666',
+  color: '#6B5D54',
+  borderColor: 'rgba(107, 93, 84, 0.3)',
+  backgroundColor: 'rgba(255, 254, 245, 0.5)',
+  fontFamily: "'Cormorant Garamond', serif",
+  fontWeight: 400,
+  fontSize: '1rem',
+  textTransform: 'none',
   '&:hover': {
-    borderColor: '#333',
-    color: '#333',
-    backgroundColor: 'rgba(0,0,0,0.04)',
+    borderColor: '#C9A961',
+    color: '#C9A961',
+    backgroundColor: 'rgba(201, 169, 97, 0.08)',
   },
 }));
 
