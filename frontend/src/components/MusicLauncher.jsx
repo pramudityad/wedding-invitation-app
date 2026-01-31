@@ -5,45 +5,35 @@ import { useTranslation } from 'react-i18next';
 import { useMusicContext } from '../contexts/MusicContext';
 
 const StyledMusicSection = styled(Box)(({ theme }) => ({
-  marginTop: theme.spacing(4),
+  marginTop: theme.spacing(5),
   marginBottom: theme.spacing(4),
   textAlign: 'center',
 }));
 
 const StyledMusicButton = styled(Button)(({ theme }) => ({
-  backgroundColor: '#5a4c4d',
+  backgroundColor: '#C9A961',
   color: 'white',
   borderRadius: '25px',
   padding: theme.spacing(1.5, 3),
-  fontSize: theme.typography.pxToRem(16),
-  fontFamily: "'Montserrat', sans-serif",
+  fontSize: '1rem',
+  fontFamily: "'Cormorant Garamond', serif",
   fontWeight: 500,
   textTransform: 'none',
   transition: 'all 0.3s ease',
   '&:hover': {
-    backgroundColor: '#4a3c3d',
+    backgroundColor: '#b89850',
     transform: 'translateY(-2px)',
-    boxShadow: '0 4px 15px rgba(90, 76, 77, 0.3)',
+    boxShadow: '0 4px 15px rgba(201, 169, 97, 0.3)',
   },
   '& .MuiButton-startIcon': {
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(0.5),
   },
-}));
-
-const StyledDescription = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Montserrat', sans-serif",
-  fontWeight: 300,
-  color: '#666',
-  fontSize: theme.typography.pxToRem(14),
-  marginBottom: theme.spacing(2),
-  fontStyle: 'italic',
 }));
 
 export default function MusicLauncher() {
   const { isMusicAvailable, isPlayerVisible, showPlayer } = useMusicContext();
   const { t } = useTranslation();
 
-  // Don't render if music is not available or player is already visible
   if (!isMusicAvailable || isPlayerVisible) {
     return null;
   }
@@ -54,7 +44,7 @@ export default function MusicLauncher() {
         startIcon={<PlayArrow />}
         onClick={showPlayer}
       >
-        <MusicNote sx={{ mr: 1 }} />
+        <MusicNote sx={{ mr: 0.5 }} />
         {t('music.playButton')}
       </StyledMusicButton>
     </StyledMusicSection>

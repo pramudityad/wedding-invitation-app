@@ -5,42 +5,38 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const StyledGiftBoxContainer = styled(Box)(({ theme }) => ({
-  marginTop: theme.spacing(4),
+  marginTop: theme.spacing(6),
   marginBottom: theme.spacing(4),
 }));
 
 const StyledGiftBox = styled(Box)(({ theme }) => ({
-  backgroundColor: '#fff',
-  border: '2px solid #e8e3d9',
+  backgroundColor: 'rgba(201, 169, 97, 0.05)',
+  border: '1px solid rgba(201, 169, 97, 0.3)',
   borderRadius: '12px',
-  padding: theme.spacing(3),
+  padding: theme.spacing(4),
   textAlign: 'center',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+  boxShadow: '0 2px 8px rgba(107, 93, 84, 0.08)',
   position: 'relative',
-  background: 'linear-gradient(135deg, #fff 0%, #fafafa 100%)',
 }));
 
 const StyledGiftTitle = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Playfair Display', serif",
-  fontWeight: 400,
-  color: '#5a4c4d',
+  fontFamily: "'Cormorant Garamond', serif",
+  fontWeight: 500,
+  color: '#6B5D54',
   marginBottom: theme.spacing(2),
-  fontSize: theme.typography.pxToRem(24),
+  fontSize: '1.25rem',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   gap: theme.spacing(1),
-  [theme.breakpoints.up('sm')]: {
-    fontSize: theme.typography.pxToRem(28),
-  },
 }));
 
 const StyledAccountContainer = styled(Box)(({ theme }) => ({
-  backgroundColor: '#f9f9f7',
+  backgroundColor: '#FFFEF5',
   borderRadius: '8px',
-  padding: theme.spacing(2),
-  marginBottom: theme.spacing(2),
-  border: '1px solid #e8e3d9',
+  padding: theme.spacing(2.5),
+  marginBottom: theme.spacing(2.5),
+  border: '1px solid rgba(107, 93, 84, 0.15)',
   '&:last-child': {
     marginBottom: 0,
   },
@@ -49,8 +45,8 @@ const StyledAccountContainer = styled(Box)(({ theme }) => ({
 const StyledAccountName = styled(Typography)(({ theme }) => ({
   fontFamily: "'Montserrat', sans-serif",
   fontWeight: 500,
-  color: '#333',
-  fontSize: theme.typography.pxToRem(16),
+  color: '#6B5D54',
+  fontSize: '1rem',
   marginBottom: theme.spacing(1),
 }));
 
@@ -59,34 +55,29 @@ const StyledAccountNumber = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   gap: theme.spacing(1),
-  backgroundColor: '#fff',
+  backgroundColor: '#FFFEF5',
   borderRadius: '6px',
-  padding: theme.spacing(1, 2),
-  border: '1px solid #ddd',
+  padding: theme.spacing(1.5, 2.5),
+  border: '1px solid rgba(139, 115, 85, 0.2)',
 }));
 
 const StyledAccountNumberText = styled(Typography)(({ theme }) => ({
   fontFamily: "'Montserrat', sans-serif",
   fontWeight: 400,
-  color: '#555',
-  fontSize: theme.typography.pxToRem(14),
+  color: '#8B7355',
+  fontSize: '1rem',
   letterSpacing: '0.5px',
   fontVariantNumeric: 'tabular-nums',
-  [theme.breakpoints.up('sm')]: {
-    fontSize: theme.typography.pxToRem(16),
-  },
 }));
 
 const StyledGiftMessage = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Montserrat', sans-serif",
+  fontFamily: "'Cormorant Garamond', serif",
   fontWeight: 300,
-  color: '#666',
-  fontSize: theme.typography.pxToRem(14),
+  color: '#8B7355',
+  fontSize: '1rem',
   fontStyle: 'italic',
   marginTop: theme.spacing(2),
-  [theme.breakpoints.up('sm')]: {
-    fontSize: theme.typography.pxToRem(15),
-  },
+  marginBottom: theme.spacing(2),
 }));
 
 export default function GiftBox() {
@@ -96,7 +87,6 @@ export default function GiftBox() {
   });
   const { t } = useTranslation();
 
-  // Get bank account details from environment variables
   const accounts = [
     {
       name: import.meta.env.VITE_PARTNER1_ACCOUNT_NAME,
@@ -129,7 +119,6 @@ export default function GiftBox() {
     setSnackbar(prev => ({ ...prev, open: false }));
   };
 
-  // Don't render the component if no accounts are configured
   if (accounts.length === 0) {
     return null;
   }
@@ -138,7 +127,7 @@ export default function GiftBox() {
     <StyledGiftBoxContainer>
       <StyledGiftBox>
         <StyledGiftTitle>
-          <CardGiftcard sx={{ fontSize: 'inherit' }} />
+          <CardGiftcard sx={{ fontSize: 'inherit', color: '#C9A961' }} />
           {t('gift.title')}
         </StyledGiftTitle>
 
@@ -146,7 +135,7 @@ export default function GiftBox() {
           {t('gift.message')}
         </StyledGiftMessage>
 
-        <Box sx={{ mt: 3 }}>
+        <Box>
           {accounts.map((account, index) => (
             <StyledAccountContainer key={index}>
               <StyledAccountName>
@@ -161,9 +150,9 @@ export default function GiftBox() {
                     size="small"
                     onClick={() => handleCopyToClipboard(account.number, account.name)}
                     sx={{
-                      color: '#5a4c4d',
+                      color: '#6B5D54',
                       '&:hover': {
-                        backgroundColor: 'rgba(90, 76, 77, 0.08)',
+                        backgroundColor: 'rgba(107, 93, 84, 0.08)',
                       },
                     }}
                   >

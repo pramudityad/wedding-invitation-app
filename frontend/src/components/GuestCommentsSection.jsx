@@ -5,17 +5,16 @@ import { useTranslation } from 'react-i18next';
 
 const StyledCommentsSection = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(5),
-  marginBottom: theme.spacing(5),
+  marginBottom: theme.spacing(4),
   textAlign: 'left',
 }));
 
 const StyledCommentBox = styled(Box)(({ theme }) => ({
-  marginBottom: theme.spacing(3),
-  padding: theme.spacing(3),
-  backgroundColor: '#fefefe',
+  marginBottom: theme.spacing(2.5),
+  padding: theme.spacing(2.5),
+  backgroundColor: 'rgba(255, 254, 245, 0.6)',
   borderRadius: '8px',
-  boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-  border: '1px solid #eee',
+  border: '1px solid rgba(107, 93, 84, 0.15)',
   wordBreak: 'break-word',
 }));
 
@@ -28,25 +27,26 @@ export default function GuestCommentsSection({ comments, navigate }) {
     <StyledCommentsSection>
       <Typography variant="h6" sx={{
         mb: 3,
-        fontFamily: "'Playfair Display', serif",
-        fontWeight: 400,
-        color: '#333',
-        textAlign: 'center'
+        fontFamily: "'Cormorant Garamond', serif",
+        fontWeight: 500,
+        color: '#6B5D54',
+        textAlign: 'center',
+        fontSize: '1.25rem',
       }}>
         {t('guestCommentsSection.title')}
       </Typography>
       
       {comments.map((comment) => (
         <StyledCommentBox key={comment.ID}>
-          <Typography variant="body1" sx={{ fontStyle: 'italic', color: '#333', mb: 1, lineHeight: 1.5 }}>
+          <Typography variant="body1" sx={{ fontStyle: 'italic', color: '#6B5D54', mb: 1, lineHeight: 1.6, fontSize: '1rem' }}>
             "{comment.Content}"
           </Typography>
-          <Typography variant="body2" sx={{ display: 'block', color: '#666', fontSize: '0.85rem' }}>
+          <Typography variant="body2" sx={{ display: 'block', color: '#8B7355', fontSize: '0.875rem' }}>
             — {comment.GuestName || t('guestCommentsSection.guestLabel')}
             <Typography
               component="span"
               variant="body2"
-              sx={{ color: '#999', fontSize: '0.75rem', ml: 1 }}
+              sx={{ color: '#C9A961', fontSize: '0.7rem', ml: 1 }}
             >
               {t('guestCommentsSection.datePrefix')} {new Intl.DateTimeFormat('en-US', {
                 year: 'numeric',
@@ -65,10 +65,13 @@ export default function GuestCommentsSection({ comments, navigate }) {
           variant="text" 
           onClick={() => navigate('/comments')}
           sx={{ 
-            color: '#666', 
+            color: '#C9A961', 
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: '1rem',
             '&:hover': { 
               textDecoration: 'underline', 
-              backgroundColor: 'transparent' 
+              backgroundColor: 'transparent',
+              color: '#b89850',
             } 
           }}
         >
