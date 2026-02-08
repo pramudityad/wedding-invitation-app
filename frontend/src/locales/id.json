@@ -17,7 +17,8 @@
     "rsvpYesSuccess": "Kami sangat senang Anda akan merayakan bersama kami!",
     "rsvpNoSuccess": "Kami akan merindukan Anda tetapi terima kasih telah memberi tahu kami.",
     "loadError": "Gagal memuat data Anda. Silakan refresh untuk mencoba lagi.",
-    "rsvpError": "Gagal mengirim RSVP. Silakan coba lagi nanti."
+"rsvpError": "Gagal mengirim RSVP. Silakan coba lagi nanti.",
+    "coupleArtAlt": "Ilustrasi pasangan pengantin"
   },
   "comments": {
     "title": "Komentar Tamu",

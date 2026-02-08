@@ -17,7 +17,8 @@
     "rsvpYesSuccess": "We're thrilled you'll be celebrating with us!",
     "rsvpNoSuccess": "We'll miss you but thank you for letting us know.",
     "loadError": "Failed to load your data. Please refresh to try again.",
-    "rsvpError": "Failed to submit RSVP. Please try again later."
+"rsvpError": "Failed to submit RSVP. Please try again later.",
+    "coupleArtAlt": "Wedding couple illustration"
   },
   "comments": {
     "title": "Guest Comments",

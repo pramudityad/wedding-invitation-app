@@ -12,6 +12,8 @@ import GiftBox from './GiftBox';
 import MusicLauncher from './MusicLauncher';
 import NavigationButtons from './NavigationButtons';
 import LanguageSwitcher from './LanguageSwitcher';
+import FloralDecorations from './FloralDecorations';
+import CoupleArtwork from './CoupleArtwork';
 
 const StyledInvitationContainer = styled(Box)(({ theme }) => ({
   minHeight: '100vh',
@@ -19,79 +21,164 @@ const StyledInvitationContainer = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  backgroundColor: '#f9f9f7',
+  background: 'linear-gradient(135deg, #2a2520 0%, #1a1614 100%)',
   padding: theme.spacing(2, 4),
-  textAlign: 'center',
+  position: 'relative',
+  overflowX: 'hidden',
+  '&::before': {
+    content: '""',
+    position: 'fixed',
+    inset: 0,
+    zIndex: 0,
+    opacity: 0.03,
+    pointerEvents: 'none',
+  },
+}));
+
+const StyledInvitationWrapper = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  zIndex: 10,
+  width: '100%',
+  maxWidth: '500px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  paddingBottom: theme.spacing(8),
+  [theme.breakpoints.down('sm')]: {
+    maxWidth: '380px',
+  },
 }));
 
 const StyledCard = styled(Box)(({ theme }) => ({
-  maxWidth: 800,
+  position: 'relative',
   width: '100%',
-  padding: theme.spacing(4, 6),
-  borderRadius: '12px',
-  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-  backgroundColor: '#ffffff',
-  border: '1px solid #e0e0e0',
+  minHeight: '100vh',
+  background: theme.palette.wedding?.cream || '#FFFEF5',
+  boxShadow: '0 20px 60px rgba(107, 93, 84, 0.25), 0 10px 20px rgba(107, 93, 84, 0.15)',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  textAlign: 'center',
+  overflow: 'visible',
+  borderRadius: '10rem 10rem 0 0',
+  animation: 'fadeInUp 1s ease-out',
+  paddingBottom: theme.spacing(4),
+  '@keyframes fadeInUp': {
+    from: { opacity: 0, transform: 'translateY(40px)' },
+    to: { opacity: 1, transform: 'translateY(0)' },
+  },
+}));
+
+const InternalBorder = styled(Box)(() => ({
+  position: 'absolute',
+  inset: '1rem',
+  borderRadius: '9rem 9rem 0 0',
+  border: '1px solid rgba(107, 93, 84, 0.3)',
+  pointerEvents: 'none',
+}));
+
+const StyledCardContent = styled(Box)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: theme.spacing(6, 3),
+  zIndex: 20,
+  position: 'relative',
+}));
+
+const PaperTexture = styled(Box)(() => ({
+  position: 'absolute',
+  inset: 0,
+  pointerEvents: 'none',
+  opacity: 0.04,
+  zIndex: 10,
+}));
+
+const RingsIcon = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(3),
+  color: theme.palette.wedding?.bronze || '#6B5D54',
+  opacity: 0.9,
+  animation: 'fadeIn 1.2s ease-out 0.3s both',
+  '@keyframes fadeIn': {
+    from: { opacity: 0, transform: 'scale(0.8)' },
+    to: { opacity: 0.9, transform: 'scale(1)' },
+  },
 }));
 
 const StyledWeddingTitle = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Playfair Display', serif",
+  fontFamily: "'Cormorant Garamond', serif",
+  fontSize: '0.875rem',
+  letterSpacing: '0.2em',
+  textTransform: 'uppercase',
+  color: theme.palette.wedding?.bronze || '#6B5D54',
+  marginBottom: theme.spacing(3),
+  lineHeight: 1.8,
+  animation: 'fadeIn 1.4s ease-out 0.5s both',
   fontWeight: 400,
-  color: '#333',
-  marginBottom: theme.spacing(2),
-  fontSize: theme.typography.pxToRem(32),
-  [theme.breakpoints.up('sm')]: {
-    fontSize: theme.typography.pxToRem(40),
-  },
-  [theme.breakpoints.up('md')]: {
-    fontSize: theme.typography.pxToRem(48),
-  },
 }));
 
 const StyledCoupleNames = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Playfair Display', serif",
-  fontWeight: 600,
-  color: '#5a4c4d',
-  marginBottom: theme.spacing(4),
-  fontSize: theme.typography.pxToRem(28),
-  [theme.breakpoints.up('sm')]: {
-    fontSize: theme.typography.pxToRem(32),
-  },
+  fontFamily: "'Great Vibes', cursive",
+  fontSize: '4rem',
+  color: theme.palette.wedding?.bronze || '#6B5D54',
+  lineHeight: 1,
+  transform: 'rotate(-2deg)',
+  animation: 'fadeIn 1.6s ease-out 0.7s both',
+  marginBottom: theme.spacing(2),
   [theme.breakpoints.up('md')]: {
-    fontSize: theme.typography.pxToRem(40),
+    fontSize: '5rem',
   },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '3rem',
+  },
+}));
+
+const StyledDivider = styled(Box)(({ theme }) => ({
+  width: '75%',
+  marginBottom: theme.spacing(4),
+  color: theme.palette.wedding?.bronze || '#6B5D54',
+  animation: 'fadeIn 2s ease-out 1.1s both',
 }));
 
 const StyledCountdownSection = styled(Box)(({ theme }) => ({
-  marginBottom: theme.spacing(5),
+  marginBottom: theme.spacing(4),
+}));
+
+const StyledCountdownLabel = styled(Typography)(({ theme }) => ({
+  fontFamily: "'Cormorant Garamond', serif",
+  fontSize: '0.75rem',
+  letterSpacing: '0.15em',
+  textTransform: 'uppercase',
+  color: theme.palette.wedding?.bronze || '#6B5D54',
+  marginBottom: theme.spacing(1),
+  opacity: 0.8,
 }));
 
 const StyledCountdownValue = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Playfair Display', serif",
+  fontFamily: "'Cormorant Garamond', serif",
   fontWeight: 600,
-  color: '#5a4c4d',
-  fontSize: theme.typography.pxToRem(24),
+  color: theme.palette.wedding?.bronze || '#6B5D54',
+  fontSize: '1.5rem',
   [theme.breakpoints.up('sm')]: {
-    fontSize: theme.typography.pxToRem(28),
+    fontSize: '1.75rem',
   },
 }));
 
 const StyledWelcomeMessage = styled(Typography)(({ theme }) => ({
   fontFamily: "'Montserrat', sans-serif",
   fontWeight: 300,
-  color: '#555',
+  color: theme.palette.wedding?.accent || '#8B7355',
   marginBottom: theme.spacing(5),
-  fontSize: theme.typography.pxToRem(16),
+  fontSize: '0.875rem',
   [theme.breakpoints.up('sm')]: {
-    fontSize: theme.typography.pxToRem(18),
+    fontSize: '1rem',
   },
-  [theme.breakpoints.up('md')]: {
-    fontSize: theme.typography.pxToRem(20),
-  },
-  lineHeight: 1.6,
+  lineHeight: 1.8,
+  maxWidth: '85%',
 }));
 
-// Memoize JWT parsing function to avoid recreation on every render
 const parseJwt = (token) => {
   try { 
     return JSON.parse(atob(token.split('.')[1])); 
@@ -99,6 +186,22 @@ const parseJwt = (token) => {
     return null; 
   }
 };
+
+const RingsIconSvg = () => (
+  <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="16" cy="16" r="10" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.7"/>
+    <circle cx="32" cy="16" r="10" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.7"/>
+  </svg>
+);
+
+const DividerSvg = () => (
+  <svg width="100%" height="24" viewBox="0 0 200 24" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <path d="M0 12 Q50 0, 100 12 T200 12" stroke="currentColor" strokeWidth="0.5" fill="none" opacity="0.4"/>
+    <circle cx="100" cy="12" r="3" fill="currentColor" opacity="0.5"/>
+    <circle cx="85" cy="12" r="1.5" fill="currentColor" opacity="0.3"/>
+    <circle cx="115" cy="12" r="1.5" fill="currentColor" opacity="0.3"/>
+  </svg>
+);
 
 function InvitationLanding() {
   const navigate = useNavigate();
@@ -114,7 +217,7 @@ function InvitationLanding() {
     days: 0, 
     hours: 0, 
     minutes: 0,
-    timeLeft: 0  // milliseconds until wedding; negative if wedding has passed
+    timeLeft: 0
   });
 
   const [snackbar, setSnackbar] = useState({
@@ -123,7 +226,6 @@ function InvitationLanding() {
     severity: 'success',
   });
 
-  // Memoize wedding date to avoid recreation on every render
   const weddingDate = useMemo(() => {
     const dateStr = import.meta.env.VITE_APP_WEDDING_DATE;
     if (!dateStr) return null;
@@ -135,7 +237,6 @@ function InvitationLanding() {
     return date;
   }, []);
 
-  // Memoize countdown calculation function
   const updateCountdown = useCallback(() => {
     if (!weddingDate) return;
     
@@ -143,7 +244,6 @@ function InvitationLanding() {
     const timeLeft = weddingDate - now;
     const absTimeLeft = Math.abs(timeLeft);
 
-    // Convert to days, hours, minutes
     const days = Math.floor(absTimeLeft / (1000 * 60 * 60 * 24));
     const hours = Math.floor((absTimeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((absTimeLeft % (1000 * 60 * 60)) / (1000 * 60));
@@ -151,19 +251,13 @@ function InvitationLanding() {
     setCountdown({ days, hours, minutes, timeLeft });
   }, [weddingDate]);
 
-  // Set up countdown timer
   useEffect(() => {
     if (!weddingDate) return;
-
-    // Calculate immediately on mount
     updateCountdown();
-
-    // Update every minute
     const interval = setInterval(updateCountdown, 60000);
     return () => clearInterval(interval);
   }, [weddingDate, updateCountdown]);
 
-  // Memoize JWT data to avoid parsing on every render
   const jwtData = useMemo(() => parseJwt(token), [token]);
   const currentUsername = jwtData?.username;
 
@@ -221,7 +315,7 @@ function InvitationLanding() {
     return () => {
       abortController.abort();
     };
-  }, [token, currentUsername, navigate]);
+  }, [token, currentUsername, navigate, t]);
 
   const handleRSVP = useCallback(async (attending) => {
     if (!username || rsvpStatus !== null || isLoading) return;
@@ -247,7 +341,7 @@ function InvitationLanding() {
     } finally {
       setIsLoading(false);
     }
-  }, [username, rsvpStatus, isLoading]);
+  }, [username, rsvpStatus, isLoading, t]);
 
   const handleCloseSnackbar = useCallback((event, reason) => {
     if (reason === 'clickaway') return;
@@ -262,10 +356,10 @@ function InvitationLanding() {
         alignItems: 'center', 
         justifyContent: 'center', 
         minHeight: '100vh', 
-        backgroundColor: '#f9f9f7' 
+        background: 'linear-gradient(135deg, #2a2520 0%, #1a1614 100%)'
       }}>
-        <CircularProgress size={60} />
-        <Typography sx={{ mt: 2, color: '#666', fontFamily: "'Montserrat', sans-serif" }}>
+        <CircularProgress size={60} sx={{ color: '#C9A961' }} />
+        <Typography sx={{ mt: 2, color: '#FFFEF5', fontFamily: "'Montserrat', sans-serif" }}>
           {t('invitation.loading')}
         </Typography>
       </Box>
@@ -274,61 +368,76 @@ function InvitationLanding() {
 
   return (
     <StyledInvitationContainer>
-      <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }}>
+      <FloralDecorations />
+      
+      <Box sx={{ position: 'fixed', top: 16, right: 16, zIndex: 1100 }}>
         <LanguageSwitcher />
       </Box>
-      <StyledCard>
-        <StyledWeddingTitle>
-          {t('invitation.title')}
-        </StyledWeddingTitle>
+      
+      <StyledInvitationWrapper>
+        <StyledCard>
+          <InternalBorder />
+          <PaperTexture />
+          
+          <StyledCardContent>
+            <RingsIcon>
+              <RingsIconSvg />
+            </RingsIcon>
+            
+            <StyledWeddingTitle>
+              {t('invitation.title')}
+            </StyledWeddingTitle>
 
-        <StyledCoupleNames>
-          {t('invitation.coupleNames')}
-        </StyledCoupleNames>
+            <StyledCoupleNames>
+              {t('invitation.coupleNames')}
+            </StyledCoupleNames>
 
-        <StyledCountdownSection>
-          <Typography variant="h6" sx={{ 
-            mb: 1,
-            fontFamily: "'Playfair Display', serif",
-            fontWeight: 400,
-            color: '#333',
-          }}>
-            {countdown.timeLeft > 0 ? t('invitation.countdownActive') : t('invitation.countdownPast')}
-          </Typography>
-          <StyledCountdownValue>
-            {countdown.timeLeft > 0 
-              ? `${countdown.days}d : ${countdown.hours}h : ${countdown.minutes}m`
-              : weddingDate?.toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })
-            }
-          </StyledCountdownValue>
-        </StyledCountdownSection>
+            <CoupleArtwork />
 
-        <StyledWelcomeMessage>
-          {t('invitation.welcomeMessage')}<br />
-          {username ? t('invitation.personalWelcome', { username }) : t('invitation.loading')}
-        </StyledWelcomeMessage>
+            <StyledDivider>
+              <DividerSvg />
+            </StyledDivider>
 
-        <GuestCommentsSection 
-          comments={featuredComments} 
-          navigate={navigate} 
-        />
+            <StyledCountdownSection>
+              <StyledCountdownLabel>
+                {countdown.timeLeft > 0 ? t('invitation.countdownActive') : t('invitation.countdownPast')}
+              </StyledCountdownLabel>
+              <StyledCountdownValue>
+                {countdown.timeLeft > 0 
+                  ? `${countdown.days}d : ${countdown.hours}h : ${countdown.minutes}m`
+                  : weddingDate?.toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })
+                }
+              </StyledCountdownValue>
+            </StyledCountdownSection>
 
-        <MusicLauncher />
+            <StyledWelcomeMessage>
+              {t('invitation.welcomeMessage')}<br />
+              {username ? t('invitation.personalWelcome', { username }) : t('invitation.loading')}
+            </StyledWelcomeMessage>
 
-        <RsvpSection 
-          rsvpStatus={rsvpStatus}
-          isLoading={isLoading}
-          handleRSVP={handleRSVP}
-        />
+            <GuestCommentsSection 
+              comments={featuredComments} 
+              navigate={navigate} 
+            />
 
-        <GiftBox />
+            <MusicLauncher />
 
-        <NavigationButtons navigate={navigate} />
-      </StyledCard>
+            <RsvpSection 
+              rsvpStatus={rsvpStatus}
+              isLoading={isLoading}
+              handleRSVP={handleRSVP}
+            />
+
+            <GiftBox />
+
+            <NavigationButtons navigate={navigate} />
+          </StyledCardContent>
+        </StyledCard>
+      </StyledInvitationWrapper>
 
       <Snackbar
         open={snackbar.open}
@@ -344,5 +453,4 @@ function InvitationLanding() {
   );
 }
 
-// Wrap with memo to prevent unnecessary re-renders
 export default memo(InvitationLanding);
