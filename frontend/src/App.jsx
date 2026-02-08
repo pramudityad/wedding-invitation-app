@@ -1,4 +1,3 @@
-import { AppProvider } from './contexts/AppContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { MusicProvider } from './contexts/MusicContext';
 import AppRoutes from './routes/Routes';
@@ -13,12 +12,10 @@ function App() {
       <CssBaseline />
       <BrowserRouter>
         <AuthProvider>
-          <AppProvider>
-            <MusicProvider>
-              <AppRoutes />
-              <PersistentMusicPlayer />
-            </MusicProvider>
-          </AppProvider>
+          <MusicProvider>
+            <AppRoutes />
+            <PersistentMusicPlayer />
+          </MusicProvider>
         </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>
