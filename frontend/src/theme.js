@@ -3,18 +3,24 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#333',
+      main: '#6B5D54',
     },
     secondary: {
-      main: '#555',
+      main: '#8B7355',
     },
     background: {
-      default: '#f9f9f7',
-      paper: '#ffffff',
+      default: '#1a1614',
+      paper: '#FFFEF5',
     },
     text: {
-      primary: '#333',
-      secondary: '#555',
+      primary: '#6B5D54',
+      secondary: '#8B7355',
+    },
+    wedding: {
+      cream: '#FFFEF5',
+      bronze: '#6B5D54',
+      gold: '#C9A961',
+      accent: '#8B7355',
     },
   },
   typography: {
@@ -23,21 +29,22 @@ const theme = createTheme({
       'sans-serif'
     ].join(','),
     h1: {
-      fontFamily: '"Playfair Display", serif',
-      fontWeight: 300,
-      fontSize: '3rem',
+      fontFamily: '"Great Vibes", cursive',
+      fontWeight: 400,
+      fontSize: '3.5rem',
     },
     h2: {
-      fontFamily: '"Playfair Display", serif',
-      fontWeight: 300,
+      fontFamily: '"Cormorant Garamond", serif',
+      fontWeight: 400,
+      fontSize: '1.75rem',
     },
     h3: {
-      fontFamily: '"Playfair Display", serif',
-      fontWeight: 300,
+      fontFamily: '"Cormorant Garamond", serif',
+      fontWeight: 400,
     },
     h4: {
-      fontFamily: '"Playfair Display", serif',
-      fontWeight: 300,
+      fontFamily: '"Cormorant Garamond", serif',
+      fontWeight: 400,
     },
     h5: {
       fontFamily: '"Montserrat", sans-serif',
@@ -57,11 +64,11 @@ const theme = createTheme({
           padding: '8px 24px',
         },
         outlined: {
-          borderColor: '#333',
-          color: '#333',
+          borderColor: '#6B5D54',
+          color: '#6B5D54',
           '&:hover': {
-            backgroundColor: 'rgba(0,0,0,0.04)',
-            borderColor: '#222',
+            backgroundColor: 'rgba(107, 93, 84, 0.04)',
+            borderColor: '#5a4c4d',
           }
         }
       }
