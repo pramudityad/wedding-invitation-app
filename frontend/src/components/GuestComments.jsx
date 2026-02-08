@@ -20,10 +20,11 @@ import { useTranslation } from 'react-i18next';
 import { getAllComments, submitComment } from '../api/comments';
 import BackButton from './BackButton';
 import LanguageSwitcher from './LanguageSwitcher';
+import { COMMENTS, PAGINATION } from '../constants/config';
 
 
-const COMMENT_MAX_LENGTH = 500;
-const COMMENTS_PER_PAGE = 10;
+const COMMENT_MAX_LENGTH = COMMENTS.MAX_LENGTH;
+const COMMENTS_PER_PAGE = COMMENTS.PER_PAGE;
 
 const CommentItem = memo(({ comment, isLast, lastCommentRef }) => (
   <ListItem

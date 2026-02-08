@@ -1,14 +1,15 @@
 import axios from 'axios';
 import { useAuthContext } from '../contexts/AuthContext';
+import { API_CONFIG, STORAGE_KEYS } from '../constants/config';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080'
+  baseURL: API_CONFIG.BASE_URL
 });
 
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('weddingToken');
+    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -25,7 +26,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401 && window.location.pathname !== '/') {
       // Handle unauthorized errors except on home page
-      localStorage.removeItem('weddingToken');
+      localStorage.removeItem(STORAGE_KEYS.TOKEN);
       window.location.href = '/login';
     }
     return Promise.reject(error);
