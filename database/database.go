@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 
 	_ "modernc.org/sqlite"
 )
@@ -21,10 +22,16 @@ func InitDB() error {
 	// Connect to SQLite database
 	dbPath := filepath.Join(dbDir, "guests.db")
 	var err error
-	DB, err = sql.Open("sqlite", dbPath)
+	DB, err = sql.Open("sqlite", dbPath+"?_journal_mode=WAL&_busy_timeout=5000&_synchronous=NORMAL")
 	if err != nil {
 		return err
 	}
+
+	// Configure connection pool for SQLite
+	// SQLite only allows one writer at a time, so limit connections
+	DB.SetMaxOpenConns(1)
+	DB.SetMaxIdleConns(1)
+	DB.SetConnMaxLifetime(time.Hour)
 
 	// Test the connection
 	if err := DB.Ping(); err != nil {
