@@ -1,39 +1,4 @@
 import axios from 'axios';
-<<<<<<< rev/improvement-fe
-import { useAuthContext } from '../contexts/AuthContext';
-import { API_CONFIG, STORAGE_KEYS } from '../constants/config';
-
-const api = axios.create({
-  baseURL: API_CONFIG.BASE_URL
-});
-
-// Request interceptor to add auth token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Response interceptor to handle errors
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401 && window.location.pathname !== '/') {
-      // Handle unauthorized errors except on home page
-      localStorage.removeItem(STORAGE_KEYS.TOKEN);
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
-=======
 
 const api = axios.create({
   baseURL: ''
@@ -64,6 +29,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
->>>>>>> main
 
 export default api;
