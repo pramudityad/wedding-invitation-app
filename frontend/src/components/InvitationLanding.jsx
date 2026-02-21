@@ -263,7 +263,7 @@ function InvitationLanding() {
 
   useEffect(() => {
     if (!token || !currentUsername) {
-      navigate('/login');
+      navigate('/invite');
       return;
     }
 

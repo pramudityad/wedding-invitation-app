@@ -1,6 +1,6 @@
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuthContext } from '../contexts/AuthContext';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -57,18 +57,15 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { name } = useParams();
   const { login } = useAuthContext();
   const { t } = useTranslation();
 
   useEffect(() => {
-    const pathSegments = window.location.pathname.split('/');
-    const loginIndex = pathSegments.findIndex(segment => segment === 'login');
-    
-    if (loginIndex !== -1 && loginIndex < pathSegments.length - 1) {
-      const encodedName = pathSegments[loginIndex + 1];
+    if (name) {
       try {
-        const name = decodeURIComponent(encodedName);
-        handleAutoLogin(name);
+        const decodedName = decodeURIComponent(name);
+        handleAutoLogin(decodedName);
       } catch (error) {
         console.error('Error decoding name:', error);
         setError(t('login.invalidName'));
@@ -76,7 +73,7 @@ export default function LoginPage() {
     } else {
       setError(t('login.provideName'));
     }
-  }, []);
+  }, [name]);
 
   const handleAutoLogin = async (name) => {
     setIsLoading(true);

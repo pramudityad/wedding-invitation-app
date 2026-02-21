@@ -24,7 +24,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && window.location.pathname !== '/') {
       // Handle unauthorized errors except on home page
       localStorage.removeItem('weddingToken');
-      window.location.href = '/login';
+      window.location.href = '/invite';
     }
     return Promise.reject(error);
   }
