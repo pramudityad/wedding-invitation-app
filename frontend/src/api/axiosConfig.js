@@ -1,11 +1,9 @@
 import axios from 'axios';
-import { useAuthContext } from '../contexts/AuthContext';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080'
+  baseURL: ''
 });
 
-// Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('weddingToken');
