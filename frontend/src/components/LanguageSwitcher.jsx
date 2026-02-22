@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
 
 const StyledLanguageButton = styled(IconButton)(({ theme }) => ({
-  color: '#666',
+  color: '#2C3E6B',
   '&:hover': {
-    color: '#333',
-    backgroundColor: 'rgba(0,0,0,0.04)',
+    color: '#4A5E8B',
+    backgroundColor: 'rgba(44, 62, 107, 0.06)',
   },
 }));
 
@@ -82,6 +82,7 @@ export default function LanguageSwitcher() {
             mt: 1,
             minWidth: 180,
             boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            backgroundColor: '#FBF7F0',
           }
         }}
       >
@@ -93,9 +94,13 @@ export default function LanguageSwitcher() {
             sx={{
               fontSize: '0.9rem',
               '&.Mui-selected': {
-                backgroundColor: 'rgba(0,0,0,0.08)',
+                backgroundColor: 'rgba(201, 169, 110, 0.15)',
                 fontWeight: 500,
-              }
+                borderLeft: '3px solid #C9A96E',
+              },
+              '&.Mui-selected:hover': {
+                backgroundColor: 'rgba(201, 169, 110, 0.25)',
+              },
             }}
           >
             <ListItemIcon sx={{ minWidth: 36 }}>
@@ -104,7 +109,7 @@ export default function LanguageSwitcher() {
             <ListItemText 
               primary={language.name}
               primaryTypographyProps={{
-                fontFamily: "'Montserrat', sans-serif",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: '0.9rem'
               }}
             />

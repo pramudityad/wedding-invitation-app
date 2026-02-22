@@ -3,40 +3,40 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#6B5D54',
+      main: '#2C3E6B', // navy
     },
     secondary: {
-      main: '#8B7355',
+      main: '#C9A96E', // gold
     },
     background: {
-      default: '#1a1614',
-      paper: '#FFFEF5',
+      default: '#FBF7F0', // warm-white
+      paper: '#FFFFFF',
     },
     text: {
-      primary: '#6B5D54',
-      secondary: '#8B7355',
+      primary: '#3A3A3A',
+      secondary: '#5A5A5A',
     },
     wedding: {
-      cream: '#FFFEF5',
-      bronze: '#6B5D54',
-      gold: '#C9A961',
-      accent: '#8B7355',
+      cream: '#F5EDE3',
+      gold: '#C9A96E',
+      goldLight: '#E8D5A8',
+      navy: '#2C3E6B',
+      navyLight: '#4A5E8B',
+      blush: '#F0E0D0',
+      sky: '#B8CDE8',
+      skyLight: '#D4E3F5',
+      warmWhite: '#FBF7F0',
     },
   },
   typography: {
-    fontFamily: [
-      '"Montserrat"',
-      'sans-serif'
-    ].join(','),
+    fontFamily: ['"Poppins"', 'sans-serif'].join(','),
     h1: {
       fontFamily: '"Great Vibes", cursive',
       fontWeight: 400,
-      fontSize: '3.5rem',
     },
     h2: {
-      fontFamily: '"Cormorant Garamond", serif',
+      fontFamily: '"Great Vibes", cursive',
       fontWeight: 400,
-      fontSize: '1.75rem',
     },
     h3: {
       fontFamily: '"Cormorant Garamond", serif',
@@ -47,48 +47,83 @@ const theme = createTheme({
       fontWeight: 400,
     },
     h5: {
-      fontFamily: '"Montserrat", sans-serif',
+      fontFamily: '"Poppins", sans-serif',
       fontWeight: 300,
     },
     h6: {
-      fontFamily: '"Montserrat", sans-serif',
+      fontFamily: '"Poppins", sans-serif',
       fontWeight: 400,
+    },
+    body1: {
+      fontFamily: '"Poppins", sans-serif',
+    },
+    body2: {
+      fontFamily: '"Poppins", sans-serif',
     },
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        html: {
+          scrollBehavior: 'smooth',
+        },
+        body: {
+          overflowX: 'hidden',
+          background: '#FBF7F0',
+        },
+        '::-webkit-scrollbar': {
+          width: '4px',
+        },
+        '::-webkit-scrollbar-track': {
+          background: 'transparent',
+        },
+        '::-webkit-scrollbar-thumb': {
+          background: '#E8D5A8',
+          borderRadius: '4px',
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: '6px',
-          textTransform: 'none',
-          padding: '8px 24px',
+          borderRadius: '4px',
+          textTransform: 'uppercase',
+          fontFamily: '"Poppins", sans-serif',
+          letterSpacing: '2px',
+          fontSize: '12px',
         },
         outlined: {
-          borderColor: '#6B5D54',
-          color: '#6B5D54',
+          borderColor: '#2C3E6B',
+          color: '#2C3E6B',
           '&:hover': {
-            backgroundColor: 'rgba(107, 93, 84, 0.04)',
-            borderColor: '#5a4c4d',
-          }
-        }
-      }
+            backgroundColor: '#2C3E6B',
+            color: '#FFFFFF',
+            borderColor: '#2C3E6B',
+          },
+        },
+      },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
-            borderRadius: '6px',
+            borderRadius: '4px',
+            fontFamily: '"Poppins", sans-serif',
+            fontSize: '13px',
             '& fieldset': {
-              borderColor: '#e0e0e0',
+              borderColor: '#E8D5A8',
             },
             '&:hover fieldset': {
-              borderColor: '#999',
+              borderColor: '#C9A96E',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#2C3E6B',
             },
           },
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 });
 
 export default theme;

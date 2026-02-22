@@ -20,7 +20,7 @@ const StyledPlayerContainer = styled(Box)(({ theme }) => ({
 }));
 
 const StyledMiniPlayer = styled(Box)(({ theme }) => ({
-  backgroundColor: '#5a4c4d',
+  backgroundColor: '#2C3E6B',
   borderRadius: '50px',
   padding: theme.spacing(1),
   display: 'flex',
@@ -30,7 +30,7 @@ const StyledMiniPlayer = styled(Box)(({ theme }) => ({
   cursor: 'pointer',
   transition: 'all 0.3s ease',
   '&:hover': {
-    backgroundColor: '#4a3c3d',
+    backgroundColor: '#4A5E8B',
     transform: 'translateY(-2px)',
     boxShadow: '0 6px 25px rgba(0,0,0,0.4)',
   },
@@ -40,12 +40,12 @@ const StyledExpandedPlayer = styled(Box)(({ theme }) => ({
   backgroundColor: '#ffffff',
   borderRadius: '12px',
   boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
-  border: '2px solid #e8e3d9',
+  border: '2px solid #E8D5A8',
   overflow: 'hidden',
 }));
 
 const StyledPlayerHeader = styled(Box)(({ theme }) => ({
-  backgroundColor: '#5a4c4d',
+  backgroundColor: '#2C3E6B',
   color: 'white',
   padding: theme.spacing(1, 2),
   display: 'flex',
@@ -54,7 +54,7 @@ const StyledPlayerHeader = styled(Box)(({ theme }) => ({
 }));
 
 const StyledPlayerTitle = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Playfair Display', serif",
+  fontFamily: "'Poppins', sans-serif",
   fontWeight: 400,
   fontSize: theme.typography.pxToRem(16),
   display: 'flex',
@@ -80,7 +80,7 @@ const StyledIframeContainer = styled(Box)(({ theme }) => ({
 const StyledMiniPlayerText = styled(Typography)(({ theme }) => ({
   color: 'white',
   fontSize: theme.typography.pxToRem(14),
-  fontFamily: "'Montserrat', sans-serif",
+  fontFamily: "'Poppins', sans-serif",
   fontWeight: 500,
 }));
 
@@ -195,7 +195,7 @@ function PersistentMusicPlayer() {
                 color: '#666',
                 mt: 1,
                 fontStyle: 'italic',
-                fontFamily: "'Montserrat', sans-serif"
+                fontFamily: "'Poppins', sans-serif"
               }}
             >
               {t('music.enjoyPlaylist')}

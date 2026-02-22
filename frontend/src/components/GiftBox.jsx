@@ -10,111 +10,124 @@ const StyledGiftBoxContainer = styled(Box)(({ theme }) => ({
 }));
 
 const StyledGiftBox = styled(Box)(({ theme }) => ({
-  backgroundColor: '#fff',
-  border: '2px solid #e8e3d9',
-  borderRadius: '12px',
+  backgroundColor: 'rgba(255, 255, 255, 0.6)',
+  border: '1px solid #E8D5A8',
+  borderRadius: '8px',
   padding: theme.spacing(3),
   textAlign: 'center',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
   position: 'relative',
-  background: 'linear-gradient(135deg, #fff 0%, #fafafa 100%)',
 }));
 
 const StyledGiftTitle = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Playfair Display', serif",
+  fontFamily: "'Great Vibes', cursive",
   fontWeight: 400,
-  color: '#5a4c4d',
+  color: '#2C3E6B',
   marginBottom: theme.spacing(2),
-  fontSize: theme.typography.pxToRem(24),
+  fontSize: '40px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   gap: theme.spacing(1),
-  [theme.breakpoints.up('sm')]: {
-    fontSize: theme.typography.pxToRem(28),
-  },
 }));
 
 const StyledAccountContainer = styled(Box)(({ theme }) => ({
-  backgroundColor: '#f9f9f7',
+  backgroundColor: 'rgba(255, 255, 255, 0.6)',
   borderRadius: '8px',
   padding: theme.spacing(2),
   marginBottom: theme.spacing(2),
-  border: '1px solid #e8e3d9',
+  border: '1px solid #E8D5A8',
   '&:last-child': {
     marginBottom: 0,
   },
 }));
 
-const StyledAccountName = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Montserrat', sans-serif",
-  fontWeight: 500,
-  color: '#333',
-  fontSize: theme.typography.pxToRem(16),
-  marginBottom: theme.spacing(1),
-}));
+const StyledBankName = styled(Typography)({
+  fontFamily: "'Poppins', sans-serif",
+  fontWeight: 600,
+  color: '#2C3E6B',
+  fontSize: '14px',
+  marginBottom: '4px',
+});
+
+const StyledAccountName = styled(Typography)({
+  fontFamily: "'Poppins', sans-serif",
+  fontWeight: 400,
+  color: '#888',
+  fontSize: '12px',
+  marginBottom: '8px',
+});
 
 const StyledAccountNumber = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   gap: theme.spacing(1),
-  backgroundColor: '#fff',
-  borderRadius: '6px',
-  padding: theme.spacing(1, 2),
-  border: '1px solid #ddd',
 }));
 
-const StyledAccountNumberText = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Montserrat', sans-serif",
+const StyledAccountNumberText = styled(Typography)({
+  fontFamily: "'Cormorant Garamond', serif",
   fontWeight: 400,
-  color: '#555',
-  fontSize: theme.typography.pxToRem(14),
-  letterSpacing: '0.5px',
+  color: '#333',
+  fontSize: '18px',
+  letterSpacing: '2px',
   fontVariantNumeric: 'tabular-nums',
-  [theme.breakpoints.up('sm')]: {
-    fontSize: theme.typography.pxToRem(16),
-  },
-}));
+});
 
-const StyledGiftMessage = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Montserrat', sans-serif",
-  fontWeight: 300,
-  color: '#666',
-  fontSize: theme.typography.pxToRem(14),
-  fontStyle: 'italic',
-  marginTop: theme.spacing(2),
-  [theme.breakpoints.up('sm')]: {
-    fontSize: theme.typography.pxToRem(15),
+const StyledCopyButton = styled(IconButton)({
+  fontSize: '10px',
+  textTransform: 'uppercase',
+  border: '1px solid #C9A96E',
+  color: '#C9A96E',
+  borderRadius: '4px',
+  padding: '4px 8px',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    backgroundColor: '#C9A96E',
+    color: '#FFFFFF',
   },
-}));
+});
+
+const StyledGiftMessage = styled(Typography)({
+  fontFamily: "'Cormorant Garamond', serif",
+  fontWeight: 300,
+  color: '#5A5A5A',
+  fontSize: '15px',
+  fontStyle: 'italic',
+  marginTop: '16px',
+  lineHeight: 1.6,
+});
 
 export default function GiftBox() {
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
   });
+  const [copiedIndex, setCopiedIndex] = useState(null);
   const { t } = useTranslation();
 
   // Get bank account details from environment variables
   const accounts = [
     {
+      bankName: import.meta.env.VITE_PARTNER1_BANK_NAME,
       name: import.meta.env.VITE_PARTNER1_ACCOUNT_NAME,
       number: import.meta.env.VITE_PARTNER1_ACCOUNT_NUMBER,
     },
     {
+      bankName: import.meta.env.VITE_PARTNER2_BANK_NAME,
       name: import.meta.env.VITE_PARTNER2_ACCOUNT_NAME,
       number: import.meta.env.VITE_PARTNER2_ACCOUNT_NUMBER,
     },
   ].filter(account => account.name && account.number);
 
-  const handleCopyToClipboard = async (accountNumber, accountName) => {
+  const handleCopyToClipboard = async (accountNumber, accountName, index) => {
     try {
       await navigator.clipboard.writeText(accountNumber);
+      setCopiedIndex(index);
       setSnackbar({
         open: true,
         message: t('gift.copySuccess', { name: accountName }),
       });
+      setTimeout(() => setCopiedIndex(null), 2000);
     } catch (error) {
       console.error('Failed to copy to clipboard:', error);
       setSnackbar({
@@ -149,6 +162,11 @@ export default function GiftBox() {
         <Box sx={{ mt: 3 }}>
           {accounts.map((account, index) => (
             <StyledAccountContainer key={index}>
+              {account.bankName && (
+                <StyledBankName>
+                  {account.bankName}
+                </StyledBankName>
+              )}
               <StyledAccountName>
                 {account.name}
               </StyledAccountName>
@@ -157,18 +175,21 @@ export default function GiftBox() {
                   {account.number}
                 </StyledAccountNumberText>
                 <Tooltip title={t('common.copy')}>
-                  <IconButton
+                  <StyledCopyButton
                     size="small"
-                    onClick={() => handleCopyToClipboard(account.number, account.name)}
-                    sx={{
-                      color: '#5a4c4d',
+                    onClick={() => handleCopyToClipboard(account.number, account.name, index)}
+                    sx={copiedIndex === index ? {
+                      backgroundColor: '#2C3E6B',
+                      color: '#FFFFFF',
+                      borderColor: '#2C3E6B',
                       '&:hover': {
-                        backgroundColor: 'rgba(90, 76, 77, 0.08)',
+                        backgroundColor: '#2C3E6B',
+                        color: '#FFFFFF',
                       },
-                    }}
+                    } : {}}
                   >
                     <ContentCopy fontSize="small" />
-                  </IconButton>
+                  </StyledCopyButton>
                 </Tooltip>
               </StyledAccountNumber>
             </StyledAccountContainer>
