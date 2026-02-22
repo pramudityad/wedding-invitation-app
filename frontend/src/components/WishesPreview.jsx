@@ -113,7 +113,7 @@ export default function WishesPreview({ comments = [], navigate, username }) {
 
     setIsSubmitting(true);
     try {
-      const response = await submitComment({ content: message.trim() });
+      const response = await submitComment(message.trim());
       const newComment = {
         guest_name: username || 'Guest',
         content: message.trim(),
