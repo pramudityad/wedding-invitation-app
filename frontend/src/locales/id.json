@@ -17,7 +17,7 @@
     "rsvpYesSuccess": "Kami sangat senang Anda akan merayakan bersama kami!",
     "rsvpNoSuccess": "Kami akan merindukan Anda tetapi terima kasih telah memberi tahu kami.",
     "loadError": "Gagal memuat data Anda. Silakan refresh untuk mencoba lagi.",
-"rsvpError": "Gagal mengirim RSVP. Silakan coba lagi nanti.",
+    "rsvpError": "Gagal mengirim RSVP. Silakan coba lagi nanti.",
     "coupleArtAlt": "Ilustrasi pasangan pengantin"
   },
   "comments": {
@@ -77,7 +77,6 @@
     "close": "Tutup",
     "copy": "Salin ke clipboard",
     "minimize": "Minimalkan",
-    "close": "Tutup",
     "refreshComments": "Segarkan komentar",
     "guestComments": "Komentar tamu",
     "changeLanguage": "Ubah bahasa"
@@ -97,5 +96,49 @@
     "guestLabel": "Tamu",
     "datePrefix": "pada",
     "readAllButton": "Baca Semua Pesan"
+  },
+  "splash": {
+    "areGettingMarried": "Are Getting Married",
+    "dear": "Kepada Yth.",
+    "openButton": "Buka Undangan"
+  },
+  "quran": {
+    "verse": "\"Di antara tanda-tanda (kebesaran)-Nya ialah bahwa Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri agar kamu merasa tenteram kepadanya. Dia menjadikan di antaramu rasa cinta dan kasih sayang. Sesungguhnya pada yang demikian itu benar-benar terdapat tanda-tanda (kebesaran Allah) bagi kaum yang berpikir.\"",
+    "reference": "(QS. Ar-Rum: 21)"
+  },
+  "event": {
+    "bismillah": "Bismillahirrahmanirrahim",
+    "intro": "Dengan izin Allah SWT, kami akan melangsungkan pernikahan pada",
+    "akadLabel": "Akad",
+    "resepsiLabel": "Resepsi",
+    "openMap": "Buka Peta"
+  },
+  "countdown": {
+    "title": "Counting Down",
+    "subtitle": "The Days",
+    "days": "Hari",
+    "hours": "Jam",
+    "minutes": "Menit",
+    "seconds": "Detik"
+  },
+  "couple": {
+    "sectionTitle": "Calon Mempelai",
+    "brideLabel": "Putri dari",
+    "groomLabel": "Putra dari"
+  },
+  "wishes": {
+    "sectionTitle": "Pesan & Kesan Sayang",
+    "messagePlaceholder": "Tulis pesan untuk kedua mempelai...",
+    "sendButton": "Kirim Pesan",
+    "readAllButton": "Baca Semua Pesan",
+    "submitSuccess": "Pesan Anda berhasil dikirim!",
+    "submitError": "Gagal mengirim pesan. Silakan coba lagi.",
+    "emptyError": "Pesan tidak boleh kosong.",
+    "limitReached": "Anda telah mencapai batas maksimal komentar."
+  },
+  "thankyou": {
+    "title": "Terima Kasih",
+    "message": "Kami sangat berterima kasih atas kehadiran, doa restu, dan hadiah yang telah Anda berikan. Kami memohon doa restu agar kami bisa selalu dan menjadikan nikah banyak kebaikan dengan Allah.",
+    "tagline": "See You On Our Big Day!"
   }
 }

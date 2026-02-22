@@ -15,8 +15,8 @@ const styles = {
     minHeight: '100vh',
     width: '100vw',
     p: 4,
-    backgroundColor: '#f9f9f7 !important',
-    background: '#f9f9f7',
+    backgroundColor: '#FBF7F0 !important',
+    background: '#FBF7F0',
     position: 'relative'
   },
   innerCard: {
@@ -24,26 +24,27 @@ const styles = {
     width: '100%',
     p: { xs: 3, md: 4 },
     borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    boxShadow: '0 4px 20px rgba(44, 62, 107, 0.08)',
     backgroundColor: '#ffffff',
-    border: '1px solid #e0e0e0'
+    border: '1px solid #E8D5A8'
   },
   title: {
-    fontFamily: "'Playfair Display', serif",
+    fontFamily: "'Great Vibes', cursive",
     fontWeight: 400,
-    color: '#333',
+    color: '#2C3E6B',
     mb: 4,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontSize: '36px',
   },
   buttonStatic: {
     py: 1.5,
     fontSize: '1rem',
     borderRadius: '8px',
-    backgroundColor: '#a7a7a3',
+    backgroundColor: '#2C3E6B',
     color: '#ffffff',
     '&:hover': {
-      backgroundColor: '#999990',
-      boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+      backgroundColor: '#4A5E8B',
+      boxShadow: '0 2px 6px rgba(44, 62, 107, 0.3)'
     },
     '&:disabled': {
       backgroundColor: '#cccccc',
@@ -112,7 +113,7 @@ export default function LoginPage() {
 
         {isLoading && (
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 3 }}>
-            <CircularProgress size={24} color="inherit" sx={{ mr: 1 }} /> {t('login.loggingIn')}
+            <CircularProgress size={24} sx={{ color: '#2C3E6B', mr: 1 }} /> {t('login.loggingIn')}
           </Box>
         )}
       </Box>

@@ -15,12 +15,13 @@ const StyledBackButton = styled(Button)(({ theme }) => ({
   px: theme.spacing(3),
   py: theme.spacing(1),
   borderRadius: '8px',
-  color: '#666',
-  borderColor: '#666',
+  color: '#2C3E6B',
+  borderColor: '#2C3E6B',
+  fontFamily: "'Poppins', sans-serif",
   '&:hover': {
-    borderColor: '#333',
-    color: '#333',
-    backgroundColor: 'rgba(0,0,0,0.04)',
+    borderColor: '#4A5E8B',
+    color: '#4A5E8B',
+    backgroundColor: 'rgba(44, 62, 107, 0.06)',
   },
 }));
 

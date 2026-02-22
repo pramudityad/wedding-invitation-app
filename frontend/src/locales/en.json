@@ -17,7 +17,7 @@
     "rsvpYesSuccess": "We're thrilled you'll be celebrating with us!",
     "rsvpNoSuccess": "We'll miss you but thank you for letting us know.",
     "loadError": "Failed to load your data. Please refresh to try again.",
-"rsvpError": "Failed to submit RSVP. Please try again later.",
+    "rsvpError": "Failed to submit RSVP. Please try again later.",
     "coupleArtAlt": "Wedding couple illustration"
   },
   "comments": {
@@ -77,7 +77,6 @@
     "close": "Close",
     "copy": "Copy to clipboard",
     "minimize": "Minimize",
-    "close": "Close",
     "refreshComments": "Refresh comments",
     "guestComments": "Guest comments",
     "changeLanguage": "Change language"
@@ -97,5 +96,49 @@
     "guestLabel": "Guest",
     "datePrefix": "on",
     "readAllButton": "Read All Messages"
+  },
+  "splash": {
+    "areGettingMarried": "Are Getting Married",
+    "dear": "Dear,",
+    "openButton": "Open Your Invitation"
+  },
+  "quran": {
+    "verse": "\"And among His Signs is that He created for you mates from among yourselves, that you may find tranquility in them, and He has put love and mercy between you. Surely in that are Signs for those who reflect.\"",
+    "reference": "(QS. Ar-Rum: 21)"
+  },
+  "event": {
+    "bismillah": "Bismillahirrahmanirrahim",
+    "intro": "With the blessing of Allah SWT, we will hold our wedding on",
+    "akadLabel": "Ceremony",
+    "resepsiLabel": "Reception",
+    "openMap": "Open Map"
+  },
+  "countdown": {
+    "title": "Counting Down",
+    "subtitle": "The Days",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Min",
+    "seconds": "Sec"
+  },
+  "couple": {
+    "sectionTitle": "The Bride & Groom",
+    "brideLabel": "Daughter of",
+    "groomLabel": "Son of"
+  },
+  "wishes": {
+    "sectionTitle": "Messages & Wishes",
+    "messagePlaceholder": "Write a message for the couple...",
+    "sendButton": "Send Message",
+    "readAllButton": "Read All Messages",
+    "submitSuccess": "Your message has been sent!",
+    "submitError": "Failed to send message. Please try again.",
+    "emptyError": "Message cannot be empty.",
+    "limitReached": "You have reached the maximum comment limit."
+  },
+  "thankyou": {
+    "title": "Thank You",
+    "message": "We are deeply grateful for your presence, blessings, and gifts. We pray that our marriage will be filled with goodness and blessings from Allah.",
+    "tagline": "See You On Our Big Day!"
   }
 }

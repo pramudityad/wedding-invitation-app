@@ -15,6 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import BackButton from './BackButton';
 import LanguageSwitcher from './LanguageSwitcher';
+import WatercolorBackground from './WatercolorBackground';
 
 // Mock photos data with captions/stories
 const mockPhotos = [
@@ -72,7 +73,7 @@ const mockPhotos = [
 const styles = {
   outerContainer: {
     p: { xs: 2, md: 4 },
-    backgroundColor: 'transparent', // Removed opaque background
+    backgroundColor: 'transparent',
     borderRadius: '12px',
     maxWidth: '1000px',
     mx: 'auto',
@@ -82,40 +83,39 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    // Removed border and shadow for cleaner look
   },
   title: {
     mb: 2,
-    fontFamily: "'Playfair Display', serif",
-    fontWeight: 700, 
-    color: '#1a1a1a', // Sleeker dark grey
-    fontSize: { xs: '1.8rem', md: '2.5rem' },
-    letterSpacing: '0.03em', // Added letter spacing
+    fontFamily: "'Great Vibes', cursive",
+    fontWeight: 400,
+    color: '#2C3E6B',
+    fontSize: { xs: '2.2rem', md: '3rem' },
+    letterSpacing: '0.03em',
   },
   introText: {
     mb: 4,
-    color: '#666', // Softer dark grey
-    fontFamily: "'Montserrat', sans-serif",
-    fontWeight: 300, // Lighter weight for elegance
+    color: '#5A5A5A',
+    fontFamily: "'Poppins', sans-serif",
+    fontWeight: 300,
     fontSize: { xs: '0.95rem', md: '1.1rem' },
     maxWidth: '700px',
     lineHeight: 1.6,
-    letterSpacing: '0.015em', // Added letter spacing
+    letterSpacing: '0.015em',
   },
   imageList: {
     width: '100%',
     borderRadius: '8px',
-    backgroundColor: 'transparent', // Ensure transparent background
+    backgroundColor: 'transparent',
   },
   imageListItem: {
     cursor: 'pointer',
     overflow: 'hidden',
     borderRadius: '8px',
-    transition: 'transform 0.3s ease-in-out, border-color 0.3s ease-in-out', // Added border transition
-    border: '1px solid #f0f0f0', // Replaced shadow with thin border
+    transition: 'transform 0.3s ease-in-out, border-color 0.3s ease-in-out',
+    border: '1px solid #E8D5A8',
     '&:hover': {
       transform: 'scale(1.03)',
-      borderColor: '#cdcdcd', // Subtle hover effect
+      borderColor: '#C9A96E',
     },
     '& img': {
       transition: 'transform 0.3s ease-in-out',
@@ -133,8 +133,8 @@ const styles = {
   },
   loadingText: {
     mt: 2,
-    color: '#757575',
-    fontFamily: "'Montserrat', sans-serif",
+    color: '#2C3E6B',
+    fontFamily: "'Poppins', sans-serif",
     fontSize: '1rem',
   },
   noPhotosText: {
@@ -154,9 +154,9 @@ const styles = {
   },
   dialogCaption: {
     mt: 3,
-    color: '#4a4a4a',
-    fontFamily: "'Montserrat', sans-serif",
-    fontWeight: 300, // Lighter weight for better readability
+    color: '#2C3E6B',
+    fontFamily: "'Poppins', sans-serif",
+    fontWeight: 300,
     fontSize: '1rem',
     lineHeight: 1.7,
     textAlign: 'justify',
@@ -199,128 +199,137 @@ export default function WeddingPhotoGallery() {
   };
 
   return (
-    <Box
-      sx={{
-        ...styles.outerContainer,
-        minHeight: loading || error ? '300px' : 'auto',
-        justifyContent: loading || error ? 'center' : 'flex-start'
-      }}
-    >
-      {/* Loading State */}
-      {loading && (
-        <Box sx={styles.loadingContainer}>
-          <CircularProgress size={60} sx={{ color: styles.title.color }} /> {/* Use accent color */}
-          <Typography sx={styles.loadingText}>
-            {t('gallery.loading')}
-          </Typography>
-        </Box>
-      )}
-
-      {/* Error State */}
-      {error && !loading && ( // Only show error if not loading
-        <Alert severity="error" sx={{ width: '100%', maxWidth: '400px' }}>
-          {error}
-        </Alert>
-      )}
-
-      {/* Content State (Loaded) */}
-      {!loading && !error && (
-        <>
-          <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }}>
-            <LanguageSwitcher />
-          </Box>
-          <BackButton />
-          <Typography variant="h4" component="h2" sx={styles.title}>
-            {t('gallery.title')}
-          </Typography>
-
-          <Typography variant="body1" sx={styles.introText}>
-            {t('gallery.subtitle')}
-          </Typography>
-
-          {photos.length === 0 ? (
-            <Typography sx={styles.noPhotosText}>
-              {t('gallery.noPhotos')}
-            </Typography>
-          ) : (
-            <ImageList
-              sx={styles.imageList}
-              cols={window.innerWidth > 900 ? 3 : window.innerWidth > 600 ? 2 : 1} // Responsive columns
-              rowHeight={window.innerWidth > 600 ? 200 : 250} // Responsive row height
-              gap={20} // Increased gap
-            >
-              {photos.map((photo) => (
-                <ImageListItem
-                  key={photo.id}
-                  onClick={() => handlePhotoClick(photo)} // Add click handler
-                  sx={styles.imageListItem} // Apply item styles
-                >
-                  <img
-                    // srcSet can be optimized for responsive grid sizes if needed,
-                    // but objectFit cover handles scaling well within the item.
-                    src={`${photo.url}?w=${styles.imageList.rowHeight}&h=${styles.imageList.rowHeight}&fit=crop&auto=format`}
-                    srcSet={`${photo.url}?w=${styles.imageList.rowHeight}&h=${styles.imageList.rowHeight}&fit=crop&auto=format&dpr=2 2x`}
-                    alt={photo.title || `Wedding Photo ${photo.id}`}
-                    loading="lazy"
-                    style={styles.imageItem}
-                  />
-                </ImageListItem>
-              ))}
-            </ImageList>
-          )}
-        </>
-      )}
-
-      {/* Photo Dialog */}
-      <Dialog
-        open={isModalOpen}
-        onClose={handleCloseModal}
-        maxWidth="md" 
-        fullWidth 
-        TransitionProps={{ 
-           timeout: 300 
-        }}
-        PaperProps={{
-          sx: {
-            borderRadius: '12px',
-            overflowY: 'visible',
-            border: '1px solid #f0f0f0',  // Added border
-            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.08)', // Refined shadow
-          }
+    <>
+      <WatercolorBackground />
+      <Box
+        sx={{
+          ...styles.outerContainer,
+          minHeight: loading || error ? '300px' : 'auto',
+          justifyContent: loading || error ? 'center' : 'flex-start'
         }}
       >
-        {selectedPhoto && ( // Only render content if a photo is selected
+        {/* Loading State */}
+        {loading && (
+          <Box sx={styles.loadingContainer}>
+            <CircularProgress size={60} sx={{ color: '#2C3E6B' }} />
+            <Typography sx={styles.loadingText}>
+              {t('gallery.loading')}
+            </Typography>
+          </Box>
+        )}
+
+        {/* Error State */}
+        {error && !loading && (
+          <Alert severity="error" sx={{ width: '100%', maxWidth: '400px' }}>
+            {error}
+          </Alert>
+        )}
+
+        {/* Content State (Loaded) */}
+        {!loading && !error && (
           <>
-            <DialogTitle sx={{ m: 0, p: 2, textAlign: 'center', fontFamily: styles.title.fontFamily, color: styles.title.color, fontWeight: 700 }}>
-               {selectedPhoto.title}
-              <IconButton
-                aria-label="close"
-                onClick={handleCloseModal}
-                sx={{
-                  position: 'absolute',
-                  right: 8,
-                  top: 8,
-                  color: (theme) => theme.palette.grey[500],
-                }}
+            <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1000 }}>
+              <LanguageSwitcher />
+            </Box>
+            <BackButton />
+            <Typography variant="h4" component="h2" sx={styles.title}>
+              {t('gallery.title')}
+            </Typography>
+
+            <Typography variant="body1" sx={styles.introText}>
+              {t('gallery.subtitle')}
+            </Typography>
+
+            {photos.length === 0 ? (
+              <Typography sx={styles.noPhotosText}>
+                {t('gallery.noPhotos')}
+              </Typography>
+            ) : (
+              <ImageList
+                sx={styles.imageList}
+                cols={window.innerWidth > 900 ? 3 : window.innerWidth > 600 ? 2 : 1}
+                rowHeight={window.innerWidth > 600 ? 200 : 250}
+                gap={20}
               >
-                <CloseIcon />
-              </IconButton>
-            </DialogTitle>
-            <DialogContent dividers sx={{ p: { xs: 2, md: 4 } }}> {/* Add padding */}
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <img
-                  src={selectedPhoto.url}
-                  alt={selectedPhoto.title || `Wedding Photo ${selectedPhoto.id}`}
-                  style={styles.dialogImage} // Apply dialog image styles
-                />
-                <Typography variant="body1" component="p" sx={styles.dialogCaption}>
-                  {selectedPhoto.caption}
-                </Typography>
-              </Box>
-            </DialogContent>
+                {photos.map((photo) => (
+                  <ImageListItem
+                    key={photo.id}
+                    onClick={() => handlePhotoClick(photo)}
+                    sx={styles.imageListItem}
+                  >
+                    <img
+                      src={`${photo.url}?w=${styles.imageList.rowHeight}&h=${styles.imageList.rowHeight}&fit=crop&auto=format`}
+                      srcSet={`${photo.url}?w=${styles.imageList.rowHeight}&h=${styles.imageList.rowHeight}&fit=crop&auto=format&dpr=2 2x`}
+                      alt={photo.title || `Wedding Photo ${photo.id}`}
+                      loading="lazy"
+                      style={styles.imageItem}
+                    />
+                  </ImageListItem>
+                ))}
+              </ImageList>
+            )}
           </>
         )}
-      </Dialog>
-    </Box>
+
+        {/* Photo Dialog */}
+        <Dialog
+          open={isModalOpen}
+          onClose={handleCloseModal}
+          maxWidth="md" 
+          fullWidth 
+          TransitionProps={{ 
+             timeout: 300 
+          }}
+          PaperProps={{
+            sx: {
+              borderRadius: '12px',
+              overflowY: 'visible',
+              border: '1px solid #E8D5A8',
+              boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.08)',
+            }
+          }}
+        >
+          {selectedPhoto && (
+            <>
+              <DialogTitle sx={{
+                m: 0,
+                p: 2,
+                textAlign: 'center',
+                fontFamily: "'Great Vibes', cursive",
+                color: '#2C3E6B',
+                fontWeight: 400,
+                fontSize: '28px',
+              }}>
+                 {selectedPhoto.title}
+                <IconButton
+                  aria-label="close"
+                  onClick={handleCloseModal}
+                  sx={{
+                    position: 'absolute',
+                    right: 8,
+                    top: 8,
+                    color: (theme) => theme.palette.grey[500],
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </DialogTitle>
+              <DialogContent dividers sx={{ p: { xs: 2, md: 4 } }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <img
+                    src={selectedPhoto.url}
+                    alt={selectedPhoto.title || `Wedding Photo ${selectedPhoto.id}`}
+                    style={styles.dialogImage}
+                  />
+                  <Typography variant="body1" component="p" sx={styles.dialogCaption}>
+                    {selectedPhoto.caption}
+                  </Typography>
+                </Box>
+              </DialogContent>
+            </>
+          )}
+        </Dialog>
+      </Box>
+    </>
   );
 }

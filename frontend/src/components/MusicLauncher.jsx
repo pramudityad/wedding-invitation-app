@@ -11,19 +11,19 @@ const StyledMusicSection = styled(Box)(({ theme }) => ({
 }));
 
 const StyledMusicButton = styled(Button)(({ theme }) => ({
-  backgroundColor: '#5a4c4d',
+  backgroundColor: '#2C3E6B',
   color: 'white',
   borderRadius: '25px',
   padding: theme.spacing(1.5, 3),
   fontSize: theme.typography.pxToRem(16),
-  fontFamily: "'Montserrat', sans-serif",
+  fontFamily: "'Poppins', sans-serif",
   fontWeight: 500,
   textTransform: 'none',
   transition: 'all 0.3s ease',
   '&:hover': {
-    backgroundColor: '#4a3c3d',
+    backgroundColor: '#4A5E8B',
     transform: 'translateY(-2px)',
-    boxShadow: '0 4px 15px rgba(90, 76, 77, 0.3)',
+    boxShadow: '0 4px 15px rgba(44, 62, 107, 0.3)',
   },
   '& .MuiButton-startIcon': {
     marginRight: theme.spacing(1),
@@ -31,7 +31,7 @@ const StyledMusicButton = styled(Button)(({ theme }) => ({
 }));
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Montserrat', sans-serif",
+  fontFamily: "'Poppins', sans-serif",
   fontWeight: 300,
   color: '#666',
   fontSize: theme.typography.pxToRem(14),

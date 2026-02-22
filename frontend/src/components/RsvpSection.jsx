@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 const StyledRSVPSection = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(6),
   marginBottom: theme.spacing(4),
+  textAlign: 'center',
 }));
 
 const StyledRSVPButtonsContainer = styled(Box)(({ theme }) => ({
@@ -21,12 +22,28 @@ const StyledRSVPButton = styled(Button)(({ theme, colorKey }) => ({
   py: theme.spacing(1.5),
   borderRadius: '8px',
   minWidth: '140px',
-  backgroundColor: colorKey === 'yes' ? '#669966' : '#a7a7a3',
-  color: 'white',
-  '&:hover': {
-    backgroundColor: colorKey === 'yes' ? '#558855' : '#999990',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-  },
+  fontFamily: "'Poppins', sans-serif",
+  textTransform: 'uppercase',
+  letterSpacing: '1px',
+  ...(colorKey === 'yes'
+    ? {
+        backgroundColor: '#2C3E6B',
+        color: '#FFFFFF',
+        '&:hover': {
+          backgroundColor: '#4A5E8B',
+          boxShadow: '0 2px 6px rgba(44, 62, 107, 0.3)',
+        },
+      }
+    : {
+        backgroundColor: 'transparent',
+        color: '#2C3E6B',
+        border: '2px solid #2C3E6B',
+        '&:hover': {
+          backgroundColor: 'rgba(44, 62, 107, 0.06)',
+          borderColor: '#4A5E8B',
+          color: '#4A5E8B',
+        },
+      }),
   '&:disabled': {
     backgroundColor: '#cccccc',
     color: '#666666',
@@ -38,23 +55,31 @@ export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP }) {
   
   return (
     <StyledRSVPSection>
-      <Typography variant="h6" sx={{ 
+      <Typography variant="h2" sx={{ 
         mb: 3, 
-        fontFamily: "'Playfair Display', serif", 
+        fontFamily: "'Great Vibes', cursive", 
         fontWeight: 400, 
-        color: '#333' 
+        fontSize: '56px',
+        color: '#2C3E6B',
       }}>
         {isLoading && rsvpStatus === null ? (
           <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-            <CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />
+            <CircularProgress size={20} sx={{ color: '#2C3E6B', mr: 1 }} />
             {t('rsvp.loading')}
           </Box>
         ) : rsvpStatus === null ? (
           t('rsvp.question')
-        ) : rsvpStatus === true ? (
-          t('rsvp.yesConfirmation')
         ) : (
-          t('rsvp.noConfirmation')
+          <Box component="span" sx={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: 'italic',
+            fontSize: '24px',
+            color: '#2C3E6B',
+          }}>
+            {rsvpStatus === true
+              ? t('rsvp.yesConfirmation')
+              : t('rsvp.noConfirmation')}
+          </Box>
         )}
       </Typography>
 
