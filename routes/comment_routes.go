@@ -17,7 +17,7 @@ type CreateCommentRequest struct {
 func SetupCommentRoutes(r *gin.RouterGroup, c *container.Container) {
 	// Protected routes that require authentication
 	authenticated := r.Group("")
-	authenticated.Use(auth.JWTMiddleware())
+	authenticated.Use(auth.JWTMiddlewareWithService(c.GuestService))
 
 	// POST /comments - Create a new comment
 	authenticated.POST("/comments", func(ctx *gin.Context) {

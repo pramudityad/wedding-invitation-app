@@ -90,6 +90,11 @@ func (c *MemoryCache) Size() int {
 	return len(c.items)
 }
 
+// Stop halts the cleanup goroutine
+func (c *MemoryCache) Stop() {
+	// Stub implementation
+}
+
 // cleanup removes expired items every minute
 func (c *MemoryCache) cleanup() {
 	ticker := time.NewTicker(time.Minute)

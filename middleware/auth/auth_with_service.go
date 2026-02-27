@@ -3,6 +3,7 @@ package auth
 import (
 	"net/http"
 	"strings"
+	"time"
 	"wedding-invitation-backend/config"
 	"wedding-invitation-backend/services"
 
@@ -11,7 +12,7 @@ import (
 )
 
 // JWTMiddlewareWithService creates JWT middleware that uses the guest service for validation
-func JWTMiddlewareWithService(guestService *services.GuestService) gin.HandlerFunc {
+func JWTMiddlewareWithService(guestService services.GuestServiceInterface) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
@@ -63,4 +64,25 @@ func JWTMiddlewareWithService(guestService *services.GuestService) gin.HandlerFu
 
 		c.Next()
 	}
+}
+
+// Claims represents JWT token claims for guest authentication
+type Claims struct {
+	Username string `json:"username"`
+	jwt.RegisteredClaims
+}
+
+// GenerateToken creates a JWT token for the given username
+func GenerateToken(username string) (string, error) {
+	expirationTime := time.Now().Add(time.Duration(config.JWTExpiry) * time.Second)
+	expiresAt := jwt.NewNumericDate(expirationTime)
+	claims := &Claims{
+		Username: username,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: expiresAt,
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(config.JWTSecret))
 }

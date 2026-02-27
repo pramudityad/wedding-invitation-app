@@ -129,3 +129,10 @@ func (gc *GuestCache) MarkInvitationOpened(name string) error {
 	
 	return nil
 }
+
+// Stop stops the underlying cache
+func (gc *GuestCache) Stop() {
+	if gc.cache != nil {
+		gc.cache.Stop()
+	}
+}
