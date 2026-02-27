@@ -9,16 +9,23 @@ import (
 )
 
 func setupDB(t *testing.T) *sql.DB {
+	t.Helper()
 	db, err := sql.Open("sqlite", ":memory:")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	// Create tables with same schema as production
+	// Enable foreign keys and create tables with same schema as production
+	_, err = db.Exec(`PRAGMA foreign_keys = ON;`)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Create tables
 	_, err = db.Exec(`
 	CREATE TABLE IF NOT EXISTS guests (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT NOT NULL,
+		name TEXT NOT NULL UNIQUE,
 		attending BOOLEAN,
 		plus_ones INTEGER DEFAULT 0,
 		dietary_restrictions TEXT,
@@ -147,4 +154,51 @@ func TestMarkInvitationOpened(t *testing.T) {
 	guest, err := GetGuestByName(db, "Unopened")
 	assert.NoError(t, err)
 	assert.True(t, guest.FirstOpenedAt.Valid)
+}
+
+func TestGetGuestByName_NotFound(t *testing.T) {
+	db := setupDB(t)
+	t.Cleanup(func() { db.Close() })
+
+	// Test retrieval of non-existent guest
+	guest, err := GetGuestByName(db, "NonExistent")
+	assert.NoError(t, err)
+	assert.Nil(t, guest)
+}
+
+func TestGuestCreate_DuplicateName(t *testing.T) {
+	db := setupDB(t)
+	t.Cleanup(func() { db.Close() })
+
+	// Create first guest
+	g1 := &Guest{Name: "Duplicate"}
+	err := g1.Create(db)
+	assert.NoError(t, err)
+
+	// Try to create another guest with same name
+	g2 := &Guest{Name: "Duplicate"}
+	err = g2.Create(db)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "UNIQUE constraint")
+}
+
+func TestGuestUpdate_NonExistent(t *testing.T) {
+	db := setupDB(t)
+	t.Cleanup(func() { db.Close() })
+
+	// Try to update a guest with non-existent ID
+	guest := &Guest{ID: 99999, Name: "Ghost"}
+	err := guest.Update(db)
+	assert.Error(t, err)
+	assert.Equal(t, sql.ErrNoRows, err)
+}
+
+func TestGetAllGuests_Empty(t *testing.T) {
+	db := setupDB(t)
+	t.Cleanup(func() { db.Close() })
+
+	// Test on empty database
+	guests, err := GetAllGuests(db)
+	assert.NoError(t, err)
+	assert.Len(t, guests, 0)
 }
