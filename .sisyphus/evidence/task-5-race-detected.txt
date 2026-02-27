@@ -1,0 +1,40 @@
+==================
+WARNING: DATA RACE
+Read at 0x00c000188f90 by goroutine 15:
+  runtime.mapassign_fast64ptr()
+      /Users/FLP9damarpramuditya/.gvm/gos/go1.23.5/src/runtime/map_fast64.go:214 +0x36c
+  wedding-invitation-backend/cache.(*MemoryCache).Get()
+      /Users/FLP9damarpramuditya/Project/wedding-invitation-app/cache/memory_cache.go:55 +0xb0
+  wedding-invitation-backend/cache.TestMemoryCache_Concurrent.func2()
+      /Users/FLP9damarpramuditya/Project/wedding-invitation-app/cache/memory_cache_test.go:128 +0x190
+  wedding-invitation-backend/cache.TestMemoryCache_Concurrent.gowrap1()
+      /Users/FLP9damarpramuditya/Project/wedding-invitation-app/cache/memory_cache_test.go:135 +0x44
+
+Previous write at 0x00c000188f90 by goroutine 12:
+  runtime.mapaccess1_faststr()
+      /Users/FLP9damarpramuditya/.gvm/gos/go1.23.5/src/runtime/map_faststr.go:13 +0x40c
+  wedding-invitation-backend/cache.(*MemoryCache).Get()
+      /Users/FLP9damarpramuditya/Project/wedding-invitation-app/cache/memory_cache.go:62 +0xfc
+  wedding-invitation-backend/cache.TestMemoryCache_Concurrent.func2()
+      /Users/FLP9damarpramuditya/Project/wedding-invitation-app/cache/memory_cache_test.go:128 +0x190
+  wedding-invitation-backend/cache.TestMemoryCache_Concurrent.gowrap1()
+      /Users/FLP9damarpramuditya/Project/wedding-invitation-app/cache/memory_cache_test.go:135 +0x44
+
+Goroutine 15 (running) created at:
+  wedding-invitation-backend/cache.TestMemoryCache_Concurrent()
+      /Users/FLP9damarpramuditya/Project/wedding-invitation-app/cache/memory_cache_test.go:112 +0xec
+  testing.tRunner()
+      /Users/FLP9damarpramuditya/.gvm/gos/go1.23.5/src/testing/testing.go:1690 +0x184
+  testing.(*T).Run.gowrap1()
+      /Users/FLP9damarpramuditya/.gvm/gos/go1.23.5/src/testing/testing.go:1743 +0x40
+
+Goroutine 12 (running) created at:
+  wedding-invitation-backend/cache.TestMemoryCache_Concurrent()
+      /Users/FLP9damarpramuditya/Project/wedding-invitation-app/cache/memory_cache_test.go:112 +0xec
+  testing.tRunner()
+      /Users/FLP9damarpramuditya/.gvm/gos/go1.23.5/src/testing/testing.go:1690 +0x184
+  testing.(*T).Run.gowrap1()
+      /Users/FLP9damarpramuditya/.gvm/gos/go1.23.5/src/testing/testing.go:1743 +0x40
+==================
+fatal error: concurrent map writes
+
