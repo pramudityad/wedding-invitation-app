@@ -8,8 +8,8 @@ import (
 
 // Container holds all application dependencies
 type Container struct {
-	GuestService   *services.GuestService
-	CommentService *services.CommentService
+	GuestService   services.GuestServiceInterface
+	CommentService services.CommentServiceInterface
 }
 
 // NewContainer creates and wires all dependencies

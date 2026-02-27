@@ -1,0 +1,40 @@
+# QA Evidence: Task 3 - Interfaces Defined
+
+## Scenario 1: Interfaces correctly defined and satisfied
+
+### Step 1: Run `go build ./services/... ./cache/... ./container/...`
+```
+$ go build ./services/... ./cache/... ./container/...
+(no output - success)
+```
+
+### Step 2: Run `grep -n "var _" services/interfaces.go`
+```
+/Users/FLP9damarpramuditya/Project/wedding-invitation-app/services/interfaces.go:28:var _ GuestServiceInterface = (*GuestService)(nil)
+/Users/FLP9damarpramuditya/Project/wedding-invitation-app/services/interfaces.go:29:var _ CommentServiceInterface = (*CommentService)(nil)
+```
+
+### Step 3: Run `grep -n "var _" cache/interfaces.go`
+```
+/Users/FLP9damarpramuditya/Project/wedding-invitation-app/cache/interfaces.go:30:var _ CacheInterface = (*MemoryCache)(nil)
+/Users/FLP9damarpramuditya/Project/wedding-invitation-app/cache/interfaces.go:31:var _ GuestCacheInterface = (*GuestCache)(nil)
+```
+
+### Step 4: Run `go vet ./services/... ./cache/... ./container/...`
+```
+$ go vet ./services/... ./cache/... ./container/...
+(no output - success)
+```
+
+## Result: All succeeded, compile-time checks present
+
+## Files Created:
+- services/interfaces.go - GuestServiceInterface, CommentServiceInterface with compile-time checks
+- cache/interfaces.go - CacheInterface, GuestCacheInterface with compile-time checks
+
+## Files Modified:
+- services/guest_service.go - Changed `guestCache *cache.GuestCache` to `guestCache cache.GuestCacheInterface`
+- services/comment_service.go - Changed `guestService *GuestService` to `guestService GuestServiceInterface`, `commentCache *cache.MemoryCache` to `commentCache cache.CacheInterface`
+- container/container.go - Changed Container fields to use interface types
+- cache/memory_cache.go - Added stub `Stop()` method
+- cache/guest_cache.go - Added stub `Stop()` method

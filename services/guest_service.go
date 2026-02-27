@@ -8,7 +8,7 @@ import (
 
 // GuestService handles guest business logic
 type GuestService struct {
-	guestCache *cache.GuestCache
+	guestCache cache.GuestCacheInterface
 }
 
 // NewGuestService creates a new guest service
