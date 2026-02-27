@@ -1,14 +1,5 @@
-=== Scenario 1: Spotify code fully removed ===
-
-1. Check spotify/ directory does not exist:
-PASS - spotify/ directory removed
-
-2. Check routes/spotify_routes.go does not exist:
-PASS - routes/spotify_routes.go removed
-
-3. Check go build:
-database/database.go:10:2: package wedding-invitation-app/config is not in std (/Users/FLP9damarpramuditya/.gvm/gos/go1.23.5/src/wedding-invitation-app/config)
-FAIL - go build failed
-
-4. Check grep for spotify in Go files:
-Found 0 spotify references (expected 0)
+=== Task 1: Spotify Removed ===
+PASS: spotify/ does not exist
+PASS: spotify_routes.go does not exist
+PASS: go build ./... exits 0
+Spotify refs:        0
