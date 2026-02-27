@@ -1,0 +1,15 @@
+=== Scenario 2: rows.Err() checks present ===
+
+1. rows.Err() count in models/guest.go:
+1
+
+2. rows.Err() count in models/comment.go:
+3
+
+3. Test verification:
+ok  	wedding-invitation-backend/models	(cached)
+
+=== RESULT ===
+guest.go rows.Err() checks: 1
+comment.go rows.Err() checks: 3
+Tests: PASSED

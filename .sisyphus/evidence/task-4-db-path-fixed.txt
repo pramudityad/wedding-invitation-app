@@ -1,0 +1,15 @@
+=== Scenario 1: DB path uses config ===
+
+1. Check for hardcoded 'data/guests.db' in database/database.go:
+       0
+
+2. Check for config.DBPath usage in database/database.go:
+       1
+
+3. Build verification:
+BUILD SUCCESS (exit 0)
+
+=== RESULT ===
+Hardcoded path count: 0
+0
+config.DBPath count: 1

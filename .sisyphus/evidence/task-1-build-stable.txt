@@ -1,0 +1,9 @@
+=== Scenario 2: Existing functionality unaffected ===
+
+1. go build ./...:
+database/database.go:10:2: package wedding-invitation-app/config is not in std (/Users/FLP9damarpramuditya/.gvm/gos/go1.23.5/src/wedding-invitation-app/config)
+FAIL - build failed
+
+2. go test ./models/...:
+ok  	wedding-invitation-backend/models	0.608s
+PASS - tests passed

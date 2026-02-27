@@ -7,20 +7,25 @@ import (
 	"path/filepath"
 	"time"
 
+	"wedding-invitation-backend/config"
+
 	_ "modernc.org/sqlite"
 )
 
 var DB *sql.DB
 
 func InitDB() error {
+	// Get database path from config
+	dbPath := config.DBPath
+
 	// Create database directory if it doesn't exist
-	dbDir := filepath.Join(".", "data")
-	if err := os.MkdirAll(dbDir, 0755); err != nil {
-		return err
+	dbDir := filepath.Dir(dbPath)
+	if dbDir != "." && dbDir != "" {
+		if err := os.MkdirAll(dbDir, 0755); err != nil {
+			return err
+		}
 	}
 
-	// Connect to SQLite database
-	dbPath := filepath.Join(dbDir, "guests.db")
 	var err error
 	DB, err = sql.Open("sqlite", dbPath+"?_journal_mode=WAL&_busy_timeout=5000&_synchronous=NORMAL")
 	if err != nil {

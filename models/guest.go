@@ -254,6 +254,11 @@ func GetAllGuests(db *sql.DB) ([]Guest, error) {
 		guests = append(guests, guest)
 	}
 
+	// Check for iteration errors
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
 	return guests, nil
 }
 

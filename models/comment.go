@@ -66,6 +66,11 @@ func GetCommentsByGuestID(db *sql.DB, guestID int64) ([]Comment, error) {
 		comments = append(comments, comment)
 	}
 
+	// Check for iteration errors
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
 	return comments, nil
 }
 
@@ -136,6 +141,11 @@ func GetAllCommentsWithGuests(db *sql.DB, limit int, cursor string) (*PaginatedC
 		comments = append(comments, comment)
 	}
 
+	// Check for iteration errors
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
 	nextCursor := ""
 	if len(comments) == limit+1 {
 		// Has next page: set nextCursor and remove extra item
@@ -186,6 +196,11 @@ func GetAllComments(db *sql.DB) ([]Comment, error) {
 			return nil, err
 		}
 		comments = append(comments, comment)
+	}
+
+	// Check for iteration errors
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 
 	return comments, nil
