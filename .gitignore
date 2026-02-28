@@ -37,7 +37,6 @@ debug
 *.db
 *.sqlite
 *.sqlite3
-database/
 data/
 
 # Backup files
