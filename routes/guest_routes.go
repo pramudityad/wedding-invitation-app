@@ -26,59 +26,59 @@ func SetupGuestRoutes(r *gin.RouterGroup, c *container.Container) {
 
 func handleBulkGuestUpload(container *container.Container) gin.HandlerFunc {
 	return func(c *gin.Context) {
-	file, err := c.FormFile("file")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Please select a CSV file to upload.",
-		})
-		return
-	}
+		file, err := c.FormFile("file")
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Please select a CSV file to upload.",
+			})
+			return
+		}
 
-	// Validate file type
-	if !strings.HasSuffix(strings.ToLower(file.Filename), ".csv") {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Please upload a CSV file only.",
-		})
-		return
-	}
+		// Validate file type
+		if !strings.HasSuffix(strings.ToLower(file.Filename), ".csv") {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Please upload a CSV file only.",
+			})
+			return
+		}
 
-	f, err := file.Open()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to process the uploaded file. Please try again.",
-		})
-		return
-	}
-	defer f.Close()
+		f, err := file.Open()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Unable to process the uploaded file. Please try again.",
+			})
+			return
+		}
+		defer f.Close()
 
-	guests, err := parseGuestCSV(f)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "There's an issue with the CSV format. Please check your file and try again.",
-			"details": err.Error(),
-		})
-		return
-	}
+		guests, err := parseGuestCSV(f)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error":   "There's an issue with the CSV format. Please check your file and try again.",
+				"details": err.Error(),
+			})
+			return
+		}
 
-	if len(guests) == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "The CSV file appears to be empty or contains no valid guest data.",
-		})
-		return
-	}
+		if len(guests) == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "The CSV file appears to be empty or contains no valid guest data.",
+			})
+			return
+		}
 
-	if err := container.GuestService.BulkCreateGuests(guests); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to save the guest list to the database. Please try again.",
-			"details": err.Error(),
-		})
-		return
-	}
+		if err := container.GuestService.BulkCreateGuests(guests); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   "Unable to save the guest list to the database. Please try again.",
+				"details": err.Error(),
+			})
+			return
+		}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": fmt.Sprintf("Successfully uploaded %d guests to the wedding list!", len(guests)),
-		"count":   len(guests),
-	})
+		c.JSON(http.StatusOK, gin.H{
+			"message": fmt.Sprintf("Successfully uploaded %d guests to the wedding list!", len(guests)),
+			"count":   len(guests),
+		})
 	}
 }
 
@@ -93,6 +93,11 @@ func parseGuestCSV(f io.Reader) ([]models.Guest, error) {
 	for i, record := range records {
 		if i == 0 {
 			continue
+		}
+
+		// Bounds check: ensure record has at least 4 fields
+		if len(record) < 4 {
+			return nil, fmt.Errorf("invalid CSV row at line %d: expected 4 fields, got %d", i+1, len(record))
 		}
 
 		var plusOnes int
@@ -110,7 +115,7 @@ func parseGuestCSV(f io.Reader) ([]models.Guest, error) {
 		if record[1] != "" {
 			val := strings.ToLower(record[1]) == "true"
 			attending = sql.NullBool{
-				Bool: val,
+				Bool:  val,
 				Valid: true,
 			}
 		}
@@ -129,32 +134,32 @@ func parseGuestCSV(f io.Reader) ([]models.Guest, error) {
 
 func handleBulkGuestUpdate(container *container.Container) gin.HandlerFunc {
 	return func(c *gin.Context) {
-	var guests []models.Guest
-	if err := c.ShouldBindJSON(&guests); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "The guest data format is invalid. Please check your request and try again.",
-		})
-		return
-	}
+		var guests []models.Guest
+		if err := c.ShouldBindJSON(&guests); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "The guest data format is invalid. Please check your request and try again.",
+			})
+			return
+		}
 
-	if len(guests) == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "No guest data provided for update.",
-		})
-		return
-	}
+		if len(guests) == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "No guest data provided for update.",
+			})
+			return
+		}
 
-	if err := container.GuestService.BulkUpdateGuests(guests); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Unable to update the guest information. Please try again.",
-			"details": err.Error(),
-		})
-		return
-	}
+		if err := container.GuestService.BulkUpdateGuests(guests); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   "Unable to update the guest information. Please try again.",
+				"details": err.Error(),
+			})
+			return
+		}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": fmt.Sprintf("Successfully updated %d guest records!", len(guests)),
-		"count":   len(guests),
-	})
+		c.JSON(http.StatusOK, gin.H{
+			"message": fmt.Sprintf("Successfully updated %d guest records!", len(guests)),
+			"count":   len(guests),
+		})
 	}
 }

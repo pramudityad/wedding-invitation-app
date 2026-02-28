@@ -6,6 +6,9 @@ import (
 	"time"
 )
 
+// ErrCommentLimitReached is a sentinel error for when a guest exceeds the comment limit
+var ErrCommentLimitReached = errors.New("maximum comment limit reached")
+
 type Comment struct {
 	ID        int64
 	GuestID   int64
@@ -19,9 +22,9 @@ func (c *Comment) Create(db *sql.DB) error {
 	if err != nil {
 		return err
 	}
-	
+
 	if count >= 2 {
-		return errors.New("maximum comment limit reached: each guest can only have 2 comments")
+		return ErrCommentLimitReached
 	}
 
 	stmt := `INSERT INTO comments 
@@ -117,7 +120,7 @@ func GetAllCommentsWithGuests(db *sql.DB, limit int, cursor string) (*PaginatedC
 		args = append(args, cursorTime)
 	}
 	query += " ORDER BY c.created_at DESC LIMIT ?"
-	args = append(args, limit+1)  // +1 to check for next page
+	args = append(args, limit+1) // +1 to check for next page
 
 	rows, err := db.Query(query, args...)
 	if err != nil {

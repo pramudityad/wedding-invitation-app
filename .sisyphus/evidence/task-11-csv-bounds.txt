@@ -1,0 +1,5 @@
+99:		if len(record) < 4 {
+100:			return nil, fmt.Errorf("invalid CSV row at line %d: expected 4 fields, got %d", i+1, len(record))
+9:// ErrCommentLimitReached is a sentinel error for when a guest exceeds the comment limit
+10:var ErrCommentLimitReached = errors.New("maximum comment limit reached")
+27:		return ErrCommentLimitReached
