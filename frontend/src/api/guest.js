@@ -20,16 +20,6 @@ export const getGuestByName = async (name) => {
   }
 };
 
-export const getGuestList = async () => {
-  try {
-    const response = await api.get('/admin/rsvps');
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch guest list:', error);
-    throw error;
-  }
-};
-
 export const markInvitationOpened = async () => {
   try {
     await api.post('/mark-opened');

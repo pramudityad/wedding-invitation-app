@@ -1,57 +1,69 @@
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuthContext } from '../contexts/AuthContext';
 import LanguageSwitcher from './LanguageSwitcher';
 
-// Define styles as constants
-const styles = {
-  outerContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-    width: '100vw',
-    p: 4,
-    backgroundColor: '#FBF7F0 !important',
-    background: '#FBF7F0',
-    position: 'relative'
+const OuterContainer = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: '100vh',
+  width: '100vw',
+  padding: '32px',
+  backgroundColor: '#FBF7F0 !important',
+  background: '#FBF7F0',
+  position: 'relative',
+});
+
+const LanguageSwitcherPositioner = styled(Box)({
+  position: 'absolute',
+  top: 24,
+  right: 24,
+  zIndex: 10,
+});
+
+const InnerCard = styled(Box)(({ theme }) => ({
+  maxWidth: 400,
+  width: '100%',
+  padding: theme.spacing(3),
+  [theme.breakpoints.up('md')]: {
+    padding: theme.spacing(4),
   },
-  innerCard: {
-    maxWidth: 400,
-    width: '100%',
-    p: { xs: 3, md: 4 },
-    borderRadius: '12px',
-    boxShadow: '0 4px 20px rgba(44, 62, 107, 0.08)',
-    backgroundColor: '#ffffff',
-    border: '1px solid #E8D5A8'
-  },
-  title: {
-    fontFamily: "'Great Vibes', cursive",
-    fontWeight: 400,
-    color: '#2C3E6B',
-    mb: 4,
-    textAlign: 'center',
-    fontSize: '36px',
-  },
-  buttonStatic: {
-    py: 1.5,
-    fontSize: '1rem',
-    borderRadius: '8px',
-    backgroundColor: '#2C3E6B',
-    color: '#ffffff',
-    '&:hover': {
-      backgroundColor: '#4A5E8B',
-      boxShadow: '0 2px 6px rgba(44, 62, 107, 0.3)'
-    },
-    '&:disabled': {
-      backgroundColor: '#cccccc',
-      color: '#666666'
-    }
-  }
-};
+  borderRadius: '12px',
+  boxShadow: '0 4px 20px rgba(44, 62, 107, 0.08)',
+  backgroundColor: '#ffffff',
+  border: '1px solid #E8D5A8',
+}));
+
+const StyledTitle = styled(Typography)({
+  fontFamily: "'Great Vibes', cursive",
+  fontWeight: 400,
+  color: '#2C3E6B',
+  marginBottom: '32px',
+  textAlign: 'center',
+  fontSize: '36px',
+});
+
+const StyledErrorAlert = styled(Alert)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+}));
+
+const LoadingContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: theme.spacing(3),
+}));
+
+const StyledCircularProgress = styled(CircularProgress)({
+  color: '#2C3E6B',
+  marginRight: '8px',
+});
 
 export default function LoginPage() {
   const [error, setError] = useState('');
@@ -91,32 +103,27 @@ export default function LoginPage() {
   }
 
   return (
-    <Box sx={styles.outerContainer}>
-      <Box sx={{ 
-        position: 'absolute', 
-        top: 24, 
-        right: 24, 
-        zIndex: 10
-      }}>
+    <OuterContainer>
+      <LanguageSwitcherPositioner>
         <LanguageSwitcher />
-      </Box>
-      <Box sx={styles.innerCard}>
-        <Typography variant="h5" component="h1" gutterBottom sx={styles.title}>
+      </LanguageSwitcherPositioner>
+      <InnerCard>
+        <StyledTitle variant="h5" component="h1" gutterBottom>
           {t('login.welcome')}
-        </Typography>
+        </StyledTitle>
 
         {error && (
-          <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
+          <StyledErrorAlert severity="error">
             {error}
-          </Alert>
+          </StyledErrorAlert>
         )}
 
         {isLoading && (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 3 }}>
-            <CircularProgress size={24} sx={{ color: '#2C3E6B', mr: 1 }} /> {t('login.loggingIn')}
-          </Box>
+          <LoadingContainer>
+            <StyledCircularProgress size={24} /> {t('login.loggingIn')}
+          </LoadingContainer>
         )}
-      </Box>
-    </Box>
+      </InnerCard>
+    </OuterContainer>
   );
 }

@@ -79,7 +79,11 @@
     "minimize": "Minimalkan",
     "refreshComments": "Segarkan komentar",
     "guestComments": "Komentar tamu",
-    "changeLanguage": "Ubah bahasa"
+    "changeLanguage": "Ubah bahasa",
+    "anonymous": "Anonim",
+    "guest": "Tamu",
+    "ellipsis": "...",
+    "dateFormat": "id-ID"
   },
   "music": {
     "playButton": "Putar Musik Pernikahan",
@@ -111,7 +115,8 @@
     "intro": "Dengan izin Allah SWT, kami akan melangsungkan pernikahan pada",
     "akadLabel": "Akad",
     "resepsiLabel": "Resepsi",
-    "openMap": "Buka Peta"
+    "openMap": "Buka Peta",
+    "weddingDate": "Tanggal Pernikahan"
   },
   "countdown": {
     "title": "Counting Down",

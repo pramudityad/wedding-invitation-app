@@ -5,12 +5,38 @@ import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
 
 const StyledLanguageButton = styled(IconButton)(({ theme }) => ({
-  color: '#2C3E6B',
+  color: theme.palette.wedding?.navy || '#2C3E6B',
   '&:hover': {
-    color: '#4A5E8B',
+    color: theme.palette.wedding?.navyLight || '#4A5E8B',
     backgroundColor: 'rgba(44, 62, 107, 0.06)',
   },
 }));
+
+const StyledMenu = styled(Menu)(({ theme }) => ({
+  '& .MuiPaper-root': {
+    borderRadius: '8px',
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+    backgroundColor: theme.palette.wedding?.warmWhite || '#FBF7F0',
+  },
+}));
+
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+  fontSize: '0.9rem',
+  '&.Mui-selected': {
+    backgroundColor: 'rgba(201, 169, 110, 0.15)',
+    fontWeight: 500,
+    borderLeft: `3px solid ${theme.palette.wedding?.gold || '#C9A96E'}`,
+  },
+  '&.Mui-selected:hover': {
+    backgroundColor: 'rgba(201, 169, 110, 0.25)',
+  },
+}));
+
+const FlagIcon = styled('span')({
+  fontSize: '1.2rem',
+});
 
 const languages = [
   {
@@ -68,7 +94,7 @@ export default function LanguageSwitcher() {
         <LanguageIcon />
       </StyledLanguageButton>
       
-      <Menu
+      <StyledMenu
         id="language-menu"
         anchorEl={anchorEl}
         open={open}
@@ -76,35 +102,15 @@ export default function LanguageSwitcher() {
         MenuListProps={{
           'aria-labelledby': 'language-button',
         }}
-        PaperProps={{
-          sx: {
-            borderRadius: '8px',
-            mt: 1,
-            minWidth: 180,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            backgroundColor: '#FBF7F0',
-          }
-        }}
       >
         {languages.map((language) => (
-          <MenuItem
+          <StyledMenuItem
             key={language.code}
             onClick={() => handleLanguageChange(language.code)}
             selected={i18n && i18n.language === language.code}
-            sx={{
-              fontSize: '0.9rem',
-              '&.Mui-selected': {
-                backgroundColor: 'rgba(201, 169, 110, 0.15)',
-                fontWeight: 500,
-                borderLeft: '3px solid #C9A96E',
-              },
-              '&.Mui-selected:hover': {
-                backgroundColor: 'rgba(201, 169, 110, 0.25)',
-              },
-            }}
           >
             <ListItemIcon sx={{ minWidth: 36 }}>
-              <span style={{ fontSize: '1.2rem' }}>{language.flag}</span>
+              <FlagIcon>{language.flag}</FlagIcon>
             </ListItemIcon>
             <ListItemText 
               primary={language.name}
@@ -113,9 +119,9 @@ export default function LanguageSwitcher() {
                 fontSize: '0.9rem'
               }}
             />
-          </MenuItem>
+          </StyledMenuItem>
         ))}
-      </Menu>
+      </StyledMenu>
     </Box>
   );
 }

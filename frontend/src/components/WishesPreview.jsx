@@ -1,187 +1,121 @@
-import { Box, Typography, Button, TextField, Snackbar, Alert } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Box, Button, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
-import { submitComment } from '../api/comments';
-
-const SectionContainer = styled(Box)({
-  padding: '60px 30px',
-  textAlign: 'center',
-  maxWidth: '520px',
-  margin: '0 auto',
-});
+import { useNavigate } from 'react-router-dom';
+import { getAllComments } from '../api/comments';
+import SectionContainer from './shared/SectionContainer';
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Great Vibes', cursive",
   fontSize: '40px',
   color: theme.palette.wedding?.navy || '#2C3E6B',
-  marginBottom: '30px',
+  marginBottom: '20px',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '32px',
+  },
 }));
 
-const FormContainer = styled(Box)(({ theme }) => ({
-  marginBottom: '30px',
-  padding: '20px',
-  background: 'rgba(255,255,255,0.6)',
-  border: `1px solid ${theme.palette.wedding?.goldLight || '#E8D5A8'}`,
-  borderRadius: '8px',
-}));
-
-const WishCard = styled(Box)(({ theme }) => ({
-  background: 'rgba(255,255,255,0.5)',
-  border: `1px solid ${theme.palette.wedding?.goldLight || '#E8D5A8'}`,
-  borderRadius: '8px',
-  padding: '16px',
-  marginBottom: '12px',
-  textAlign: 'left',
-}));
-
-const WishName = styled(Typography)(({ theme }) => ({
+const Subtitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Poppins', sans-serif",
-  fontSize: '13px',
-  fontWeight: 600,
-  color: theme.palette.wedding?.navy || '#2C3E6B',
-  marginBottom: '4px',
+  fontSize: '12px',
+  color: theme.palette.text?.secondary || '#5A5A5A',
+  letterSpacing: '2px',
+  textTransform: 'uppercase',
+  marginBottom: '30px',
+}));
+
+const WishesContainer = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '16px',
+  marginBottom: '30px',
+});
+
+const WishItem = styled(Box)(({ theme }) => ({
+  backgroundColor: 'rgba(255,255,255,0.6)',
+  padding: '16px',
+  borderRadius: '8px',
+  border: `1px solid ${theme.palette.wedding?.goldLight || '#E8D5A8'}`,
+  textAlign: 'left',
 }));
 
 const WishText = styled(Typography)({
   fontFamily: "'Cormorant Garamond', serif",
-  fontSize: '15px',
+  fontSize: '14px',
   fontStyle: 'italic',
   color: '#5A5A5A',
-  lineHeight: 1.6,
+  lineHeight: 1.5,
+  marginBottom: '8px',
 });
 
-const ScrollContainer = styled(Box)({
-  maxHeight: '300px',
-  overflowY: 'auto',
-  marginBottom: '20px',
-  '&::-webkit-scrollbar': {
-    width: '3px',
-  },
-  '&::-webkit-scrollbar-thumb': {
-    background: '#E8D5A8',
-    borderRadius: '3px',
-  },
-});
-
-const ReadAllButton = styled(Button)(({ theme }) => ({
+const WishAuthor = styled(Typography)(({ theme }) => ({
   fontFamily: "'Poppins', sans-serif",
   fontSize: '11px',
-  letterSpacing: '2px',
-  textTransform: 'uppercase',
-  padding: '10px 28px',
-  border: `1.5px solid ${theme.palette.wedding?.navy || '#2C3E6B'}`,
   color: theme.palette.wedding?.navy || '#2C3E6B',
-  borderRadius: 0,
-  '&:hover': {
-    background: theme.palette.wedding?.navy || '#2C3E6B',
-    color: '#FFFFFF',
-  },
+  fontWeight: 600,
 }));
 
-const SubmitButton = styled(Button)(({ theme }) => ({
+const ViewAllButton = styled(Button)(({ theme }) => ({
   fontFamily: "'Poppins', sans-serif",
   fontSize: '11px',
   letterSpacing: '2px',
   textTransform: 'uppercase',
-  padding: '10px 28px',
-  background: theme.palette.wedding?.navy || '#2C3E6B',
-  color: '#FFFFFF',
-  borderRadius: 0,
-  marginTop: '12px',
+  padding: '10px 24px',
+  borderColor: theme.palette.wedding?.gold || '#C9A96E',
+  color: theme.palette.wedding?.gold || '#C9A96E',
+  width: '100%',
   '&:hover': {
-    background: theme.palette.wedding?.navyLight || '#4A5E8B',
-  },
-  '&:disabled': {
-    background: '#ccc',
-    color: '#888',
+    backgroundColor: theme.palette.wedding?.gold || '#C9A96E',
+    color: '#fff',
+    borderColor: theme.palette.wedding?.gold || '#C9A96E',
   },
 }));
 
-export default function WishesPreview({ comments = [], navigate, username }) {
+const WishesPreview = () => {
   const { t } = useTranslation();
-  const [localComments, setLocalComments] = useState(comments);
-  const [message, setMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const navigate = useNavigate();
+  const [wishes, setWishes] = useState([]);
 
-  const handleSubmit = async () => {
-    if (!message.trim()) {
-      setSnackbar({ open: true, message: t('wishes.emptyError'), severity: 'warning' });
-      return;
-    }
+  useEffect(() => {
+    const fetchWishes = async () => {
+      try {
+        const response = await getAllComments({ limit: 3 });
+        if (response.comments) {
+          setWishes(response.comments.slice(0, 3));
+        }
+      } catch (error) {
+        console.error('Failed to fetch wishes:', error);
+      }
+    };
 
-    setIsSubmitting(true);
-    try {
-      const response = await submitComment({ content: message.trim() });
-      const newComment = {
-        guest_name: username || 'Guest',
-        content: message.trim(),
-        created_at: new Date().toISOString(),
-        ...(response?.data || {}),
-      };
-      setLocalComments((prev) => [newComment, ...prev]);
-      setMessage('');
-      setSnackbar({ open: true, message: t('wishes.submitSuccess'), severity: 'success' });
-    } catch (err) {
-      const errorMsg = err?.response?.status === 400
-        ? t('wishes.limitReached')
-        : t('wishes.submitError');
-      setSnackbar({ open: true, message: errorMsg, severity: 'error' });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    fetchWishes();
+  }, []);
 
   return (
     <SectionContainer>
-      <SectionTitle>{t('wishes.sectionTitle')}</SectionTitle>
-
-      <FormContainer>
-        <TextField
-          multiline
-          rows={3}
-          fullWidth
-          placeholder={t('wishes.messagePlaceholder')}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          sx={{ mb: 0 }}
-        />
-        <SubmitButton
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? '...' : t('wishes.sendButton')}
-        </SubmitButton>
-      </FormContainer>
-
-      <ScrollContainer>
-        {localComments.map((comment, index) => (
-          <WishCard key={comment.id || index}>
-            <WishName>{comment.GuestName || 'Guest'}</WishName>
-            <WishText>"{comment.Content}"</WishText>
-          </WishCard>
+      <SectionTitle sx={{ marginBottom: 0 }}>
+        {t('wishesPreview.title')}
+      </SectionTitle>
+      <Subtitle>{wishes.length} {t('wishesPreview.subtitle')}</Subtitle>
+      
+      <WishesContainer>
+        {wishes.map((wish) => (
+          <WishItem key={wish.ID}>
+            <WishText>"{wish.Content}"</WishText>
+            <WishAuthor>— {wish.GuestName || t('common.anonymous')}</WishAuthor>
+          </WishItem>
         ))}
-      </ScrollContainer>
+      </WishesContainer>
 
-      <ReadAllButton onClick={() => navigate('/comments')}>
-        {t('wishes.readAllButton')}
-      </ReadAllButton>
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar((s) => ({ ...s, open: false }))}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      <ViewAllButton
+        variant="outlined"
+        onClick={() => navigate('/comments')}
       >
-        <Alert
-          onClose={() => setSnackbar((s) => ({ ...s, open: false }))}
-          severity={snackbar.severity}
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        {t('wishesPreview.viewAll')}
+      </ViewAllButton>
     </SectionContainer>
   );
-}
+};
+
+export default WishesPreview;

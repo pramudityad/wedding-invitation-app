@@ -79,7 +79,11 @@
     "minimize": "Minimize",
     "refreshComments": "Refresh comments",
     "guestComments": "Guest comments",
-    "changeLanguage": "Change language"
+    "changeLanguage": "Change language",
+    "anonymous": "Anonymous",
+    "guest": "Guest",
+    "ellipsis": "...",
+    "dateFormat": "en-US"
   },
   "music": {
     "playButton": "Play Wedding Music",
@@ -111,7 +115,8 @@
     "intro": "With the blessing of Allah SWT, we will hold our wedding on",
     "akadLabel": "Ceremony",
     "resepsiLabel": "Reception",
-    "openMap": "Open Map"
+    "openMap": "Open Map",
+    "weddingDate": "Wedding Date"
   },
   "countdown": {
     "title": "Counting Down",

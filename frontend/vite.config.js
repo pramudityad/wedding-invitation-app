@@ -1,18 +1,21 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import liveReload from 'vite-plugin-live-reload'
 
 export default defineConfig({
   envDir: '../', // Look for .env in root directory
-  plugins: [
-    react(),
-    liveReload([
-      '../**/*.go' // Watch Go files in backend
-    ])
-  ],
+  plugins: [react()],
   build: {
     outDir: 'dist',
-    emptyOutDir: true
+    emptyOutDir: true,
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          mui: ['@mui/material', '@mui/icons-material', '@mui/utils']
+        }
+      }
+    }
   },
   server: {
     port: 3000,

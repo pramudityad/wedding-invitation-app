@@ -1,13 +1,7 @@
-import { Box, Typography, Grid } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-
-const SectionContainer = styled(Box)({
-  padding: '60px 30px',
-  textAlign: 'center',
-  maxWidth: '520px',
-  margin: '0 auto',
-});
+import SectionContainer from './shared/SectionContainer';
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Great Vibes', cursive",
@@ -42,12 +36,12 @@ const PersonName = styled(Typography)(({ theme }) => ({
   marginBottom: '8px',
 }));
 
-const ParentLabel = styled(Typography)({
+const ParentLabel = styled(Typography)(({ theme }) => ({
   fontFamily: "'Poppins', sans-serif",
   fontSize: '10px',
-  color: '#5A5A5A',
+  color: theme.palette.text?.secondary || '#5A5A5A',
   marginBottom: '4px',
-});
+}));
 
 const ParentName = styled(Typography)(({ theme }) => ({
   fontFamily: "'Cormorant Garamond', serif",
@@ -61,6 +55,14 @@ const Ampersand = styled(Typography)(({ theme }) => ({
   fontSize: '48px',
   color: theme.palette.wedding?.gold || '#C9A96E',
   margin: '16px 0',
+}));
+
+const SpacedBox = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
+
+const SpacedBoxTop = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(2),
 }));
 
 export default function CoupleSection() {
@@ -77,25 +79,25 @@ export default function CoupleSection() {
     <SectionContainer>
       <SectionTitle>{t('couple.sectionTitle')}</SectionTitle>
 
-      <Box sx={{ mb: 2 }}>
+      <SpacedBox>
         <PhotoCircle>👩</PhotoCircle>
         <PersonName>{brideName.toUpperCase()}</PersonName>
         <ParentLabel>{t('couple.brideLabel')}</ParentLabel>
         <ParentName>{brideFather}</ParentName>
         <ParentName>&</ParentName>
         <ParentName>{brideMother}</ParentName>
-      </Box>
+      </SpacedBox>
 
       <Ampersand>&</Ampersand>
 
-      <Box sx={{ mt: 2 }}>
+      <SpacedBoxTop>
         <PhotoCircle>👨</PhotoCircle>
         <PersonName>{groomName.toUpperCase()}</PersonName>
         <ParentLabel>{t('couple.groomLabel')}</ParentLabel>
         <ParentName>{groomFather}</ParentName>
         <ParentName>&</ParentName>
         <ParentName>{groomMother}</ParentName>
-      </Box>
+      </SpacedBoxTop>
     </SectionContainer>
   );
 }

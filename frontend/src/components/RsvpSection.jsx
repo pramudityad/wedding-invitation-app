@@ -2,12 +2,8 @@ import React from 'react';
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+import SectionContainer from './shared/SectionContainer';
 
-const StyledRSVPSection = styled(Box)(({ theme }) => ({
-  marginTop: theme.spacing(6),
-  marginBottom: theme.spacing(4),
-  textAlign: 'center',
-}));
 
 const StyledRSVPButtonsContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -50,38 +46,52 @@ const StyledRSVPButton = styled(Button)(({ theme, colorKey }) => ({
   },
 }));
 
+const RSVPTitle = styled(Typography)({
+  marginBottom: '24px',
+  fontFamily: "'Great Vibes', cursive",
+  fontWeight: 400,
+  fontSize: '56px',
+  color: '#2C3E6B',
+});
+
+const LoadingIndicator = styled(Box)({
+  display: 'inline-flex',
+  alignItems: 'center',
+});
+
+const StyledLoadingProgress = styled(CircularProgress)({
+  color: '#2C3E6B',
+  marginRight: '8px',
+});
+
+const ConfirmationText = styled('span')({
+  fontFamily: "'Cormorant Garamond', serif",
+  fontStyle: 'italic',
+  fontSize: '24px',
+  color: '#2C3E6B',
+});
+
 export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP }) {
   const { t } = useTranslation();
   
   return (
-    <StyledRSVPSection>
-      <Typography variant="h2" sx={{ 
-        mb: 3, 
-        fontFamily: "'Great Vibes', cursive", 
-        fontWeight: 400, 
-        fontSize: '56px',
-        color: '#2C3E6B',
-      }}>
+    <SectionContainer>
+      <RSVPTitle variant="h2">
         {isLoading && rsvpStatus === null ? (
-          <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-            <CircularProgress size={20} sx={{ color: '#2C3E6B', mr: 1 }} />
+          <LoadingIndicator>
+            <StyledLoadingProgress size={20} />
             {t('rsvp.loading')}
-          </Box>
+          </LoadingIndicator>
         ) : rsvpStatus === null ? (
           t('rsvp.question')
         ) : (
-          <Box component="span" sx={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: 'italic',
-            fontSize: '24px',
-            color: '#2C3E6B',
-          }}>
+          <ConfirmationText>
             {rsvpStatus === true
               ? t('rsvp.yesConfirmation')
               : t('rsvp.noConfirmation')}
-          </Box>
+          </ConfirmationText>
         )}
-      </Typography>
+      </RSVPTitle>
 
       {!isLoading && rsvpStatus === null && (
         <StyledRSVPButtonsContainer>
@@ -102,6 +112,6 @@ export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP }) {
           </StyledRSVPButton>
         </StyledRSVPButtonsContainer>
       )}
-    </StyledRSVPSection>
+    </SectionContainer>
   );
 }
