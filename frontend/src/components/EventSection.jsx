@@ -25,7 +25,7 @@ const RingIcon = styled(Box)({
 });
 
 const DateText = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Great Vibes', cursive",
+  fontFamily: "'Poppins', sans-serif",
   fontSize: '36px',
   color: theme.palette.wedding?.navy || '#2C3E6B',
   marginBottom: '24px',

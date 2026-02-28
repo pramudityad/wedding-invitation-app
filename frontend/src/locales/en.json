@@ -146,6 +146,11 @@
     "emptyError": "Message cannot be empty.",
     "limitReached": "You have reached the maximum comment limit."
   },
+  "wishesPreview": {
+    "title": "Messages & Wishes",
+    "subtitle": "messages",
+    "viewAll": "View All Messages"
+  },
   "thankyou": {
     "title": "Thank You",
     "message": "We are deeply grateful for your presence, blessings, and gifts. We pray that our marriage will be filled with goodness and blessings from Allah.",

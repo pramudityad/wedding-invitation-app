@@ -146,6 +146,11 @@
     "emptyError": "Pesan tidak boleh kosong.",
     "limitReached": "Anda telah mencapai batas maksimal komentar."
   },
+  "wishesPreview": {
+    "title": "Pesan & Kesan Sayang",
+    "subtitle": "pesan",
+    "viewAll": "Lihat Semua Pesan"
+  },
   "thankyou": {
     "title": "Terima Kasih",
     "message": "Kami sangat berterima kasih atas kehadiran, doa restu, dan hadiah yang telah Anda berikan. Kami memohon doa restu agar kami bisa selalu dan menjadikan nikah banyak kebaikan dengan Allah.",

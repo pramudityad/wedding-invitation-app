@@ -36,9 +36,12 @@ const Tagline = styled(Typography)(({ theme }) => ({
   marginBottom: '32px',
 }));
 
-const CoupleIcon = styled(Box)({
-  fontSize: '80px',
+const CoupleImage = styled('img')({
+  width: '200px',
+  height: 'auto',
   marginBottom: '16px',
+  borderRadius: '50%',
+  objectFit: 'cover',
 });
 
 const CoupleNames = styled(Typography)(({ theme }) => ({
@@ -61,7 +64,7 @@ export default function ThankYouSection() {
       <Title>{t('thankyou.title')}</Title>
       <Message>{t('thankyou.message')}</Message>
       <Tagline>{t('thankyou.tagline')}</Tagline>
-      <CoupleIcon>👫</CoupleIcon>
+      <CoupleImage src="/images/couple-art.jpeg" alt="Couple" />
       <CoupleNames>{groomShort} & {brideShort}</CoupleNames>
     </SectionContainer>
   );
