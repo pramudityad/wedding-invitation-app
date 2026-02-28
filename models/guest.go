@@ -263,15 +263,29 @@ func GetAllGuests(db *sql.DB) ([]Guest, error) {
 }
 
 func MarkInvitationOpened(db *sql.DB, name string) error {
-	stmt := `UPDATE guests SET first_opened_at = CURRENT_TIMESTAMP WHERE name = ? AND first_opened_at IS NULL`
-	
-	result, err := db.Exec(stmt, name)
+	tx, err := db.Begin()
 	if err != nil {
+		log.Printf("Failed to begin transaction: %v", err)
+		return err
+	}
+	defer tx.Rollback()
+
+	stmt := `UPDATE guests SET first_opened_at = CURRENT_TIMESTAMP WHERE name = ? AND first_opened_at IS NULL`
+
+	result, err := tx.Exec(stmt, name)
+	if err != nil {
+		log.Printf("Failed to mark invitation opened: %v", err)
 		return err
 	}
 
 	rows, err := result.RowsAffected()
 	if err != nil {
+		log.Printf("Failed to get rows affected: %v", err)
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		log.Printf("Failed to commit transaction: %v", err)
 		return err
 	}
 
