@@ -61,7 +61,12 @@
     "noButton": "Tidak, saya tidak bisa hadir",
     "yesConfirmation": "Terima kasih atas RSVP Anda! Kami berharap dapat merayakan dengan Anda.",
     "noConfirmation": "Kami telah menerima RSVP Anda. Kami memahami jika Anda tidak dapat hadir.",
-    "loading": "Memuat..."
+    "loading": "Memuat...",
+    "confirmTitle": "Konfirmasi RSVP",
+    "confirmAttending": "Anda akan mengkonfirmasi kehadiran Anda. Apakah Anda yakin?",
+    "confirmNotAttending": "Anda akan mengkonfirmasi bahwa Anda tidak dapat hadir. Apakah Anda yakin?",
+    "confirmButton": "Ya, Saya Yakin",
+    "cancelButton": "Kembali"
   },
   "gift": {
     "title": "Hadiah Pernikahan",

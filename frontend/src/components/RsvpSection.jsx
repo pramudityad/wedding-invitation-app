@@ -1,5 +1,14 @@
-import React from 'react';
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import SectionContainer from './shared/SectionContainer';
@@ -71,9 +80,91 @@ const ConfirmationText = styled('span')({
   color: '#2C3E6B',
 });
 
+// --- Dialog styled components ---
+
+const StyledDialogPaper = styled('div')({
+  borderRadius: '16px',
+  padding: '8px',
+  maxWidth: '400px',
+  width: '100%',
+  textAlign: 'center',
+  border: '1px solid rgba(201, 168, 76, 0.3)',
+});
+
+const DialogTitleStyled = styled(DialogTitle)({
+  fontFamily: "'Great Vibes', cursive",
+  fontWeight: 400,
+  fontSize: '40px',
+  color: '#2C3E6B',
+  padding: '16px 24px 8px',
+});
+
+const DialogMessageStyled = styled(Typography)({
+  fontFamily: "'Cormorant Garamond', serif",
+  fontStyle: 'italic',
+  fontSize: '18px',
+  color: '#2C3E6B',
+  padding: '0 8px',
+});
+
+const DialogActionsStyled = styled(DialogActions)({
+  justifyContent: 'center',
+  gap: '16px',
+  padding: '16px 24px 20px',
+  flexWrap: 'wrap',
+});
+
+const ConfirmButton = styled(Button)({
+  backgroundColor: '#2C3E6B',
+  color: '#FFFFFF',
+  borderRadius: '8px',
+  minWidth: '140px',
+  fontFamily: "'Poppins', sans-serif",
+  textTransform: 'uppercase',
+  letterSpacing: '1px',
+  '&:hover': {
+    backgroundColor: '#4A5E8B',
+    boxShadow: '0 2px 6px rgba(44, 62, 107, 0.3)',
+  },
+});
+
+const CancelButton = styled(Button)({
+  backgroundColor: 'transparent',
+  color: '#2C3E6B',
+  border: '2px solid #2C3E6B',
+  borderRadius: '8px',
+  minWidth: '140px',
+  fontFamily: "'Poppins', sans-serif",
+  textTransform: 'uppercase',
+  letterSpacing: '1px',
+  '&:hover': {
+    backgroundColor: 'rgba(44, 62, 107, 0.06)',
+    borderColor: '#4A5E8B',
+    color: '#4A5E8B',
+  },
+});
+
 export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP }) {
   const { t } = useTranslation();
-  
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [pendingChoice, setPendingChoice] = useState(null);
+
+  const handleButtonClick = (attending) => {
+    setPendingChoice(attending);
+    setShowConfirm(true);
+  };
+
+  const handleConfirm = () => {
+    setShowConfirm(false);
+    handleRSVP(pendingChoice);
+    setPendingChoice(null);
+  };
+
+  const handleCancel = () => {
+    setShowConfirm(false);
+    setPendingChoice(null);
+  };
+
   return (
     <SectionContainer>
       <RSVPTitle variant="h2">
@@ -95,23 +186,47 @@ export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP }) {
 
       {!isLoading && rsvpStatus === null && (
         <StyledRSVPButtonsContainer>
-          <StyledRSVPButton 
-            colorKey="yes" 
-            onClick={() => handleRSVP(true)} 
+          <StyledRSVPButton
+            colorKey="yes"
+            onClick={() => handleButtonClick(true)}
             disabled={isLoading}
           >
             {isLoading ? <CircularProgress size={24} color="inherit" /> : t('rsvp.yesButton')}
           </StyledRSVPButton>
-          
-          <StyledRSVPButton 
-            colorKey="no" 
-            onClick={() => handleRSVP(false)} 
+
+          <StyledRSVPButton
+            colorKey="no"
+            onClick={() => handleButtonClick(false)}
             disabled={isLoading}
           >
             {isLoading ? <CircularProgress size={24} color="inherit" /> : t('rsvp.noButton')}
           </StyledRSVPButton>
         </StyledRSVPButtonsContainer>
       )}
+
+      <Dialog
+        open={showConfirm}
+        onClose={handleCancel}
+        PaperComponent={StyledDialogPaper}
+        PaperProps={{ elevation: 8 }}
+      >
+        <DialogTitleStyled>{t('rsvp.confirmTitle')}</DialogTitleStyled>
+        <DialogContent>
+          <DialogMessageStyled>
+            {pendingChoice === true
+              ? t('rsvp.confirmAttending')
+              : t('rsvp.confirmNotAttending')}
+          </DialogMessageStyled>
+        </DialogContent>
+        <DialogActionsStyled>
+          <CancelButton onClick={handleCancel}>
+            {t('rsvp.cancelButton')}
+          </CancelButton>
+          <ConfirmButton onClick={handleConfirm}>
+            {t('rsvp.confirmButton')}
+          </ConfirmButton>
+        </DialogActionsStyled>
+      </Dialog>
     </SectionContainer>
   );
 }
