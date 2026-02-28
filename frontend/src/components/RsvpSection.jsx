@@ -57,7 +57,7 @@ const StyledRSVPButton = styled(Button)(({ theme, colorKey }) => ({
 
 const RSVPTitle = styled(Typography)({
   marginBottom: '24px',
-  fontFamily: "'Great Vibes', cursive",
+  fontFamily: "'Cormorant Garamond', serif",
   fontWeight: 400,
   fontSize: '56px',
   color: '#2C3E6B',
@@ -89,6 +89,7 @@ const StyledDialogPaper = styled('div')({
   width: '100%',
   textAlign: 'center',
   border: '1px solid rgba(201, 168, 76, 0.3)',
+  backgroundColor: 'rgba(255, 255, 255, 0.6)',
 });
 
 const DialogTitleStyled = styled(DialogTitle)({
