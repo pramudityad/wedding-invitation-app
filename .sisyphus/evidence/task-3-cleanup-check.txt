@@ -1,0 +1,32 @@
+Cleanup check evidence
+----------------------
+Directories check:
+ls: frontend/src/components/ui/: No such file or directory
+ls: frontend/src/styles/: No such file or directory
+Directories not found (as expected)
+
+package.json check:
+vite-plugin-live-reload not found in package.json
+
+vite.config.js check:
+vite-plugin-live-reload not found in vite.config.js
+
+Build check:
+
+> wedding-invitation-ui@1.0.0 build
+> vite build
+
+vite v6.4.1 building for production...
+transforming...
+✓ 11800 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                0.74 kB │ gzip:  0.44 kB
+dist/assets/BackButton-D_dTaWMh.js             0.72 kB │ gzip:  0.48 kB │ map:     2.04 kB
+dist/assets/LoginPage-N6NRLbBj.js              1.82 kB │ gzip:  0.99 kB │ map:     5.85 kB
+dist/assets/WeddingPhotoGallery-Cd0c7kTq.js    7.41 kB │ gzip:  3.11 kB │ map:    18.77 kB
+dist/assets/GuestComments-B_NsjpaM.js          8.87 kB │ gzip:  3.29 kB │ map:    30.01 kB
+dist/assets/index-BuzS-00A.js                146.78 kB │ gzip: 48.42 kB │ map:   489.96 kB
+dist/assets/vendor-CDrl2uaN.js               179.36 kB │ gzip: 58.97 kB │ map:   770.32 kB
+dist/assets/mui-nCdgZRao.js                  280.18 kB │ gzip: 87.60 kB │ map: 1,476.37 kB
+✓ built in 8.62s
