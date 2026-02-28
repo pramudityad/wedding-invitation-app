@@ -1,8 +1,0 @@
-Function-field mock pattern count:
-
-guest_service_test.go mockGuestCache struct:
-8 function fields
-
-comment_service_test.go:
-- mockCommentRepo: 4 function fields
-- mockGuestService: 8 function fields

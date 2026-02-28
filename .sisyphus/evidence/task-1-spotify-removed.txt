@@ -1,5 +1,0 @@
-=== Task 1: Spotify Removed ===
-PASS: spotify/ does not exist
-PASS: spotify_routes.go does not exist
-PASS: go build ./... exits 0
-Spotify refs:        0

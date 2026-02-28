@@ -1,2 +1,0 @@
-ok  	wedding-invitation-backend/models	(cached)
-Race test: PASSED

@@ -1,7 +1,0 @@
-=== Scenario 2: Existing functionality unaffected ===
-
-1. go build ./...:
-PASS - build succeeded
-
-2. go test ./models/...:
-PASS - tests passed
