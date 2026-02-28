@@ -38,3 +38,47 @@ $ go vet ./services/... ./cache/... ./container/...
 - container/container.go - Changed Container fields to use interface types
 - cache/memory_cache.go - Added stub `Stop()` method
 - cache/guest_cache.go - Added stub `Stop()` method
+
+
+
+---
+
+## Re-Verification: 2026-02-28
+
+### Build Check
+```
+$ go build ./...
+(no output - success)
+```
+
+### Test Check
+```
+$ go test ./...
+ok   wedding-invitation-backend/cache
+ok   wedding-invitation-backend/middleware/apikey
+ok   wedding-invitation-backend/middleware/auth
+ok   wedding-invitation-backend/models
+ok   wedding-invitation-backend/services
+```
+
+### Model Tests (verbose)
+```
+=== RUN   TestCommentCreate
+--- PASS: TestCommentCreate (0.00s)
+=== RUN   TestGetCommentsByGuestID
+--- PASS: TestGetCommentsByGuestID (0.00s)
+... (18 more tests)
+PASS
+ok  wedding-invitation-backend/models 0.621s
+```
+
+### Checklist Verification
+- [x] services/interfaces.go exists with GuestServiceInterface and CommentServiceInterface
+- [x] cache/interfaces.go exists with CacheInterface and GuestCacheInterface
+- [x] Compile-time checks present in both files
+- [x] container.Container fields use interface types
+- [x] go build ./... succeeds
+- [x] All tests pass
+
+### Status: COMPLETE
+All interfaces defined and compile-time verified. Ready for mock implementations in downstream tasks.

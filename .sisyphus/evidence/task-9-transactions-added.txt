@@ -1,0 +1,18 @@
+=== Comment.Create() transaction evidence ===
+func (c *Comment) Create(db *sql.DB) error {
+	tx, err := db.Begin()
+	if err != nil {
+		log.Printf("Failed to begin transaction: %v", err)
+		return err
+	}
+
+=== MarkInvitationOpened() transaction evidence ===
+func MarkInvitationOpened(db *sql.DB, name string) error {
+	tx, err := db.Begin()
+	if err != nil {
+		log.Printf("Failed to begin transaction: %v", err)
+		return err
+	}
+
+=== Build verification ===
+Build: OK

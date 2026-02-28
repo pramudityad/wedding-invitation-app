@@ -1,0 +1,25 @@
+--- Container Shutdown() method ---
+
+container/container.go:
+42:// Shutdown gracefully shuts down the container and releases resources
+43:func (c *Container) Shutdown() {
+44:	// Stop caches if they implement Stop()
+45:	if c.guestCache != nil {
+46:		c.guestCache.Stop()
+47:	}
+48:	if c.commentCache != nil {
+49:		c.commentCache.Stop()
+50:	}
+51:}
+
+--- Test output ---
+=== RUN   TestShutdown_DoesNotPanic
+--- PASS: TestShutdown_DoesNotPanic (0.00s)
+PASS
+ok  	wedding-invitation-backend/container	(cached)
+
+--- Shutdown() calls Stop() on caches ---
+- c.guestCache.Stop() - stops GuestCache (cache.GuestCacheInterface)
+- c.commentCache.Stop() - stops MemoryCache (cache.CacheInterface)
+
+Both interfaces define Stop() method (from cache/interfaces.go:14 and :26)
