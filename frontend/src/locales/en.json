@@ -61,7 +61,12 @@
     "noButton": "No, I cannot make it",
     "yesConfirmation": "Thank you for your RSVP! We look forward to celebrating with you.",
     "noConfirmation": "We've received your RSVP. We understand if you cannot make it.",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "confirmTitle": "Confirm RSVP",
+    "confirmAttending": "You are confirming your attendance. Are you sure?",
+    "confirmNotAttending": "You are confirming that you will not attend. Are you sure?",
+    "confirmButton": "Yes, I'm Sure",
+    "cancelButton": "Go Back"
   },
   "gift": {
     "title": "Wedding Gift",
