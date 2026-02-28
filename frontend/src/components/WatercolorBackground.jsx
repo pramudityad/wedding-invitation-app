@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { memo } from 'react';
 
 const WatercolorBg = styled(Box)({
   position: 'fixed',
@@ -38,11 +39,13 @@ const WatercolorOverlay = styled(Box)({
   },
 });
 
-export default function WatercolorBackground() {
+const WatercolorBackground = memo(function WatercolorBackground() {
   return (
     <>
       <WatercolorBg />
       <WatercolorOverlay />
     </>
   );
-}
+});
+
+export default WatercolorBackground;

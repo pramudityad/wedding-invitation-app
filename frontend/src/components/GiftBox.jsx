@@ -11,7 +11,7 @@ const StyledGiftBoxContainer = styled(Box)(({ theme }) => ({
 
 const StyledGiftBox = styled(Box)(({ theme }) => ({
   backgroundColor: 'rgba(255, 255, 255, 0.6)',
-  border: '1px solid #E8D5A8',
+  border: `1px solid ${theme.palette.wedding?.goldLight || '#E8D5A8'}`,
   borderRadius: '8px',
   padding: theme.spacing(3),
   textAlign: 'center',
@@ -21,7 +21,7 @@ const StyledGiftBox = styled(Box)(({ theme }) => ({
 const StyledGiftTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Great Vibes', cursive",
   fontWeight: 400,
-  color: '#2C3E6B',
+  color: theme.palette.wedding?.navy || '#2C3E6B',
   marginBottom: theme.spacing(2),
   fontSize: '40px',
   display: 'flex',
@@ -35,27 +35,27 @@ const StyledAccountContainer = styled(Box)(({ theme }) => ({
   borderRadius: '8px',
   padding: theme.spacing(2),
   marginBottom: theme.spacing(2),
-  border: '1px solid #E8D5A8',
+  border: `1px solid ${theme.palette.wedding?.goldLight || '#E8D5A8'}`,
   '&:last-child': {
     marginBottom: 0,
   },
 }));
 
-const StyledBankName = styled(Typography)({
+const StyledBankName = styled(Typography)(({ theme }) => ({
   fontFamily: "'Poppins', sans-serif",
   fontWeight: 600,
-  color: '#2C3E6B',
+  color: theme.palette.wedding?.navy || '#2C3E6B',
   fontSize: '14px',
   marginBottom: '4px',
-});
+}));
 
-const StyledAccountName = styled(Typography)({
+const StyledAccountName = styled(Typography)(({ theme }) => ({
   fontFamily: "'Poppins', sans-serif",
   fontWeight: 400,
-  color: '#888',
+  color: theme.palette.grey[500] || '#888',
   fontSize: '12px',
   marginBottom: '8px',
-});
+}));
 
 const StyledAccountNumber = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -64,37 +64,64 @@ const StyledAccountNumber = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
-const StyledAccountNumberText = styled(Typography)({
+const StyledAccountNumberText = styled(Typography)(({ theme }) => ({
   fontFamily: "'Cormorant Garamond', serif",
   fontWeight: 400,
-  color: '#333',
+  color: theme.palette.text?.primary || '#333',
   fontSize: '18px',
   letterSpacing: '2px',
   fontVariantNumeric: 'tabular-nums',
-});
+}));
 
-const StyledCopyButton = styled(IconButton)({
+const StyledCopyButton = styled(IconButton)(({ theme }) => ({
   fontSize: '10px',
   textTransform: 'uppercase',
-  border: '1px solid #C9A96E',
-  color: '#C9A96E',
+  border: `1px solid ${theme.palette.wedding?.gold || '#C9A96E'}`,
+  color: theme.palette.wedding?.gold || '#C9A96E',
   borderRadius: '4px',
   padding: '4px 8px',
   transition: 'all 0.3s ease',
   '&:hover': {
-    backgroundColor: '#C9A96E',
-    color: '#FFFFFF',
+    backgroundColor: theme.palette.wedding?.gold || '#C9A96E',
+    color: theme.palette.common.white || '#FFFFFF',
   },
-});
+}));
 
-const StyledGiftMessage = styled(Typography)({
+const StyledCopyButtonCopied = styled(IconButton)(({ theme }) => ({
+  fontSize: '10px',
+  textTransform: 'uppercase',
+  border: `1px solid ${theme.palette.wedding?.navy || '#2C3E6B'}`,
+  color: theme.palette.common.white || '#FFFFFF',
+  backgroundColor: theme.palette.wedding?.navy || '#2C3E6B',
+  borderRadius: '4px',
+  padding: '4px 8px',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    backgroundColor: theme.palette.wedding?.navy || '#2C3E6B',
+    color: theme.palette.common.white || '#FFFFFF',
+  },
+}));
+
+const StyledGiftMessage = styled(Typography)(({ theme }) => ({
   fontFamily: "'Cormorant Garamond', serif",
   fontWeight: 300,
-  color: '#5A5A5A',
+  color: theme.palette.text?.secondary || '#5A5A5A',
   fontSize: '15px',
   fontStyle: 'italic',
   marginTop: '16px',
   lineHeight: 1.6,
+}));
+
+const StyledCardGiftcard = styled(CardGiftcard)({
+  fontSize: 'inherit',
+});
+
+const AccountsWrapper = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+}));
+
+const StyledSnackbarAlert = styled(Alert)({
+  width: '100%',
 });
 
 export default function GiftBox() {
@@ -105,7 +132,6 @@ export default function GiftBox() {
   const [copiedIndex, setCopiedIndex] = useState(null);
   const { t } = useTranslation();
 
-  // Get bank account details from environment variables
   const accounts = [
     {
       bankName: import.meta.env.VITE_PARTNER1_BANK_NAME,
@@ -142,7 +168,6 @@ export default function GiftBox() {
     setSnackbar(prev => ({ ...prev, open: false }));
   };
 
-  // Don't render the component if no accounts are configured
   if (accounts.length === 0) {
     return null;
   }
@@ -151,7 +176,7 @@ export default function GiftBox() {
     <StyledGiftBoxContainer>
       <StyledGiftBox>
         <StyledGiftTitle>
-          <CardGiftcard sx={{ fontSize: 'inherit' }} />
+          <StyledCardGiftcard />
           {t('gift.title')}
         </StyledGiftTitle>
 
@@ -159,7 +184,7 @@ export default function GiftBox() {
           {t('gift.message')}
         </StyledGiftMessage>
 
-        <Box sx={{ mt: 3 }}>
+        <AccountsWrapper>
           {accounts.map((account, index) => (
             <StyledAccountContainer key={index}>
               {account.bankName && (
@@ -175,26 +200,26 @@ export default function GiftBox() {
                   {account.number}
                 </StyledAccountNumberText>
                 <Tooltip title={t('common.copy')}>
-                  <StyledCopyButton
-                    size="small"
-                    onClick={() => handleCopyToClipboard(account.number, account.name, index)}
-                    sx={copiedIndex === index ? {
-                      backgroundColor: '#2C3E6B',
-                      color: '#FFFFFF',
-                      borderColor: '#2C3E6B',
-                      '&:hover': {
-                        backgroundColor: '#2C3E6B',
-                        color: '#FFFFFF',
-                      },
-                    } : {}}
-                  >
-                    <ContentCopy fontSize="small" />
-                  </StyledCopyButton>
+                  {copiedIndex === index ? (
+                    <StyledCopyButtonCopied
+                      size="small"
+                      onClick={() => handleCopyToClipboard(account.number, account.name, index)}
+                    >
+                      <ContentCopy fontSize="small" />
+                    </StyledCopyButtonCopied>
+                  ) : (
+                    <StyledCopyButton
+                      size="small"
+                      onClick={() => handleCopyToClipboard(account.number, account.name, index)}
+                    >
+                      <ContentCopy fontSize="small" />
+                    </StyledCopyButton>
+                  )}
                 </Tooltip>
               </StyledAccountNumber>
             </StyledAccountContainer>
           ))}
-        </Box>
+        </AccountsWrapper>
       </StyledGiftBox>
 
       <Snackbar
@@ -203,9 +228,9 @@ export default function GiftBox() {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+        <StyledSnackbarAlert onClose={handleCloseSnackbar} severity="success">
           {snackbar.message}
-        </Alert>
+        </StyledSnackbarAlert>
       </Snackbar>
     </StyledGiftBoxContainer>
   );

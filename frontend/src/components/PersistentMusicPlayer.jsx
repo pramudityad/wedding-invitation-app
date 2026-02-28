@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, IconButton, Typography, Tooltip, Collapse, Alert } from '@mui/material';
+import { Box, IconButton, Typography, Tooltip, Alert } from '@mui/material';
 import { MusicNote, Close, ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useMusicContext } from '../contexts/MusicContext';
@@ -36,13 +36,13 @@ const StyledMiniPlayer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StyledExpandedPlayer = styled(Box)(({ theme }) => ({
+const StyledExpandedPlayer = styled(Box)({
   backgroundColor: '#ffffff',
   borderRadius: '12px',
   boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
   border: '2px solid #E8D5A8',
   overflow: 'hidden',
-}));
+});
 
 const StyledPlayerHeader = styled(Box)(({ theme }) => ({
   backgroundColor: '#2C3E6B',
@@ -62,9 +62,9 @@ const StyledPlayerTitle = styled(Typography)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
-const StyledIframeContainer = styled(Box)(({ theme }) => ({
+const StyledIframeContainer = styled(Box)({
   position: 'relative',
-  paddingBottom: '225px', // Fixed height for compact player
+  paddingBottom: '225px',
   height: 0,
   backgroundColor: '#f5f5f5',
   '& iframe': {
@@ -75,7 +75,7 @@ const StyledIframeContainer = styled(Box)(({ theme }) => ({
     height: '100%',
     border: 'none',
   },
-}));
+});
 
 const StyledMiniPlayerText = styled(Typography)(({ theme }) => ({
   color: 'white',
@@ -83,6 +83,58 @@ const StyledMiniPlayerText = styled(Typography)(({ theme }) => ({
   fontFamily: "'Poppins', sans-serif",
   fontWeight: 500,
 }));
+
+const StyledMiniPlayerIcon = styled(MusicNote)({
+  color: 'white',
+  fontSize: 24,
+});
+
+const StyledExpandIcon = styled(ExpandLess)({
+  color: 'white',
+  fontSize: 20,
+});
+
+const StyledMusicNoteInherit = styled(MusicNote)({
+  fontSize: 'inherit',
+});
+
+const StyledMinimizeButton = styled(IconButton)({
+  color: 'white',
+  marginRight: '8px',
+});
+
+const StyledCloseButton = styled(IconButton)({
+  color: 'white',
+});
+
+const StyledHiddenIframeContainer = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'expanded',
+})(({ expanded }) => ({
+  position: expanded ? 'relative' : 'absolute',
+  top: expanded ? 'auto' : '-9999px',
+  left: expanded ? 'auto' : '-9999px',
+  width: expanded ? 'auto' : '1px',
+  height: expanded ? 'auto' : '1px',
+  opacity: expanded ? 1 : 0,
+  pointerEvents: expanded ? 'auto' : 'none',
+}));
+
+const StyledErrorAlert = styled(Alert)({
+  margin: '8px',
+});
+
+const StyledFooterContainer = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(1),
+}));
+
+const StyledEnjoyText = styled(Typography)({
+  display: 'block',
+  textAlign: 'center',
+  color: '#666',
+  marginTop: '8px',
+  fontStyle: 'italic',
+  fontFamily: "'Poppins', sans-serif",
+});
 
 function PersistentMusicPlayer() {
   const {
@@ -97,43 +149,21 @@ function PersistentMusicPlayer() {
   } = useMusicContext();
   const { t } = useTranslation();
 
-  // All hooks must be called before any conditional returns
   const handlePlayerError = useCallback(() => {
     onPlayerError();
   }, [onPlayerError]);
 
-  // Don't render if music is not available or player is not visible
   if (!isMusicAvailable || !isPlayerVisible) {
     return null;
   }
 
   return (
     <StyledPlayerContainer>
-      {/* Always render the iframe to keep music playing, hidden when minimized */}
-      <Box 
-        sx={{ 
-          position: 'absolute',
-          top: '-9999px',
-          left: '-9999px',
-          width: '1px',
-          height: '1px',
-          opacity: 0,
-          pointerEvents: 'none',
-          ...(isPlayerExpanded && {
-            position: 'relative',
-            top: 'auto',
-            left: 'auto',
-            width: 'auto',
-            height: 'auto',
-            opacity: 1,
-            pointerEvents: 'auto'
-          })
-        }}
-      >
+      <StyledHiddenIframeContainer expanded={isPlayerExpanded}>
         {hasError ? (
-          <Alert severity="warning" sx={{ m: 1 }}>
+          <StyledErrorAlert severity="warning">
             {t('music.connectionError')}
-          </Alert>
+          </StyledErrorAlert>
         ) : (
           <StyledIframeContainer>
             <iframe
@@ -145,67 +175,46 @@ function PersistentMusicPlayer() {
             />
           </StyledIframeContainer>
         )}
-      </Box>
+      </StyledHiddenIframeContainer>
 
       {!isPlayerExpanded ? (
-        // Mini Player
         <StyledMiniPlayer onClick={togglePlayerExpanded}>
-          <MusicNote sx={{ color: 'white', fontSize: 24 }} />
+          <StyledMiniPlayerIcon />
           <StyledMiniPlayerText>
             {t('music.miniPlayerText')}
           </StyledMiniPlayerText>
-          <ExpandLess sx={{ color: 'white', fontSize: 20 }} />
+          <StyledExpandIcon />
         </StyledMiniPlayer>
       ) : (
-        // Expanded Player
         <StyledExpandedPlayer>
           <StyledPlayerHeader>
             <StyledPlayerTitle>
-              <MusicNote sx={{ fontSize: 'inherit' }} />
+              <StyledMusicNoteInherit />
               {t('music.playlistTitle')}
             </StyledPlayerTitle>
             <Box>
               <Tooltip title={t('common.minimize')}>
-                <IconButton 
-                  size="small" 
-                  onClick={togglePlayerExpanded}
-                  sx={{ color: 'white', mr: 1 }}
-                >
+                <StyledMinimizeButton size="small" onClick={togglePlayerExpanded}>
                   <ExpandMore />
-                </IconButton>
+                </StyledMinimizeButton>
               </Tooltip>
               <Tooltip title={t('common.close')}>
-                <IconButton 
-                  size="small" 
-                  onClick={hidePlayer}
-                  sx={{ color: 'white' }}
-                >
+                <StyledCloseButton size="small" onClick={hidePlayer}>
                   <Close />
-                </IconButton>
+                </StyledCloseButton>
               </Tooltip>
             </Box>
           </StyledPlayerHeader>
 
-          <Box sx={{ p: 1 }}>
-            <Typography 
-              variant="caption" 
-              sx={{ 
-                display: 'block',
-                textAlign: 'center',
-                color: '#666',
-                mt: 1,
-                fontStyle: 'italic',
-                fontFamily: "'Poppins', sans-serif"
-              }}
-            >
+          <StyledFooterContainer>
+            <StyledEnjoyText variant="caption">
               {t('music.enjoyPlaylist')}
-            </Typography>
-          </Box>
+            </StyledEnjoyText>
+          </StyledFooterContainer>
         </StyledExpandedPlayer>
       )}
     </StyledPlayerContainer>
   );
 }
 
-// Wrap with memo to prevent unnecessary iframe re-renders
 export default memo(PersistentMusicPlayer);

@@ -1,5 +1,7 @@
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { memo } from 'react';
+
 
 const DividerContainer = styled(Box)({
   display: 'flex',
@@ -20,7 +22,7 @@ const Ornament = styled(Box)(({ theme }) => ({
   fontSize: '14px',
 }));
 
-export default function SectionDivider() {
+const SectionDivider = memo(function SectionDivider() {
   return (
     <DividerContainer>
       <Line />
@@ -28,4 +30,6 @@ export default function SectionDivider() {
       <Line />
     </DividerContainer>
   );
-}
+});
+
+export default SectionDivider;

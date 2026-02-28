@@ -1,13 +1,7 @@
 import { Box, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-
-const SectionContainer = styled(Box)({
-  padding: '60px 30px',
-  textAlign: 'center',
-  maxWidth: '520px',
-  margin: '0 auto',
-});
+import SectionContainer from './shared/SectionContainer';
 
 const BismillahText = styled(Typography)(({ theme }) => ({
   fontFamily: "'Cormorant Garamond', serif",
@@ -84,7 +78,7 @@ const MapButton = styled(Button)(({ theme }) => ({
 }));
 
 export default function EventSection() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const weddingDate = import.meta.env.VITE_APP_WEDDING_DATE;
   const akadTime = import.meta.env.VITE_WEDDING_AKAD_TIME || '08.00 - 10.00 WIB';
@@ -92,14 +86,15 @@ export default function EventSection() {
   const venue = import.meta.env.VITE_WEDDING_VENUE || 'Wedding Venue';
   const mapsUrl = import.meta.env.VITE_VENUE_MAPS_URL || '#';
 
+  const locale = i18n.language === 'id' ? 'id-ID' : 'en-US';
   const formattedDate = weddingDate
-    ? new Date(weddingDate).toLocaleDateString('id-ID', {
+    ? new Date(weddingDate).toLocaleDateString(locale, {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric',
       })
-    : 'Wedding Date';
+    : t('event.weddingDate');
 
   return (
     <SectionContainer>

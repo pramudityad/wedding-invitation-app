@@ -111,7 +111,7 @@ export default function SplashOverlay({ visible, guestName, onOpen }) {
         </CoupleNamesCover>
         <GettingMarried>{t('splash.areGettingMarried')}</GettingMarried>
         <DearLabel>{t('splash.dear')}</DearLabel>
-        <GuestNameText>{guestName || 'Guest'}</GuestNameText>
+        <GuestNameText>{guestName || t('common.guest')}</GuestNameText>
         <OpenButton onClick={onOpen}>
           {t('splash.openButton')}
         </OpenButton>

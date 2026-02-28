@@ -23,16 +23,6 @@ export const submitComment = async (content) => {
   }
 };
 
-export const getUserComments = async () => {
-  try {
-    const response = await api.get('/comments/me');
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch user comments:', error);
-    throw error;
-  }
-};
-
 export const getAllComments = async (params = {}) => {
   try {
     const response = await api.get('/comments', { params });
