@@ -10,12 +10,12 @@ import (
 // CommentService handles comment business logic
 type CommentService struct {
 	commentRepo repositories.CommentRepository
-	guestService *GuestService
-	commentCache *cache.MemoryCache
+	guestService GuestServiceInterface
+	commentCache cache.CacheInterface
 }
 
 // NewCommentService creates a new comment service
-func NewCommentService(commentRepo repositories.CommentRepository, guestService *GuestService) *CommentService {
+func NewCommentService(commentRepo repositories.CommentRepository, guestService GuestServiceInterface) *CommentService {
 	return &CommentService{
 		commentRepo:  commentRepo,
 		guestService: guestService,

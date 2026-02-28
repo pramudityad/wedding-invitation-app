@@ -3,8 +3,12 @@ package models
 import (
 	"database/sql"
 	"errors"
+	"log"
 	"time"
 )
+
+// ErrCommentLimitReached is a sentinel error for when a guest exceeds the comment limit
+var ErrCommentLimitReached = errors.New("maximum comment limit reached")
 
 type Comment struct {
 	ID        int64
@@ -14,29 +18,50 @@ type Comment struct {
 }
 
 func (c *Comment) Create(db *sql.DB) error {
-	// Check if guest already has 2 comments
-	count, err := GetCommentCountByGuestID(db, c.GuestID)
+	tx, err := db.Begin()
 	if err != nil {
+		log.Printf("Failed to begin transaction: %v", err)
 		return err
 	}
-	
-	if count >= 2 {
-		return errors.New("maximum comment limit reached: each guest can only have 2 comments")
+	defer tx.Rollback()
+
+	// Check if guest already has 2 comments
+	var count int
+	row := tx.QueryRow("SELECT COUNT(*) FROM comments WHERE guest_id = ?", c.GuestID)
+	if err := row.Scan(&count); err != nil {
+		log.Printf("Failed to count comments: %v", err)
+		return err
 	}
 
-	stmt := `INSERT INTO comments 
+	if count >= 2 {
+		return ErrCommentLimitReached
+	}
+
+	stmt := `INSERT INTO comments
 		(guest_id, content)
 		VALUES (?, ?)`
 
-	result, err := db.Exec(stmt,
+	result, err := tx.Exec(stmt,
 		c.GuestID,
 		c.Content)
 	if err != nil {
+		log.Printf("Failed to create comment: %v", err)
 		return err
 	}
 
 	c.ID, err = result.LastInsertId()
-	return err
+	if err != nil {
+		log.Printf("Failed to get last insert ID: %v", err)
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		log.Printf("Failed to commit transaction: %v", err)
+		return err
+	}
+
+	log.Printf("Successfully created comment with ID %d", c.ID)
+	return nil
 }
 
 func GetCommentsByGuestID(db *sql.DB, guestID int64) ([]Comment, error) {
@@ -64,6 +89,11 @@ func GetCommentsByGuestID(db *sql.DB, guestID int64) ([]Comment, error) {
 			return nil, err
 		}
 		comments = append(comments, comment)
+	}
+
+	// Check for iteration errors
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 
 	return comments, nil
@@ -112,7 +142,7 @@ func GetAllCommentsWithGuests(db *sql.DB, limit int, cursor string) (*PaginatedC
 		args = append(args, cursorTime)
 	}
 	query += " ORDER BY c.created_at DESC LIMIT ?"
-	args = append(args, limit+1)  // +1 to check for next page
+	args = append(args, limit+1) // +1 to check for next page
 
 	rows, err := db.Query(query, args...)
 	if err != nil {
@@ -134,6 +164,11 @@ func GetAllCommentsWithGuests(db *sql.DB, limit int, cursor string) (*PaginatedC
 			return nil, err
 		}
 		comments = append(comments, comment)
+	}
+
+	// Check for iteration errors
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 
 	nextCursor := ""
@@ -186,6 +221,11 @@ func GetAllComments(db *sql.DB) ([]Comment, error) {
 			return nil, err
 		}
 		comments = append(comments, comment)
+	}
+
+	// Check for iteration errors
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 
 	return comments, nil

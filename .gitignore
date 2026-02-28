@@ -98,3 +98,10 @@ docker-compose.override.yml
 *.tmp
 tmp/
 temp/
+
+
+# Compiled Go binary
+wedding-backend
+
+# Sisyphus workspace files
+.sisyphus/

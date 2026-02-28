@@ -1,11 +1,14 @@
 package routes
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
+
 	"wedding-invitation-backend/container"
 	"wedding-invitation-backend/middleware/auth"
+	"wedding-invitation-backend/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,14 +20,14 @@ type CreateCommentRequest struct {
 func SetupCommentRoutes(r *gin.RouterGroup, c *container.Container) {
 	// Protected routes that require authentication
 	authenticated := r.Group("")
-	authenticated.Use(auth.JWTMiddleware())
+	authenticated.Use(auth.JWTMiddlewareWithService(c.GuestService))
 
 	// POST /comments - Create a new comment
 	authenticated.POST("/comments", func(ctx *gin.Context) {
 		var req CreateCommentRequest
 		if err := ctx.ShouldBindJSON(&req); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid request data",
+				"error":   "Invalid request data",
 				"details": err.Error(),
 			})
 			return
@@ -49,15 +52,15 @@ func SetupCommentRoutes(r *gin.RouterGroup, c *container.Container) {
 		comment, err := c.CommentService.CreateComment(username.(string), content)
 		if err != nil {
 			// Check for specific maximum comment limit error
-			if strings.Contains(err.Error(), "maximum comment limit reached") {
+			if errors.Is(err, models.ErrCommentLimitReached) {
 				ctx.JSON(http.StatusBadRequest, gin.H{
-					"error": "Maximum comment limit reached",
+					"error":   "Maximum comment limit reached",
 					"details": "Each guest can only have 2 comments maximum",
 				})
 				return
 			}
 			ctx.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Error creating comment",
+				"error":   "Error creating comment",
 				"details": err.Error(),
 			})
 			return
@@ -88,7 +91,7 @@ func SetupCommentRoutes(r *gin.RouterGroup, c *container.Container) {
 		comments, err := c.CommentService.GetCommentsByGuest(username.(string))
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Error retrieving comments",
+				"error":   "Error retrieving comments",
 				"details": err.Error(),
 			})
 			return
@@ -111,17 +114,17 @@ func SetupCommentRoutes(r *gin.RouterGroup, c *container.Container) {
 		// Parse query parameters
 		limitStr := ctx.DefaultQuery("limit", "10")
 		cursor := ctx.Query("cursor")
-		
+
 		limit, err := strconv.Atoi(limitStr)
 		if err != nil || limit <= 0 || limit > 100 {
 			limit = 10 // Default limit
 		}
-		
+
 		// Get all comments with guest names using the service
 		result, err := c.CommentService.GetAllCommentsWithGuests(limit, cursor)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Error retrieving comments",
+				"error":   "Error retrieving comments",
 				"details": err.Error(),
 			})
 			return

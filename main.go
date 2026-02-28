@@ -6,7 +6,6 @@ import (
 	"wedding-invitation-backend/container"
 	"wedding-invitation-backend/database"
 	"wedding-invitation-backend/routes"
-	"wedding-invitation-backend/spotify"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -32,9 +31,6 @@ func main() {
 	// Initialize dependency injection container
 	appContainer := container.NewContainer(database.DB)
 	log.Println("Dependency injection container initialized with caching enabled")
-
-	// Initialize Spotify client
-	spotify.Init()
 
 	// Initialize Gin router
 	r := gin.Default()

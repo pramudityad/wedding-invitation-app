@@ -36,9 +36,6 @@ func SetupRoutes(r *gin.Engine, c *container.Container) {
 		// Setup comment routes
 		SetupCommentRoutes(protected, c)
 
-		// Setup Spotify routes
-		// SetupSpotifyRoutes(protected)
-
 		// Setup invitation routes
 		SetupInvitationRoutes(protected, c)
 	}

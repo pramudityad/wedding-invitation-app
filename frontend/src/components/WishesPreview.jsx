@@ -158,8 +158,8 @@ export default function WishesPreview({ comments = [], navigate, username }) {
       <ScrollContainer>
         {localComments.map((comment, index) => (
           <WishCard key={comment.id || index}>
-            <WishName>{comment.guest_name || 'Guest'}</WishName>
-            <WishText>"{comment.content}"</WishText>
+            <WishName>{comment.GuestName || 'Guest'}</WishName>
+            <WishText>"{comment.Content}"</WishText>
           </WishCard>
         ))}
       </ScrollContainer>

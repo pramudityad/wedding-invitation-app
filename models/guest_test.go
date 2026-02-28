@@ -5,37 +5,24 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"wedding-invitation-backend/database"
 	_ "modernc.org/sqlite"
 )
 
 func setupDB(t *testing.T) *sql.DB {
+	t.Helper()
 	db, err := sql.Open("sqlite", ":memory:")
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	// Create tables with same schema as production
-	_, err = db.Exec(`
-	CREATE TABLE IF NOT EXISTS guests (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT NOT NULL,
-		attending BOOLEAN,
-		plus_ones INTEGER DEFAULT 0,
-		dietary_restrictions TEXT,
-		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		first_opened_at TIMESTAMP DEFAULT NULL
-	);
-
-	CREATE TABLE IF NOT EXISTS comments (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		guest_id INTEGER NOT NULL,
-		content TEXT NOT NULL,
-		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (guest_id) REFERENCES guests(id)
-	);
-	`)
+	// Enable foreign keys (must be set before creating tables)
+	_, err = db.Exec(`PRAGMA foreign_keys = ON;`)
 	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Create tables using shared schema
+	if err := database.CreateSchema(db); err != nil {
 		t.Fatal(err)
 	}
 
@@ -147,4 +134,37 @@ func TestMarkInvitationOpened(t *testing.T) {
 	guest, err := GetGuestByName(db, "Unopened")
 	assert.NoError(t, err)
 	assert.True(t, guest.FirstOpenedAt.Valid)
+}
+
+func TestGetGuestByName_NotFound(t *testing.T) {
+	db := setupDB(t)
+	t.Cleanup(func() { db.Close() })
+
+	// Test retrieval of non-existent guest
+	guest, err := GetGuestByName(db, "NonExistent")
+	assert.NoError(t, err)
+	assert.Nil(t, guest)
+}
+
+
+
+func TestGuestUpdate_NonExistent(t *testing.T) {
+	db := setupDB(t)
+	t.Cleanup(func() { db.Close() })
+
+	// Try to update a guest with non-existent ID
+	guest := &Guest{ID: 99999, Name: "Ghost"}
+	err := guest.Update(db)
+	assert.Error(t, err)
+	assert.Equal(t, sql.ErrNoRows, err)
+}
+
+func TestGetAllGuests_Empty(t *testing.T) {
+	db := setupDB(t)
+	t.Cleanup(func() { db.Close() })
+
+	// Test on empty database
+	guests, err := GetAllGuests(db)
+	assert.NoError(t, err)
+	assert.Len(t, guests, 0)
 }

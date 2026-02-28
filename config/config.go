@@ -7,15 +7,11 @@ import (
 )
 
 var (
-	ServerPort          string
-	JWTSecret           string
-	JWTExpiry           int
-	DBPath              string
-	SpotifyClientId     string
-	SpotifyClientSecret string
-	SpotifyRedirectURI  string
-	SpotifyCacheSeconds int
-	AdminAPIKey         string
+	ServerPort  string
+	JWTSecret   string
+	JWTExpiry   int
+	DBPath      string
+	AdminAPIKey string
 )
 
 func init() {
@@ -24,10 +20,6 @@ func init() {
 	JWTSecret = getEnv("JWT_SECRET", "test-secret")
 	JWTExpiry = getEnvInt("JWT_EXPIRY", 24*60*60)
 	DBPath = getEnv("DB_PATH", "data/guests.db")
-	SpotifyClientId = getEnv("SPOTIFY_CLIENT_ID", "")
-	SpotifyClientSecret = getEnv("SPOTIFY_CLIENT_SECRET", "")
-	SpotifyRedirectURI = getEnv("SPOTIFY_REDIRECT_URI", "http://localhost:8080/spotify/callback")
-	SpotifyCacheSeconds = getEnvInt("SPOTIFY_CACHE_SECONDS", 300)
 	AdminAPIKey = getEnv("ADMIN_API_KEY", "admin-api-key")
 }
 
@@ -60,15 +52,6 @@ func ValidateConfig() {
 
 	if AdminAPIKey == "admin-api-key" {
 		warnings = append(warnings, "ADMIN_API_KEY is using default value - this is insecure for production")
-	}
-
-	// Optional but recommended validations
-	if SpotifyClientId == "" {
-		warnings = append(warnings, "SPOTIFY_CLIENT_ID not set - Spotify features will be disabled")
-	}
-
-	if SpotifyClientSecret == "" && SpotifyClientId != "" {
-		errors = append(errors, "SPOTIFY_CLIENT_SECRET is required when SPOTIFY_CLIENT_ID is set")
 	}
 
 	// Log warnings

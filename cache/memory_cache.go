@@ -18,21 +18,23 @@ func (item *CacheItem) IsExpired() bool {
 
 // MemoryCache provides an in-memory cache with TTL support
 type MemoryCache struct {
-	items map[string]*CacheItem
-	mutex sync.RWMutex
-	ttl   time.Duration
+	items  map[string]*CacheItem
+	mutex  sync.RWMutex
+	ttl    time.Duration
+	stopCh chan struct{}
 }
 
 // NewMemoryCache creates a new memory cache with specified TTL
 func NewMemoryCache(ttl time.Duration) *MemoryCache {
 	cache := &MemoryCache{
-		items: make(map[string]*CacheItem),
-		ttl:   ttl,
+		items:  make(map[string]*CacheItem),
+		ttl:    ttl,
+		stopCh: make(chan struct{}),
 	}
-	
+
 	// Start cleanup goroutine
 	go cache.cleanup()
-	
+
 	return cache
 }
 
@@ -49,20 +51,20 @@ func (c *MemoryCache) Set(key string, value interface{}) {
 
 // Get retrieves a value from the cache
 func (c *MemoryCache) Get(key string) (interface{}, bool) {
-	c.mutex.RLock()
-	defer c.mutex.RUnlock()
-	
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
 	item, exists := c.items[key]
 	if !exists {
 		return nil, false
 	}
-	
+
 	if item.IsExpired() {
 		// Item expired, remove it
 		delete(c.items, key)
 		return nil, false
 	}
-	
+
 	return item.Value, true
 }
 
@@ -90,15 +92,22 @@ func (c *MemoryCache) Size() int {
 	return len(c.items)
 }
 
+// Stop halts the cleanup goroutine
+func (c *MemoryCache) Stop() {
+	close(c.stopCh)
+}
+
 // cleanup removes expired items every minute
 func (c *MemoryCache) cleanup() {
 	ticker := time.NewTicker(time.Minute)
 	defer ticker.Stop()
-	
+
 	for {
 		select {
 		case <-ticker.C:
 			c.removeExpired()
+		case <-c.stopCh:
+			return
 		}
 	}
 }
