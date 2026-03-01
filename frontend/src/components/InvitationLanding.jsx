@@ -138,6 +138,7 @@ function InvitationLanding() {
     featuredComments,
     isLoading,
     handleRSVP,
+    handleCommentSubmitted,
     snackbar,
     handleCloseSnackbar,
   } = useGuestData();
@@ -211,7 +212,12 @@ function InvitationLanding() {
           <SectionDivider />
 
           <ScrollSection enabled={mainVisible}>
-            <RsvpSection rsvpStatus={rsvpStatus} isLoading={isLoading} handleRSVP={handleRSVP} />
+            <RsvpSection
+              rsvpStatus={rsvpStatus}
+              isLoading={isLoading}
+              handleRSVP={handleRSVP}
+              onCommentSubmitted={handleCommentSubmitted}
+            />
           </ScrollSection>
 
           <SectionDivider />
