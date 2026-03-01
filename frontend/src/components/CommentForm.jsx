@@ -101,7 +101,8 @@ export default function CommentForm({ onCommentSubmitted }) {
         onCommentSubmitted(comment);
       }
     } catch (err) {
-      setError(err.message || t('comments.submitError'));
+      const apiError = err.response?.data?.details || err.response?.data?.error || err.message || t('comments.submitError');
+      setError(apiError);
     } finally {
       setSubmitting(false);
     }
