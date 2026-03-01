@@ -128,12 +128,20 @@ export default function useGuestData() {
     setSnackbar((prev) => ({ ...prev, open: false }));
   }, []);
 
+  const handleCommentSubmitted = useCallback(
+    (newComment) => {
+      setFeaturedComments((prev) => [newComment, ...prev].slice(0, 3));
+    },
+    []
+  );
+
   return {
     username,
     rsvpStatus,
     featuredComments,
     isLoading,
     handleRSVP,
+    handleCommentSubmitted,
     snackbar,
     handleCloseSnackbar,
   };

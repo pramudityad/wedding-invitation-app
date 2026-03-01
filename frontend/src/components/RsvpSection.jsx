@@ -12,6 +12,7 @@ import {
 import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import SectionContainer from './shared/SectionContainer';
+import CommentForm from './CommentForm';
 
 
 const StyledRSVPButtonsContainer = styled(Box)(({ theme }) => ({
@@ -145,7 +146,22 @@ const CancelButton = styled(Button)({
   },
 });
 
-export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP }) {
+const WishesDivider = styled(Box)(({ theme }) => ({
+  width: '60px',
+  height: '1px',
+  background: theme.palette.wedding?.gold || '#C9A96E',
+  margin: `${theme.spacing(4)} auto`,
+}));
+
+const WishesLabel = styled(Typography)(({ theme }) => ({
+  fontFamily: "'Cormorant Garamond', serif",
+  fontStyle: 'italic',
+  fontSize: '18px',
+  color: theme.palette.wedding?.navy || '#2C3E6B',
+  marginBottom: theme.spacing(2),
+}));
+
+export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP, onCommentSubmitted }) {
   const { t } = useTranslation();
   const [showConfirm, setShowConfirm] = useState(false);
   const [pendingChoice, setPendingChoice] = useState(null);
@@ -228,6 +244,10 @@ export default function RsvpSection({ rsvpStatus, isLoading, handleRSVP }) {
           </ConfirmButton>
         </DialogActionsStyled>
       </Dialog>
+
+      <WishesDivider />
+      <WishesLabel>{t('rsvp.wishesLabel')}</WishesLabel>
+      <CommentForm onCommentSubmitted={onCommentSubmitted} />
     </SectionContainer>
   );
 }

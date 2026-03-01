@@ -1,6 +1,6 @@
 {
   "login": {
-    "welcome": "Selamat Datang, Silakan Masuk",
+    "welcome": "Selamat Datang",
     "invalidName": "Format nama tidak valid. Silakan periksa URL.",
     "provideName": "Silakan berikan nama Anda di path URL.",
     "verificationFailed": "Tidak dapat memverifikasi nama Anda. Silakan periksa URL.",
@@ -25,11 +25,15 @@
     "placeholder": "Tinggalkan komentar atau doa...",
     "placeholderHint": "Bagikan pemikiran Anda... (Ctrl+Enter untuk kirim)",
     "submitButton": "Kirim Komentar",
+    "submit": "Kirim Komentar",
+    "submitting": "Mengirim...",
     "loading": "Memuat komentar...",
     "loadError": "Gagal memuat komentar. Silakan refresh.",
     "emptyError": "Komentar tidak boleh kosong.",
     "lengthError": "Komentar terlalu panjang. Maksimal {{max}} karakter diizinkan.",
     "successMessage": "Komentar Anda berhasil dikirim!",
+    "submitSuccess": "Komentar Anda berhasil dikirim!",
+    "overLimit": "Melebihi batas",
     "limitReached": "Anda telah mencapai batas maksimal {{max}} komentar.",
     "submitError": "Gagal mengirim komentar. Silakan coba lagi.",
     "noComments": "Belum ada komentar. Jadilah yang pertama meninggalkan pesan!",
@@ -66,7 +70,8 @@
     "confirmAttending": "Anda akan mengkonfirmasi kehadiran Anda. Apakah Anda yakin?",
     "confirmNotAttending": "Anda akan mengkonfirmasi bahwa Anda tidak dapat hadir. Apakah Anda yakin?",
     "confirmButton": "Ya, Saya Yakin",
-    "cancelButton": "Kembali"
+    "cancelButton": "Kembali",
+    "wishesLabel": "Tinggalkan doa untuk kedua mempelai"
   },
   "gift": {
     "title": "Hadiah Pernikahan",

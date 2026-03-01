@@ -1,6 +1,6 @@
 {
   "login": {
-    "welcome": "Welcome, Please Log In",
+    "welcome": "Welcome",
     "invalidName": "Invalid name format. Please check the URL.",
     "provideName": "Please provide your name in the URL path.",
     "verificationFailed": "Could not verify your name. Please check the URL.",
@@ -25,11 +25,15 @@
     "placeholder": "Leave a comment or well wish...",
     "placeholderHint": "Share your thoughts... (Ctrl+Enter to submit)",
     "submitButton": "Post Comment",
+    "submit": "Post Comment",
+    "submitting": "Posting...",
     "loading": "Loading comments...",
     "loadError": "Failed to load comments. Please try refreshing.",
     "emptyError": "Comment cannot be empty.",
     "lengthError": "Comment is too long. Maximum {{max}} characters allowed.",
     "successMessage": "Your comment has been posted successfully!",
+    "submitSuccess": "Your comment has been posted successfully!",
+    "overLimit": "Over limit",
     "limitReached": "You have reached the maximum limit of {{max}} comments.",
     "submitError": "Failed to post comment. Please try again.",
     "noComments": "No comments yet. Be the first to leave a message!",
@@ -66,7 +70,8 @@
     "confirmAttending": "You are confirming your attendance. Are you sure?",
     "confirmNotAttending": "You are confirming that you will not attend. Are you sure?",
     "confirmButton": "Yes, I'm Sure",
-    "cancelButton": "Go Back"
+    "cancelButton": "Go Back",
+    "wishesLabel": "Leave a wish for the couple"
   },
   "gift": {
     "title": "Wedding Gift",
