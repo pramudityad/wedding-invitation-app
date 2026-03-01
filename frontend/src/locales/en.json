@@ -1,6 +1,6 @@
 {
   "login": {
-    "welcome": "Welcome, Please Log In",
+    "welcome": "Welcome",
     "invalidName": "Invalid name format. Please check the URL.",
     "provideName": "Please provide your name in the URL path.",
     "verificationFailed": "Could not verify your name. Please check the URL.",
@@ -66,7 +66,8 @@
     "confirmAttending": "You are confirming your attendance. Are you sure?",
     "confirmNotAttending": "You are confirming that you will not attend. Are you sure?",
     "confirmButton": "Yes, I'm Sure",
-    "cancelButton": "Go Back"
+    "cancelButton": "Go Back",
+    "wishesLabel": "Leave a wish for the couple"
   },
   "gift": {
     "title": "Wedding Gift",
