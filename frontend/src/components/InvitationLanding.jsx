@@ -96,6 +96,28 @@ const StyledSnackbarAlert = styled(Alert)({
   width: '100%',
 });
 
+const WelcomeContainer = styled(Box)({
+  padding: '40px 30px 20px',
+  textAlign: 'center',
+});
+
+const WelcomeDearLabel = styled(Typography)({
+  fontFamily: "'Poppins', sans-serif",
+  fontSize: '12px',
+  color: '#5A5A5A',
+  marginBottom: '4px',
+});
+
+const WelcomeGuestName = styled(Typography)(({ theme }) => ({
+  fontFamily: "'Great Vibes', cursive",
+  fontSize: '36px',
+  color: theme.palette.wedding?.navy || '#2C3E6B',
+  lineHeight: 1.3,
+  [theme.breakpoints?.down?.('sm')]: {
+    fontSize: '28px',
+  },
+}));
+
 const ScrollSection = memo(function ScrollSection({ children, enabled }) {
   const [ref, isVisible] = useScrollAnimation(enabled);
   return (
@@ -155,6 +177,15 @@ function InvitationLanding() {
 
       {mainVisible && (
         <PageWrapper>
+          <ScrollSection enabled={mainVisible}>
+            <WelcomeContainer>
+              <WelcomeDearLabel>{t('splash.dear')}</WelcomeDearLabel>
+              <WelcomeGuestName>{username || t('common.guest')}</WelcomeGuestName>
+            </WelcomeContainer>
+          </ScrollSection>
+
+          <SectionDivider />
+
           <ScrollSection enabled={mainVisible}>
             <QuranSection />
           </ScrollSection>
