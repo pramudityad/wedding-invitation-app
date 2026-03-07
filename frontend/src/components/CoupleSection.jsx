@@ -13,17 +13,14 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const PhotoCircle = styled(Box)(({ theme }) => ({
+const PhotoImage = styled('img')(({ theme }) => ({
   width: '130px',
   height: '130px',
   borderRadius: '50%',
   border: `2px solid ${theme.palette.wedding?.gold || '#C9A96E'}`,
-  background: `linear-gradient(135deg, ${theme.palette.wedding?.sky || '#B8CDE8'}, ${theme.palette.wedding?.blush || '#F0E0D0'})`,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '50px',
+  objectFit: 'cover',
   margin: '0 auto 16px',
+  display: 'block',
 }));
 
 const PersonName = styled(Typography)(({ theme }) => ({
@@ -80,7 +77,7 @@ export default function CoupleSection() {
       <SectionTitle>{t('couple.sectionTitle')}</SectionTitle>
 
       <SpacedBox>
-        <PhotoCircle>👩</PhotoCircle>
+        <PhotoImage src="/images/bride.png" alt="Bride" />
         <PersonName>{brideName.toUpperCase()}</PersonName>
         <ParentLabel>{t('couple.brideLabel')}</ParentLabel>
         <ParentName>{brideFather}</ParentName>
@@ -91,7 +88,7 @@ export default function CoupleSection() {
       <Ampersand>&</Ampersand>
 
       <SpacedBoxTop>
-        <PhotoCircle>👨</PhotoCircle>
+        <PhotoImage src="/images/groom.png" alt="Groom" />
         <PersonName>{groomName.toUpperCase()}</PersonName>
         <ParentLabel>{t('couple.groomLabel')}</ParentLabel>
         <ParentName>{groomFather}</ParentName>
