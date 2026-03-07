@@ -1,4 +1,4 @@
-import { Box, Typography, Button } from '@mui/material';
+import { Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import SectionContainer from './shared/SectionContainer';
@@ -19,10 +19,19 @@ const IntroText = styled(Typography)({
   lineHeight: 1.6,
 });
 
-const RingIcon = styled(Box)({
-  fontSize: '40px',
+const RingImage = styled('img')(({ theme }) => ({
+  width: '60px',
+  height: 'auto',
   marginBottom: '16px',
-});
+  animation: 'fadeIn 0.8s ease-out',
+  '@keyframes fadeIn': {
+    from: { opacity: 0 },
+    to: { opacity: 1 },
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '48px',
+  },
+}));
 
 const DateText = styled(Typography)(({ theme }) => ({
   fontFamily: "'Poppins', sans-serif",
@@ -109,7 +118,7 @@ export default function EventSection() {
     <SectionContainer>
       <BismillahText>{t('event.bismillah')}</BismillahText>
       <IntroText>{t('event.intro')}</IntroText>
-      <RingIcon>💍</RingIcon>
+      <RingImage src="/images/asset/ring.png" alt="Wedding rings" />
       <DateText>{formattedDate}</DateText>
 
       <TimeBlock>
