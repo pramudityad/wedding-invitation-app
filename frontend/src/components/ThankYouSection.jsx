@@ -37,10 +37,9 @@ const Tagline = styled(Typography)(({ theme }) => ({
 }));
 
 const CoupleImage = styled('img')({
-  width: '200px',
+  width: '280px',
   height: 'auto',
   marginBottom: '16px',
-  borderRadius: '50%',
   objectFit: 'cover',
 });
 
@@ -64,7 +63,7 @@ export default function ThankYouSection() {
       <Title>{t('thankyou.title')}</Title>
       <Message>{t('thankyou.message')}</Message>
       <Tagline>{t('thankyou.tagline')}</Tagline>
-      <CoupleImage src="/images/couple-art.jpeg" alt="Couple" />
+      <CoupleImage src="/images/bride-groom.png" alt="Couple" />
       <CoupleNames>{groomShort} & {brideShort}</CoupleNames>
     </SectionContainer>
   );

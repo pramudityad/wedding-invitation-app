@@ -58,8 +58,16 @@ const VenueText = styled(Typography)(({ theme }) => ({
   fontWeight: 600,
   color: theme.palette.wedding?.navy || '#2C3E6B',
   marginTop: '20px',
-  marginBottom: '20px',
+  marginBottom: '4px',
 }));
+
+const VenueDetail = styled(Typography)({
+  fontFamily: "'Poppins', sans-serif",
+  fontSize: '12px',
+  fontWeight: 400,
+  color: '#5A5A5A',
+  marginBottom: '20px',
+});
 
 const MapButton = styled(Button)(({ theme }) => ({
   fontFamily: "'Poppins', sans-serif",
@@ -84,6 +92,7 @@ export default function EventSection() {
   const akadTime = import.meta.env.VITE_WEDDING_AKAD_TIME || '08.00 - 10.00 WIB';
   const resepsiTime = import.meta.env.VITE_WEDDING_RESEPSI_TIME || '11.00 - 13.00 WIB';
   const venue = import.meta.env.VITE_WEDDING_VENUE || 'Wedding Venue';
+  const venueDetail = import.meta.env.VITE_WEDDING_DETAIL || '';
   const mapsUrl = import.meta.env.VITE_VENUE_MAPS_URL || '#';
 
   const locale = i18n.language === 'id' ? 'id-ID' : 'en-US';
@@ -114,6 +123,7 @@ export default function EventSection() {
       </TimeBlock>
 
       <VenueText>{venue}</VenueText>
+      {venueDetail && <VenueDetail>{venueDetail}</VenueDetail>}
 
       <MapButton
         component="a"
