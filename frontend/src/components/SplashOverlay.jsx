@@ -97,6 +97,64 @@ const OpenButton = styled(Button)(({ theme }) => ({
   },
 }));
 
+const YellowFlower = styled('img')(({ theme }) => ({
+  position: 'absolute',
+  top: '10%',
+  right: '5%',
+  width: '100px',
+  height: 'auto',
+  opacity: 0.6,
+  transform: 'rotate(20deg)',
+  pointerEvents: 'none',
+  animation: 'fadeIn 0.8s ease-out',
+  '@keyframes fadeIn': {
+    from: { opacity: 0 },
+    to: { opacity: 0.6 },
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '70px',
+    right: '2%',
+  },
+}));
+
+const LeafTop = styled('img')(({ theme }) => ({
+  position: 'absolute',
+  top: '15%',
+  left: '0',
+  width: '70px',
+  height: 'auto',
+  opacity: 0.5,
+  transform: 'rotate(-30deg)',
+  pointerEvents: 'none',
+  animation: 'fadeIn 0.8s ease-out',
+  '@keyframes fadeIn': {
+    from: { opacity: 0 },
+    to: { opacity: 0.5 },
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '50px',
+  },
+}));
+
+const LeafBottom = styled('img')(({ theme }) => ({
+  position: 'absolute',
+  bottom: '10%',
+  right: '0',
+  width: '70px',
+  height: 'auto',
+  opacity: 0.5,
+  transform: 'rotate(150deg)',
+  pointerEvents: 'none',
+  animation: 'fadeIn 0.8s ease-out',
+  '@keyframes fadeIn': {
+    from: { opacity: 0 },
+    to: { opacity: 0.5 },
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '50px',
+  },
+}));
+
 export default function SplashOverlay({ visible, guestName, onOpen }) {
   const { t } = useTranslation();
 
@@ -106,6 +164,9 @@ export default function SplashOverlay({ visible, guestName, onOpen }) {
   return (
     <Overlay visible={visible}>
       <CoverSection>
+        <YellowFlower src="/images/asset/yellow-flower.png" alt="" />
+        <LeafTop src="/images/asset/leaf.png" alt="" />
+        <LeafBottom src="/images/asset/leaf.png" alt="" />
         <CoupleNamesCover>
           {brideShort} & {groomShort}
         </CoupleNamesCover>
