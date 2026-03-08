@@ -119,12 +119,12 @@ export default function CoupleSection() {
 
   return (
     <CoupleSectionContainer>
-      <LeafLeft src="/images/asset/leaf-2.png" alt="" />
-      <LeafRight src="/images/asset/leaf-3.png" alt="" />
+      <LeafLeft src="/images/asset/leaf-2.webp" alt="" />
+      <LeafRight src="/images/asset/leaf-3.webp" alt="" />
       <SectionTitle>{t('couple.sectionTitle')}</SectionTitle>
 
       <SpacedBox>
-        <PhotoImage src="/images/bride.png" alt="Bride" />
+        <PhotoImage src="/images/bride.webp" alt="Bride" />
         <PersonName>{brideName.toUpperCase()}</PersonName>
         <ParentLabel>{t('couple.brideLabel')}</ParentLabel>
         <ParentName>{brideFather}</ParentName>
@@ -135,7 +135,7 @@ export default function CoupleSection() {
       <Ampersand>&</Ampersand>
 
       <SpacedBoxTop>
-        <PhotoImage src="/images/groom.png" alt="Groom" />
+        <PhotoImage src="/images/groom.webp" alt="Groom" />
         <PersonName>{groomName.toUpperCase()}</PersonName>
         <ParentLabel>{t('couple.groomLabel')}</ParentLabel>
         <ParentName>{groomFather}</ParentName>

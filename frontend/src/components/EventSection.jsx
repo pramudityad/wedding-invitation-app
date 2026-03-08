@@ -119,7 +119,7 @@ export default function EventSection() {
     <SectionContainer>
       <BismillahText>{t("event.bismillah")}</BismillahText>
       <IntroText>{t("event.intro")}</IntroText>
-      <RingImage src="/images/asset/ring.png" alt="Wedding rings" />
+      <RingImage src="/images/asset/ring.webp" alt="Wedding rings" />
       <DateText>{formattedDate}</DateText>
 
       <TimeBlock>
