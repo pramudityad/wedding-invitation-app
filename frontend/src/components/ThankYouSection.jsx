@@ -63,7 +63,7 @@ export default function ThankYouSection() {
       <Title>{t('thankyou.title')}</Title>
       <Message>{t('thankyou.message')}</Message>
       <Tagline>{t('thankyou.tagline')}</Tagline>
-      <CoupleImage src="/images/bride-groom.png" alt="Couple" />
+      <CoupleImage src="/images/bride-groom.webp" alt="Couple" />
       <CoupleNames>{groomShort} & {brideShort}</CoupleNames>
     </SectionContainer>
   );

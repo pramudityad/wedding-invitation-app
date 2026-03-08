@@ -164,9 +164,9 @@ export default function SplashOverlay({ visible, guestName, onOpen }) {
   return (
     <Overlay visible={visible}>
       <CoverSection>
-        <YellowFlower src="/images/asset/yellow-flower.png" alt="" />
-        <LeafTop src="/images/asset/leaf.png" alt="" />
-        <LeafBottom src="/images/asset/leaf.png" alt="" />
+        <YellowFlower src="/images/asset/yellow-flower.webp" alt="" />
+        <LeafTop src="/images/asset/leaf.webp" alt="" />
+        <LeafBottom src="/images/asset/leaf.webp" alt="" />
         <CoupleNamesCover>
           {brideShort} & {groomShort}
         </CoupleNamesCover>
