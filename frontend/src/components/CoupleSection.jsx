@@ -1,7 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import SectionContainer from './shared/SectionContainer';
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontFamily: "'Great Vibes', cursive",
@@ -62,6 +61,52 @@ const SpacedBoxTop = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
+const CoupleSectionContainer = styled(Box)({
+  position: 'relative',
+  padding: '60px 30px',
+  textAlign: 'center',
+  maxWidth: '520px',
+  margin: '0 auto',
+});
+
+const LeafLeft = styled('img')(({ theme }) => ({
+  position: 'absolute',
+  left: 0,
+  top: '20%',
+  width: '80px',
+  height: 'auto',
+  opacity: 0.7,
+  transform: 'rotate(-15deg)',
+  pointerEvents: 'none',
+  animation: 'fadeIn 0.8s ease-out',
+  '@keyframes fadeIn': {
+    from: { opacity: 0 },
+    to: { opacity: 0.7 },
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '60px',
+  },
+}));
+
+const LeafRight = styled('img')(({ theme }) => ({
+  position: 'absolute',
+  right: 0,
+  bottom: '20%',
+  width: '80px',
+  height: 'auto',
+  opacity: 0.7,
+  transform: 'rotate(165deg)',
+  pointerEvents: 'none',
+  animation: 'fadeIn 0.8s ease-out',
+  '@keyframes fadeIn': {
+    from: { opacity: 0 },
+    to: { opacity: 0.7 },
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: '60px',
+  },
+}));
+
 export default function CoupleSection() {
   const { t } = useTranslation();
 
@@ -73,7 +118,9 @@ export default function CoupleSection() {
   const groomMother = import.meta.env.VITE_GROOM_MOTHER || 'Mother';
 
   return (
-    <SectionContainer>
+    <CoupleSectionContainer>
+      <LeafLeft src="/images/asset/leaf-2.png" alt="" />
+      <LeafRight src="/images/asset/leaf-3.png" alt="" />
       <SectionTitle>{t('couple.sectionTitle')}</SectionTitle>
 
       <SpacedBox>
@@ -95,6 +142,6 @@ export default function CoupleSection() {
         <ParentName>&</ParentName>
         <ParentName>{groomMother}</ParentName>
       </SpacedBoxTop>
-    </SectionContainer>
+    </CoupleSectionContainer>
   );
 }
