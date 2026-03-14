@@ -9,10 +9,10 @@ const SectionContainer = styled(Box)({
   margin: '0 auto',
 });
 
-const LeafIcon = styled(Box)({
-  fontSize: '36px',
+const BranchImage = styled('img')({
+  height: '100px',
+  width: 'auto',
   marginBottom: '20px',
-  filter: 'hue-rotate(60deg)',
 });
 
 const VerseText = styled(Typography)(({ theme }) => ({
@@ -56,7 +56,7 @@ export default function QuranSection() {
 
   return (
     <SectionContainer>
-      <LeafIcon>🍃</LeafIcon>
+      <BranchImage src="/images/asset/branch.webp" alt="" />
       <VerseText>{t('quran.verse')}</VerseText>
       <GoldDivider>
         <Box className="line" />

@@ -104,3 +104,6 @@ wedding-backend
 
 # Sisyphus workspace files
 .sisyphus/
+
+# Git worktrees
+.worktrees/
