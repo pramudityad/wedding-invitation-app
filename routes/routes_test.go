@@ -3,10 +3,12 @@ package routes
 import (
 	"database/sql"
 	"net/http/httptest"
+	"time"
 	"wedding-invitation-backend/config"
 	"wedding-invitation-backend/container"
 	"wedding-invitation-backend/middleware/auth"
 	"wedding-invitation-backend/models"
+	"wedding-invitation-backend/ratelimit"
 	"wedding-invitation-backend/services"
 
 	"github.com/gin-gonic/gin"
@@ -121,7 +123,7 @@ var _ services.GuestServiceInterface = (*mockGuestService)(nil)
 var _ services.CommentServiceInterface = (*mockCommentService)(nil)
 
 // setupTestRouter creates a gin router with mocked services for testing
-func setupTestRouter(mockGuest *mockGuestService, mockComment *mockCommentService) (*gin.Engine, *httptest.ResponseRecorder) {
+func setupTestRouter(mockGuest *mockGuestService, mockComment *mockCommentService, limiter *ratelimit.SlidingWindowLimiter) (*gin.Engine, *httptest.ResponseRecorder) {
 	gin.SetMode(gin.TestMode)
 	w := httptest.NewRecorder()
 	_, router := gin.CreateTestContext(w)
@@ -129,10 +131,17 @@ func setupTestRouter(mockGuest *mockGuestService, mockComment *mockCommentServic
 }
 
 // setupTestContainer creates a test container with mocked services
-func setupTestContainer(mockGuest *mockGuestService, mockComment *mockCommentService) *container.Container {
+func setupTestContainer(mockGuest *mockGuestService, mockComment *mockCommentService, limiter *ratelimit.SlidingWindowLimiter) *container.Container {
+	// Create a real rate limiter with generous limits if not provided
+	if limiter == nil {
+		limiter = ratelimit.NewSlidingWindowLimiter(1000, time.Hour)
+	}
 	return &container.Container{
 		GuestService:   mockGuest,
 		CommentService: mockComment,
+		AuthLimiter:    limiter,
+		RSVPLimiter:    limiter,
+		CommentLimiter: limiter,
 	}
 }
 

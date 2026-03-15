@@ -2,32 +2,39 @@ package routes
 
 import (
 	"net/http"
-	"net/url"
 	"wedding-invitation-backend/container"
 	"wedding-invitation-backend/middleware/auth"
+	ratelimitmw "wedding-invitation-backend/middleware/ratelimit"
 
 	"github.com/gin-gonic/gin"
 )
 
 func SetupAuthRoutes(r *gin.Engine, c *container.Container) {
-	// Health check endpoint
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"status": "ok",
-		})
+	// Health check (public, no rate limit)
+	r.GET("/health", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{"status": "healthy"})
 	})
 
-	// Login endpoint
-	r.GET("/login/:name", func(ctx *gin.Context) {
-		name := ctx.Param("name")
-		decodedName, err := url.PathUnescape(name)
-		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid name encoding"})
+	// Login route with rate limiting
+	r.POST("/login",
+		ratelimitmw.Middleware(c.AuthLimiter),
+		handleLogin(c),
+	)
+}
+
+func handleLogin(c *container.Container) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var req struct {
+			Name string `json:"name" binding:"required"`
+		}
+
+		if err := ctx.ShouldBindJSON(&req); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 			return
 		}
 
 		// Check if user is on guest list using service
-		guest, err := c.GuestService.GetGuestByName(decodedName)
+		guest, err := c.GuestService.GetGuestByName(req.Name)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
 				"error": "We're having trouble accessing the guest list right now. Please try again in a moment.",
@@ -50,8 +57,8 @@ func SetupAuthRoutes(r *gin.Engine, c *container.Container) {
 			return
 		}
 		ctx.JSON(http.StatusOK, gin.H{
-			"token": token,
+			"token":  token,
 			"message": "Welcome! You're successfully logged in.",
 		})
-	})
+	}
 }

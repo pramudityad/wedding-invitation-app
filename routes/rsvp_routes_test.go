@@ -40,8 +40,8 @@ func TestRSVPSubmission_Attending(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, _ := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupRSVPRoutes(router.Group("/"), c)
 
 	token := generateTestToken("John Doe")
@@ -82,8 +82,8 @@ func TestRSVPSubmission_NotAttending(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, _ := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupRSVPRoutes(router.Group("/"), c)
 
 	token := generateTestToken("Jane Doe")
@@ -113,8 +113,8 @@ func TestRSVPSubmission_GuestNotFound(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, _ := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupRSVPRoutes(router.Group("/"), c)
 
 	token := generateTestToken("testuser")
@@ -141,8 +141,8 @@ func TestRSVPSubmission_InvalidRequest(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, _ := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupRSVPRoutes(router.Group("/"), c)
 
 	token := generateTestToken("testuser")
