@@ -1,10 +1,11 @@
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuthContext } from '../contexts/AuthContext';
 import LanguageSwitcher from './LanguageSwitcher';
+import { COLORS } from '../constants';
 
 const OuterContainer = styled(Box)({
   display: 'flex',
@@ -14,8 +15,8 @@ const OuterContainer = styled(Box)({
   minHeight: '100vh',
   width: '100vw',
   padding: '32px',
-  backgroundColor: '#FBF7F0 !important',
-  background: '#FBF7F0',
+  backgroundColor: `${COLORS.background} !important`,
+  background: COLORS.background,
   position: 'relative',
 });
 
@@ -35,14 +36,14 @@ const InnerCard = styled(Box)(({ theme }) => ({
   },
   borderRadius: '12px',
   boxShadow: '0 4px 20px rgba(44, 62, 107, 0.08)',
-  backgroundColor: '#ffffff',
-  border: '1px solid #E8D5A8',
+  backgroundColor: COLORS.white,
+  border: `1px solid ${COLORS.goldLight}`,
 }));
 
 const StyledTitle = styled(Typography)({
   fontFamily: "'Great Vibes', cursive",
   fontWeight: 400,
-  color: '#2C3E6B',
+  color: COLORS.navy,
   marginBottom: '32px',
   textAlign: 'center',
   fontSize: '36px',
@@ -61,7 +62,7 @@ const LoadingContainer = styled(Box)(({ theme }) => ({
 }));
 
 const StyledCircularProgress = styled(CircularProgress)({
-  color: '#2C3E6B',
+  color: COLORS.navy,
   marginRight: '8px',
 });
 
@@ -74,33 +75,35 @@ export default function LoginPage() {
   const { login } = useAuthContext();
   const { t } = useTranslation();
 
+  const handleAutoLogin = useCallback(async (guestName) => {
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      await login(guestName);
+      navigate('/');
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Login failed:', err);
+      setError(t('login.verificationFailed'));
+      setIsLoading(false);
+    }
+  }, [login, navigate, t]);
+
   useEffect(() => {
     if (name) {
       try {
         const decodedName = decodeURIComponent(name);
         handleAutoLogin(decodedName);
-      } catch (error) {
-        console.error('Error decoding name:', error);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('Error decoding name:', err);
         setError(t('login.invalidName'));
       }
     } else {
       setError(t('login.provideName'));
     }
-  }, [name]);
-
-  const handleAutoLogin = async (name) => {
-    setIsLoading(true);
-    setError('');
-    
-    try {
-      await login(name)
-      navigate('/')
-    } catch (error) {
-      console.error('Login failed:', error)
-      setError(t('login.verificationFailed'))
-      setIsLoading(false)
-    }
-  }
+  }, [name, handleAutoLogin, t]);
 
   return (
     <OuterContainer>

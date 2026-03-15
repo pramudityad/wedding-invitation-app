@@ -1,16 +1,14 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
 import { Box, Typography, CircularProgress, Alert, Button, IconButton, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { useTranslation } from 'react-i18next';
-import { getAllComments } from '../api/comments';
 import BackButton from './BackButton';
 import LanguageSwitcher from './LanguageSwitcher';
 import WatercolorBackground from './WatercolorBackground';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
-
-const COMMENTS_PER_PAGE = 10;
+import { useInfiniteComments } from '../hooks/useInfiniteComments';
+import { COLORS } from '../constants';
 
 const LoadingContainer = styled(Box)({
   textAlign: 'center',
@@ -23,12 +21,12 @@ const LoadingContainer = styled(Box)({
 });
 
 const StyledCircularProgress = styled(CircularProgress)({
-  color: '#2C3E6B',
+  color: COLORS.navy,
 });
 
 const LoadingText = styled(Typography)({
   marginTop: '16px',
-  color: '#2C3E6B',
+  color: COLORS.navy,
   fontFamily: "'Poppins', sans-serif",
 });
 
@@ -82,14 +80,14 @@ const CommentsTitle = styled(Typography)({
   fontFamily: "'Great Vibes', cursive",
   fontSize: '40px',
   fontWeight: 400,
-  color: '#2C3E6B',
+  color: COLORS.navy,
   flex: 1,
   textAlign: 'center',
 });
 
 const RefreshButton = styled(IconButton)({
   marginLeft: '16px',
-  color: '#2C3E6B',
+  color: COLORS.navy,
 });
 
 const WarningAlert = styled(Alert)(({ theme }) => ({
@@ -98,67 +96,18 @@ const WarningAlert = styled(Alert)(({ theme }) => ({
 }));
 
 export default function GuestComments() {
-  const [comments, setComments] = useState([]);
-  const [nextCursor, setNextCursor] = useState(null);
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [error, setError] = useState(null);
-  const lastCommentRef = useRef(null);
-  const observerRef = useRef(null);
   const { t } = useTranslation();
 
-  const fetchComments = useCallback(async (isRefresh = false) => {
-    if (isRefresh) {
-      setError(null);
-      setComments([]);
-      setNextCursor(null);
-    } else {
-      setInitialLoading(true);
-      setError(null);
-    }
-    try {
-      const response = await getAllComments({ limit: COMMENTS_PER_PAGE });
-      setComments(response.comments || []);
-      setNextCursor(response.next_cursor || null);
-    } catch (err) {
-      console.error('Error fetching comments:', err);
-      setError(t('comments.loadError'));
-    } finally {
-      setInitialLoading(false);
-    }
-  }, []);
-
-  useEffect(() => { fetchComments(); }, [fetchComments]);
-
-  const loadMoreComments = useCallback(async () => {
-    if (!nextCursor || loadingMore) return;
-    setLoadingMore(true);
-    setError(null);
-    try {
-      const response = await getAllComments({ limit: COMMENTS_PER_PAGE, cursor: nextCursor });
-      setComments((prev) => [...prev, ...(response.comments || [])]);
-      setNextCursor(response.next_cursor || null);
-    } catch (err) {
-      console.error('Error loading more comments:', err);
-      setError(t('comments.loadError'));
-    } finally {
-      setLoadingMore(false);
-    }
-  }, [nextCursor, loadingMore]);
-
-  useEffect(() => {
-    if (observerRef.current) observerRef.current.disconnect();
-    observerRef.current = new IntersectionObserver(
-      (entries) => { if (entries[0].isIntersecting) loadMoreComments(); },
-      { threshold: 0.1, rootMargin: '50px' }
-    );
-    if (lastCommentRef.current) observerRef.current.observe(lastCommentRef.current);
-    return () => { if (observerRef.current) observerRef.current.disconnect(); };
-  }, [loadMoreComments, comments.length]);
-
-  const handleCommentSubmitted = useCallback((newComment) => {
-    setComments((prev) => [newComment, ...prev]);
-  }, []);
+  const {
+    comments,
+    error,
+    initialLoading,
+    loadingMore,
+    hasMore,
+    lastCommentRef,
+    fetchComments,
+    handleCommentSubmitted,
+  } = useInfiniteComments({ t });
 
   if (initialLoading) {
     return (
@@ -179,13 +128,23 @@ export default function GuestComments() {
         <ErrorOuterContainer>
           <LanguageSwitcherContainer><LanguageSwitcher /></LanguageSwitcherContainer>
           <BackButton />
-          <StyledErrorAlert severity="error" action={
-            <Tooltip title={t('common.refreshComments')}>
-              <IconButton color="inherit" size="small" onClick={() => fetchComments(true)} aria-label={t('common.refreshComments')}>
-                <RefreshIcon />
-              </IconButton>
-            </Tooltip>
-          }>{error}</StyledErrorAlert>
+          <StyledErrorAlert 
+            severity="error" 
+            action={
+              <Tooltip title={t('common.refreshComments')}>
+                <IconButton 
+                  color="inherit" 
+                  size="small" 
+                  onClick={() => fetchComments(true)} 
+                  aria-label={t('common.refreshComments')}
+                >
+                  <RefreshIcon />
+                </IconButton>
+              </Tooltip>
+            }
+          >
+            {error}
+          </StyledErrorAlert>
         </ErrorOuterContainer>
       </>
     );
@@ -201,7 +160,11 @@ export default function GuestComments() {
             {t('comments.title')}
           </CommentsTitle>
           <Tooltip title={t('common.refreshComments')}>
-            <RefreshButton onClick={() => fetchComments(true)} disabled={initialLoading} aria-label={t('common.refreshComments')}>
+            <RefreshButton 
+              onClick={() => fetchComments(true)} 
+              disabled={initialLoading} 
+              aria-label={t('common.refreshComments')}
+            >
               <RefreshIcon />
             </RefreshButton>
           </Tooltip>
@@ -210,15 +173,22 @@ export default function GuestComments() {
         <CommentForm onCommentSubmitted={handleCommentSubmitted} />
 
         {error && comments.length > 0 && (
-          <WarningAlert severity="warning" action={
-            <Button color="inherit" size="small" onClick={() => fetchComments(true)}>Retry</Button>
-          }>{error}</WarningAlert>
+          <WarningAlert 
+            severity="warning" 
+            action={
+              <Button color="inherit" size="small" onClick={() => fetchComments(true)}>
+                Retry
+              </Button>
+            }
+          >
+            {error}
+          </WarningAlert>
         )}
 
         <CommentList
           comments={comments}
           loadingMore={loadingMore}
-          hasMore={!!nextCursor}
+          hasMore={hasMore}
           lastCommentRef={lastCommentRef}
         />
       </MainContainer>
