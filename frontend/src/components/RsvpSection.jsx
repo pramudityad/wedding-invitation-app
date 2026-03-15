@@ -13,6 +13,7 @@ import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import SectionContainer from './shared/SectionContainer';
 import CommentForm from './CommentForm';
+import { COLORS, BORDER_RADIUS, BUTTON_MIN_WIDTH } from '../constants';
 
 
 const StyledRSVPButtonsContainer = styled(Box)(({ theme }) => ({
@@ -26,28 +27,28 @@ const StyledRSVPButtonsContainer = styled(Box)(({ theme }) => ({
 const StyledRSVPButton = styled(Button)(({ theme, colorKey }) => ({
   px: theme.spacing(5),
   py: theme.spacing(1.5),
-  borderRadius: '8px',
-  minWidth: '140px',
+  borderRadius: BORDER_RADIUS.button,
+  minWidth: BUTTON_MIN_WIDTH,
   fontFamily: "'Poppins', sans-serif",
   textTransform: 'uppercase',
   letterSpacing: '1px',
   ...(colorKey === 'yes'
     ? {
-        backgroundColor: '#2C3E6B',
-        color: '#FFFFFF',
+        backgroundColor: COLORS.navy,
+        color: COLORS.white,
         '&:hover': {
-          backgroundColor: '#4A5E8B',
+          backgroundColor: COLORS.navyLight,
           boxShadow: '0 2px 6px rgba(44, 62, 107, 0.3)',
         },
       }
     : {
         backgroundColor: 'transparent',
-        color: '#2C3E6B',
-        border: '2px solid #2C3E6B',
+        color: COLORS.navy,
+        border: `2px solid ${COLORS.navy}`,
         '&:hover': {
           backgroundColor: 'rgba(44, 62, 107, 0.06)',
-          borderColor: '#4A5E8B',
-          color: '#4A5E8B',
+          borderColor: COLORS.navyLight,
+          color: COLORS.navyLight,
         },
       }),
   '&:disabled': {
@@ -61,7 +62,7 @@ const RSVPTitle = styled(Typography)({
   fontFamily: "'Cormorant Garamond', serif",
   fontWeight: 400,
   fontSize: '56px',
-  color: '#2C3E6B',
+  color: COLORS.navy,
 });
 
 const LoadingIndicator = styled(Box)({
@@ -70,7 +71,7 @@ const LoadingIndicator = styled(Box)({
 });
 
 const StyledLoadingProgress = styled(CircularProgress)({
-  color: '#2C3E6B',
+  color: COLORS.navy,
   marginRight: '8px',
 });
 
@@ -78,18 +79,18 @@ const ConfirmationText = styled('span')({
   fontFamily: "'Cormorant Garamond', serif",
   fontStyle: 'italic',
   fontSize: '24px',
-  color: '#2C3E6B',
+  color: COLORS.navy,
 });
 
 // --- Dialog styled components ---
 
 const StyledDialogPaper = styled('div')({
-  borderRadius: '16px',
+  borderRadius: BORDER_RADIUS.dialog,
   padding: '8px',
   maxWidth: '400px',
   width: '100%',
   textAlign: 'center',
-  border: '1px solid rgba(201, 168, 76, 0.3)',
+  border: `1px solid ${COLORS.gold}4D`, // 30% opacity
   backgroundColor: 'rgba(255, 255, 255, 0.6)',
 });
 
@@ -97,7 +98,7 @@ const DialogTitleStyled = styled(DialogTitle)({
   fontFamily: "'Great Vibes', cursive",
   fontWeight: 400,
   fontSize: '40px',
-  color: '#2C3E6B',
+  color: COLORS.navy,
   padding: '16px 24px 8px',
 });
 
@@ -105,7 +106,7 @@ const DialogMessageStyled = styled(Typography)({
   fontFamily: "'Cormorant Garamond', serif",
   fontStyle: 'italic',
   fontSize: '18px',
-  color: '#2C3E6B',
+  color: COLORS.navy,
   padding: '0 8px',
 });
 
@@ -117,39 +118,39 @@ const DialogActionsStyled = styled(DialogActions)({
 });
 
 const ConfirmButton = styled(Button)({
-  backgroundColor: '#2C3E6B',
-  color: '#FFFFFF',
-  borderRadius: '8px',
-  minWidth: '140px',
+  backgroundColor: COLORS.navy,
+  color: COLORS.white,
+  borderRadius: BORDER_RADIUS.button,
+  minWidth: BUTTON_MIN_WIDTH,
   fontFamily: "'Poppins', sans-serif",
   textTransform: 'uppercase',
   letterSpacing: '1px',
   '&:hover': {
-    backgroundColor: '#4A5E8B',
+    backgroundColor: COLORS.navyLight,
     boxShadow: '0 2px 6px rgba(44, 62, 107, 0.3)',
   },
 });
 
 const CancelButton = styled(Button)({
   backgroundColor: 'transparent',
-  color: '#2C3E6B',
-  border: '2px solid #2C3E6B',
-  borderRadius: '8px',
-  minWidth: '140px',
+  color: COLORS.navy,
+  border: `2px solid ${COLORS.navy}`,
+  borderRadius: BORDER_RADIUS.button,
+  minWidth: BUTTON_MIN_WIDTH,
   fontFamily: "'Poppins', sans-serif",
   textTransform: 'uppercase',
   letterSpacing: '1px',
   '&:hover': {
     backgroundColor: 'rgba(44, 62, 107, 0.06)',
-    borderColor: '#4A5E8B',
-    color: '#4A5E8B',
+    borderColor: COLORS.navyLight,
+    color: COLORS.navyLight,
   },
 });
 
 const WishesDivider = styled(Box)(({ theme }) => ({
   width: '60px',
   height: '1px',
-  background: theme.palette.wedding?.gold || '#C9A96E',
+  background: theme.palette.wedding?.gold || COLORS.gold,
   margin: `${theme.spacing(4)} auto`,
 }));
 
@@ -157,7 +158,7 @@ const WishesLabel = styled(Typography)(({ theme }) => ({
   fontFamily: "'Cormorant Garamond', serif",
   fontStyle: 'italic',
   fontSize: '18px',
-  color: theme.palette.wedding?.navy || '#2C3E6B',
+  color: theme.palette.wedding?.navy || COLORS.navy,
   marginBottom: theme.spacing(2),
 }));
 

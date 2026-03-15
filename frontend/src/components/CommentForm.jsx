@@ -13,8 +13,7 @@ import { styled } from '@mui/material/styles';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import { useTranslation } from 'react-i18next';
 import { submitComment } from '../api/comments';
-
-const COMMENT_MAX_LENGTH = 500;
+import { COMMENT_MAX_LENGTH, SNACKBAR_DURATION_MS, COLORS } from '../constants';
 
 const StyledTextField = styled(TextField, {
   shouldForwardProp: (prop) => prop !== 'isOverLimit',
@@ -26,13 +25,13 @@ const StyledTextField = styled(TextField, {
     fontFamily: "'Poppins', sans-serif",
     fontSize: '13px',
     '& fieldset': {
-      borderColor: isOverLimit ? theme.palette.error.main : (theme.palette.wedding?.goldLight || '#E8D5A8'),
+      borderColor: isOverLimit ? theme.palette.error.main : (theme.palette.wedding?.goldLight || COLORS.goldLight),
     },
     '&:hover fieldset': {
-      borderColor: isOverLimit ? theme.palette.error.main : (theme.palette.wedding?.gold || '#C9A96E'),
+      borderColor: isOverLimit ? theme.palette.error.main : (theme.palette.wedding?.gold || COLORS.gold),
     },
     '&.Mui-focused fieldset': {
-      borderColor: isOverLimit ? theme.palette.error.main : (theme.palette.wedding?.navy || '#2C3E6B'),
+      borderColor: isOverLimit ? theme.palette.error.main : (theme.palette.wedding?.navy || COLORS.navy),
     },
   },
 }));
@@ -65,10 +64,10 @@ const SubmitButton = styled(Button)(({ theme }) => ({
   display: 'block',
   margin: '0 auto',
   minWidth: '180px',
-  background: theme.palette.wedding?.navy || '#2C3E6B',
-  color: theme.palette.common.white || '#FFFFFF',
+  background: theme.palette.wedding?.navy || COLORS.navy,
+  color: theme.palette.common.white || COLORS.white,
   '&:hover': {
-    background: theme.palette.wedding?.navyLight || '#4A5E8B',
+    background: theme.palette.wedding?.navyLight || COLORS.navyLight,
   },
   '&:disabled': {
     background: theme.palette.grey[400] || '#ccc',
@@ -162,7 +161,7 @@ export default function CommentForm({ onCommentSubmitted }) {
 
       <Snackbar
         open={showSuccess}
-        autoHideDuration={3000}
+        autoHideDuration={SNACKBAR_DURATION_MS}
         onClose={handleCloseSuccess}
         message={t('comments.submitSuccess')}
       />
