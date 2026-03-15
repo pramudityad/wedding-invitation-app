@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 	"net/http/httptest"
-	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -16,15 +16,15 @@ func init() {
 }
 
 func TestHealthEndpoint(t *testing.T) {
-	router, w := setupTestRouter(nil, nil)
-	c := setupTestContainer(nil, nil)
+	router, w := setupTestRouter(nil, nil, nil)
+	c := setupTestContainer(nil, nil, nil)
 	SetupAuthRoutes(router, c)
 
 	req := httptest.NewRequest("GET", "/health", nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Contains(t, w.Body.String(), "ok")
+	assert.Contains(t, w.Body.String(), "healthy")
 }
 
 func TestLoginEndpoint_ValidGuest(t *testing.T) {
@@ -37,12 +37,13 @@ func TestLoginEndpoint_ValidGuest(t *testing.T) {
 		},
 	}
 
-	router, w := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, w := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupAuthRoutes(router, c)
 
-	encodedName := url.PathEscape("John Doe")
-	req := httptest.NewRequest("GET", "/login/"+encodedName, nil)
+	reqBody := `{"name":"John Doe"}`
+	req := httptest.NewRequest("POST", "/login", strings.NewReader(reqBody))
+	req.Header.Set("Content-Type", "application/json")
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -59,11 +60,13 @@ func TestLoginEndpoint_GuestNotFound(t *testing.T) {
 		},
 	}
 
-	router, w := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, w := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupAuthRoutes(router, c)
 
-	req := httptest.NewRequest("GET", "/login/UnknownPerson", nil)
+	reqBody := `{"name":"UnknownPerson"}`
+	req := httptest.NewRequest("POST", "/login", strings.NewReader(reqBody))
+	req.Header.Set("Content-Type", "application/json")
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusForbidden, w.Code)
@@ -79,11 +82,13 @@ func TestLoginEndpoint_ServiceError(t *testing.T) {
 		},
 	}
 
-	router, w := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, w := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupAuthRoutes(router, c)
 
-	req := httptest.NewRequest("GET", "/login/TestUser", nil)
+	reqBody := `{"name":"TestUser"}`
+	req := httptest.NewRequest("POST", "/login", strings.NewReader(reqBody))
+	req.Header.Set("Content-Type", "application/json")
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)

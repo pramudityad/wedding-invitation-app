@@ -1,8 +1,8 @@
 package services
 
 import (
-	"time"
 	"wedding-invitation-backend/cache"
+	"wedding-invitation-backend/config"
 	"wedding-invitation-backend/models"
 	"wedding-invitation-backend/repositories"
 )
@@ -19,7 +19,7 @@ func NewCommentService(commentRepo repositories.CommentRepository, guestService 
 	return &CommentService{
 		commentRepo:  commentRepo,
 		guestService: guestService,
-		commentCache: cache.NewMemoryCache(2 * time.Minute), // 2 minute TTL for comments
+		commentCache: cache.NewMemoryCache(config.CacheCommentTTL),
 	}
 }
 

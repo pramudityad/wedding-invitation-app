@@ -35,8 +35,8 @@ func TestCreateComment_Success(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(mockGuest, mockComment)
-	c := setupTestContainer(mockGuest, mockComment)
+	router, _ := setupTestRouter(mockGuest, mockComment, nil)
+	c := setupTestContainer(mockGuest, mockComment, nil)
 	SetupCommentRoutes(router.Group("/"), c)
 
 	token := generateTestToken("testuser")
@@ -63,8 +63,8 @@ func TestCreateComment_EmptyContent(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, _ := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupCommentRoutes(router.Group("/"), c)
 
 	token := generateTestToken("testuser")
@@ -97,8 +97,8 @@ func TestCreateComment_CommentLimitReached(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(mockGuest, mockComment)
-	c := setupTestContainer(mockGuest, mockComment)
+	router, _ := setupTestRouter(mockGuest, mockComment, nil)
+	c := setupTestContainer(mockGuest, mockComment, nil)
 	SetupCommentRoutes(router.Group("/"), c)
 
 	token := generateTestToken("testuser")
@@ -135,8 +135,8 @@ func TestGetCommentsByGuest_Success(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(mockGuest, mockComment)
-	c := setupTestContainer(mockGuest, mockComment)
+	router, _ := setupTestRouter(mockGuest, mockComment, nil)
+	c := setupTestContainer(mockGuest, mockComment, nil)
 	SetupCommentRoutes(router.Group("/"), c)
 
 	token := generateTestToken("testuser")
@@ -167,8 +167,8 @@ func TestGetAllComments_Success(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(nil, mockComment)
-	c := setupTestContainer(nil, mockComment)
+	router, _ := setupTestRouter(nil, mockComment, nil)
+	c := setupTestContainer(nil, mockComment, nil)
 	SetupCommentRoutes(router.Group("/"), c)
 
 	req := httptest.NewRequest("GET", "/comments", nil)
@@ -198,8 +198,8 @@ func TestGetAllComments_WithPagination(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(nil, mockComment)
-	c := setupTestContainer(nil, mockComment)
+	router, _ := setupTestRouter(nil, mockComment, nil)
+	c := setupTestContainer(nil, mockComment, nil)
 	SetupCommentRoutes(router.Group("/"), c)
 
 	req := httptest.NewRequest("GET", "/comments?limit=5&cursor=2024-01-01T00:00:00Z", nil)
@@ -228,8 +228,8 @@ func TestGetGuestByName_Success(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, _ := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupGuestManagementRoutes(router.Group("/"), c)
 
 	token := generateTestToken("testuser")
