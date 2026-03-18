@@ -35,6 +35,11 @@ func main() {
 	// Initialize Gin router
 	r := gin.Default()
 
+	// Configure trusted proxies for security
+	if err := r.SetTrustedProxies(nil); err != nil {
+		log.Printf("Warning: Failed to set trusted proxies: %v", err)
+	}
+
 	// Configure CORS
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000", "http://localhost", "http://127.0.0.1"},
