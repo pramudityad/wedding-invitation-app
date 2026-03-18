@@ -16,7 +16,7 @@ func SetupAuthRoutes(r *gin.Engine, c *container.Container) {
 	})
 
 	// Login route with rate limiting
-	r.POST("/login",
+	r.GET("/login/:name",
 		ratelimitmw.Middleware(c.AuthLimiter),
 		handleLogin(c),
 	)
@@ -24,17 +24,15 @@ func SetupAuthRoutes(r *gin.Engine, c *container.Container) {
 
 func handleLogin(c *container.Container) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var req struct {
-			Name string `json:"name" binding:"required"`
-		}
+		name := ctx.Param("name")
 
-		if err := ctx.ShouldBindJSON(&req); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		if name == "" {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Name is required"})
 			return
 		}
 
 		// Check if user is on guest list using service
-		guest, err := c.GuestService.GetGuestByName(req.Name)
+		guest, err := c.GuestService.GetGuestByName(name)
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
 				"error": "We're having trouble accessing the guest list right now. Please try again in a moment.",
@@ -57,7 +55,7 @@ func handleLogin(c *container.Container) gin.HandlerFunc {
 			return
 		}
 		ctx.JSON(http.StatusOK, gin.H{
-			"token":  token,
+			"token":   token,
 			"message": "Welcome! You're successfully logged in.",
 		})
 	}
