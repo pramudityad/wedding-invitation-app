@@ -25,6 +25,7 @@ services:
         - VITE_PARTNER2_ACCOUNT_NUMBER=${VITE_PARTNER2_ACCOUNT_NUMBER}
         - VITE_YOUTUBE_PLAYLIST_URL=${VITE_YOUTUBE_PLAYLIST_URL}
         - VITE_WEDDING_DETAIL=${VITE_WEDDING_DETAIL}
+        - VITE_PHOTOS_JSON=${VITE_PHOTOS_JSON}
     depends_on:
       - backend
     restart: unless-stopped
