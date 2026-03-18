@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"time"
+	"wedding-invitation-backend/config"
 	"wedding-invitation-backend/models"
 	"wedding-invitation-backend/repositories"
 )
@@ -15,7 +15,7 @@ type GuestCache struct {
 // NewGuestCache creates a new guest cache
 func NewGuestCache(repository repositories.GuestRepository) *GuestCache {
 	return &GuestCache{
-		cache:      NewMemoryCache(5 * time.Minute), // 5 minute TTL
+		cache:      NewMemoryCache(config.CacheGuestTTL),
 		repository: repository,
 	}
 }

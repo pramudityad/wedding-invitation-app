@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"time"
+	"wedding-invitation-backend/config"
 )
 
 // ErrCommentLimitReached is a sentinel error for when a guest exceeds the comment limit
@@ -33,7 +34,7 @@ func (c *Comment) Create(db *sql.DB) error {
 		return err
 	}
 
-	if count >= 2 {
+	if count >= config.MaxCommentsPerGuest {
 		return ErrCommentLimitReached
 	}
 

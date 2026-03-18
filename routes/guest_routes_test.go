@@ -32,8 +32,8 @@ func TestBulkGuestUpload_Success(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, _ := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupGuestRoutes(router.Group("/admin"), c)
 
 	// Create multipart form with CSV file
@@ -56,8 +56,8 @@ func TestBulkGuestUpload_MissingFile(t *testing.T) {
 	setupTestConfig()
 	config.AdminAPIKey = "test-api-key"
 
-	router, _ := setupTestRouter(nil, nil)
-	c := setupTestContainer(nil, nil)
+	router, _ := setupTestRouter(nil, nil, nil)
+	c := setupTestContainer(nil, nil, nil)
 	SetupGuestRoutes(router.Group("/admin"), c)
 
 	req := httptest.NewRequest("POST", "/admin/guests/bulk", nil)
@@ -77,8 +77,8 @@ func TestBulkGuestUpload_EmptyCSV(t *testing.T) {
 
 	mockGuest := &mockGuestService{}
 
-	router, _ := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, _ := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupGuestRoutes(router.Group("/admin"), c)
 
 	// CSV with only header, no data rows
@@ -108,8 +108,8 @@ func TestBulkGuestUpdate_Success(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, _ := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupGuestRoutes(router.Group("/admin"), c)
 
 	guests := []models.Guest{
@@ -133,8 +133,8 @@ func TestBulkGuestUpdate_EmptyData(t *testing.T) {
 	setupTestConfig()
 	config.AdminAPIKey = "test-api-key"
 
-	router, _ := setupTestRouter(nil, nil)
-	c := setupTestContainer(nil, nil)
+	router, _ := setupTestRouter(nil, nil, nil)
+	c := setupTestContainer(nil, nil, nil)
 	SetupGuestRoutes(router.Group("/admin"), c)
 
 	jsonBody, _ := json.Marshal([]models.Guest{})
@@ -163,8 +163,8 @@ func TestGetAllRSVPs_Success(t *testing.T) {
 		},
 	}
 
-	router, _ := setupTestRouter(mockGuest, nil)
-	c := setupTestContainer(mockGuest, nil)
+	router, _ := setupTestRouter(mockGuest, nil, nil)
+	c := setupTestContainer(mockGuest, nil, nil)
 	SetupGuestRoutes(router.Group("/admin"), c)
 	router.GET("/admin/rsvps", handleGetAllRSVPs(c))
 

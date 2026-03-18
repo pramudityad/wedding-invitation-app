@@ -3,19 +3,29 @@ package routes
 import (
 	"net/http"
 	"wedding-invitation-backend/container"
+	"wedding-invitation-backend/errors"
 	"wedding-invitation-backend/middleware/apikey"
 	"wedding-invitation-backend/middleware/auth"
+	"wedding-invitation-backend/middleware/errorhandler"
+	ratelimitmw "wedding-invitation-backend/middleware/ratelimit"
 
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRoutes(r *gin.Engine, c *container.Container) {
-	// Setup auth routes (health check and login)
+	// Global error handler (must be first)
+	r.Use(errorhandler.ErrorHandler())
+
+	// Setup auth routes with rate limiting
 	SetupAuthRoutes(r, c)
 
-	// Setup RSVP routes
+	// Setup RSVP routes with rate limiting
 	rsvpGroup := r.Group("/")
 	rsvpGroup.Use(auth.JWTMiddlewareWithService(c.GuestService))
+	rsvpGroup.Use(ratelimitmw.MiddlewareWithKeyFunc(
+		c.RSVPLimiter,
+		ratelimitmw.UserKeyFunc(),
+	))
 	SetupRSVPRoutes(rsvpGroup, c)
 
 	// Protected routes
@@ -33,8 +43,13 @@ func SetupRoutes(r *gin.Engine, c *container.Container) {
 		// Setup guest management routes
 		SetupGuestManagementRoutes(protected, c)
 
-		// Setup comment routes
-		SetupCommentRoutes(protected, c)
+		// Setup comment routes with rate limiting
+		commentGroup := protected.Group("/")
+		commentGroup.Use(ratelimitmw.MiddlewareWithKeyFunc(
+			c.CommentLimiter,
+			ratelimitmw.UserKeyFunc(),
+		))
+		SetupCommentRoutes(commentGroup, c)
 
 		// Setup invitation routes
 		SetupInvitationRoutes(protected, c)
@@ -51,9 +66,8 @@ func handleGetAllRSVPs(container *container.Container) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		guests, err := container.GuestService.GetAllGuests()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Unable to retrieve RSVP information. Please try again.",
-			})
+			c.Error(errors.WrapError(err, "Failed to retrieve RSVPs"))
+			c.Abort()
 			return
 		}
 
