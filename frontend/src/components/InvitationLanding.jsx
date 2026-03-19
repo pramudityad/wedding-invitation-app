@@ -146,6 +146,8 @@ function InvitationLanding() {
   const [splashVisible, setSplashVisible] = useState(true);
   const [mainVisible, setMainVisible] = useState(false);
 
+  const disableGallery = import.meta.env.VITE_DISABLE_GALLERY === 'true';
+
   const handleOpenInvitation = useCallback(() => {
     setSplashVisible(false);
     setMainVisible(true);
@@ -234,15 +236,17 @@ function InvitationLanding() {
 
           <SectionDivider />
 
-          <ScrollSection enabled={mainVisible}>
-            <GalleryLinkContainer>
-              <GalleryLinkButton onClick={() => navigate('/gallery')}>
-                {t('navigation.photoGallery')}
-              </GalleryLinkButton>
-            </GalleryLinkContainer>
-          </ScrollSection>
+          {!disableGallery && (
+            <ScrollSection enabled={mainVisible}>
+              <GalleryLinkContainer>
+                <GalleryLinkButton onClick={() => navigate('/gallery')}>
+                  {t('navigation.photoGallery')}
+                </GalleryLinkButton>
+              </GalleryLinkContainer>
+            </ScrollSection>
+          )}
 
-          <SectionDivider />
+          {!disableGallery && <SectionDivider />}
 
           <ScrollSection enabled={mainVisible}>
             <ThankYouSection />
