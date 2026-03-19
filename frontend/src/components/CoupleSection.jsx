@@ -117,6 +117,10 @@ export default function CoupleSection() {
   const groomFather = import.meta.env.VITE_GROOM_FATHER || 'Father';
   const groomMother = import.meta.env.VITE_GROOM_MOTHER || 'Mother';
 
+  const disableGallery = import.meta.env.VITE_DISABLE_GALLERY === 'true';
+  const bridePhoto = disableGallery ? '/images/bride-placeholder.svg' : '/images/bride.webp';
+  const groomPhoto = disableGallery ? '/images/groom-placeholder.svg' : '/images/groom.webp';
+
   return (
     <CoupleSectionContainer>
       <LeafLeft src="/images/asset/leaf-2.webp" alt="" />
@@ -124,7 +128,7 @@ export default function CoupleSection() {
       <SectionTitle>{t('couple.sectionTitle')}</SectionTitle>
 
       <SpacedBox>
-        <PhotoImage src="/images/bride.webp" alt="Bride" />
+        <PhotoImage src={bridePhoto} alt="Bride" />
         <PersonName>{brideName.toUpperCase()}</PersonName>
         <ParentLabel>{t('couple.brideLabel')}</ParentLabel>
         <ParentName>{brideFather}</ParentName>
@@ -135,7 +139,7 @@ export default function CoupleSection() {
       <Ampersand>&</Ampersand>
 
       <SpacedBoxTop>
-        <PhotoImage src="/images/groom.webp" alt="Groom" />
+        <PhotoImage src={groomPhoto} alt="Groom" />
         <PersonName>{groomName.toUpperCase()}</PersonName>
         <ParentLabel>{t('couple.groomLabel')}</ParentLabel>
         <ParentName>{groomFather}</ParentName>
