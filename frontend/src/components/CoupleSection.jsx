@@ -118,8 +118,8 @@ export default function CoupleSection() {
   const groomMother = import.meta.env.VITE_GROOM_MOTHER || 'Mother';
 
   const disableGallery = import.meta.env.VITE_DISABLE_GALLERY === 'true';
-  const bridePhoto = disableGallery ? '/images/bride-placeholder.svg' : '/images/bride.webp';
-  const groomPhoto = disableGallery ? '/images/groom-placeholder.svg' : '/images/groom.webp';
+  const bridePhoto = disableGallery ? '/images/bride-placeholder.svg' : '/images/bride_real.webp';
+  const groomPhoto = disableGallery ? '/images/groom-placeholder.svg' : '/images/groom_real.webp';
 
   return (
     <CoupleSectionContainer>
