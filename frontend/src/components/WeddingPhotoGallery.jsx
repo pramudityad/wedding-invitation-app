@@ -19,57 +19,7 @@ import { useTheme } from '@mui/material/styles';
 import BackButton from './BackButton';
 import LanguageSwitcher from './LanguageSwitcher';
 import WatercolorBackground from './WatercolorBackground';
-
-const mockPhotos = [
-  {
-    id: 1,
-    url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87',
-    title: 'Walking into Forever',
-    caption: 'This moment captured the feeling of stepping into a new chapter together. The sun was setting, painting the sky in our favorite colors, and it felt like the world was just for us. A perfect start to our forever.',
-  },
-  {
-    id: 2,
-    url: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-    title: 'Symbols of Commitment',
-    caption: 'Our rings, simple yet profound symbols of our vows. Placed next to the bouquet filled with blooms that held special meaning, this photo reminds us of the promises we made and the beauty of starting a life bound by love.',
-  },
-  {
-    id: 3,
-    url: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
-    title: 'The Sacred Spot',
-    caption: 'Where we officially became one. Surrounded by nature and our loved ones, this setup felt magical. Every detail, from the flowers to the view, made our ceremony feel deeply personal and incredibly special.',
-  },
-  {
-    id: 4,
-    url: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
-    title: 'Sweet Beginnings',
-    caption: 'Our wedding cake, a delicious masterpiece! More than just dessert, cutting the cake felt like our first collaborative task as a married couple, a sweet tradition marking the start of our shared journey.',
-  },
-  {
-    id: 5,
-    url: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
-    title: 'Our First Dance',
-    caption: 'Lost in the music, lost in each other\'s eyes. The first dance was a whirlwind of emotions, a moment where nothing else mattered but holding each other close and celebrating the love that brought us here.',
-  },
-  {
-    id: 6,
-    url: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-    title: 'Bridal Blooms',
-    caption: 'The colors, the scents, the artistry - the bridal bouquet was stunning. It felt like carrying a piece of the garden with me, a fragrant reminder of the natural beauty surrounding our special day.',
-  },
-  {
-    id: 7,
-    url: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
-    title: 'Feast & Fellowship',
-    caption: 'Detail from one of our reception tables. We wanted our guests to feel welcomed and cherished. The elegant setting, candles flickering, promised an evening of great food, laughter, and shared happiness.',
-  },
-  {
-    id: 8,
-    url: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-    title: 'The Dress Details',
-    caption: 'A glimpse of the intricate lace and fabric of the wedding dress. Each stitch felt like part of the story, a garment chosen with love for a day filled with love. It truly felt like a dream to wear.',
-  },
-];
+import { getLocalizedText } from '../types/photo';
 
 const OuterContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -250,21 +200,40 @@ export default function WeddingPhotoGallery() {
   const [error, setError] = useState(null);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    setTimeout(() => {
+    const loadPhotos = () => {
       try {
-        setPhotos(mockPhotos);
+        const photosJson = import.meta.env.VITE_PHOTOS_JSON;
+        
+        if (!photosJson) {
+          console.warn('VITE_PHOTOS_JSON not configured');
+          setPhotos([]);
+          setError(null);
+          return;
+        }
+
+        const parsedPhotos = JSON.parse(photosJson);
+        
+        if (!Array.isArray(parsedPhotos)) {
+          throw new Error('VITE_PHOTOS_JSON must be an array');
+        }
+
+        setPhotos(parsedPhotos);
         setError(null);
       } catch (err) {
-        console.error("Failed to load mock photos:", err);
+        console.error("Failed to parse photos config:", err);
         setError(t('gallery.loadError') || 'Failed to load photos. Please try again.');
+        setPhotos([]);
       } finally {
         setLoading(false);
       }
-    }, 800);
-  }, []);
+    };
+
+    const timer = setTimeout(loadPhotos, 800);
+    return () => clearTimeout(timer);
+  }, [t]);
 
   const handlePhotoClick = (photo) => {
     setSelectedPhoto(photo);
@@ -332,7 +301,7 @@ export default function WeddingPhotoGallery() {
                     <GalleryImage
                       src={`${photo.url}?w=300&h=300&fit=crop&auto=format`}
                       srcSet={`${photo.url}?w=300&h=300&fit=crop&auto=format&dpr=2 2x`}
-                      alt={photo.title || `Wedding Photo ${photo.id}`}
+                      alt={getLocalizedText(photo.title, i18n.language) || `Wedding Photo ${photo.id}`}
                       loading="lazy"
                     />
                   </StyledImageListItem>
@@ -357,7 +326,7 @@ export default function WeddingPhotoGallery() {
           {selectedPhoto && (
             <>
               <DialogTitleStyled>
-                {selectedPhoto.title}
+                {getLocalizedText(selectedPhoto.title, i18n.language)}
                 <CloseIconButton
                   aria-label="close"
                   onClick={handleCloseModal}
@@ -369,10 +338,10 @@ export default function WeddingPhotoGallery() {
                 <DialogContentInner>
                   <DialogImage
                     src={selectedPhoto.url}
-                    alt={selectedPhoto.title || `Wedding Photo ${selectedPhoto.id}`}
+                    alt={getLocalizedText(selectedPhoto.title, i18n.language) || `Wedding Photo ${selectedPhoto.id}`}
                   />
                   <DialogCaption variant="body1" component="p">
-                    {selectedPhoto.caption}
+                    {getLocalizedText(selectedPhoto.caption, i18n.language)}
                   </DialogCaption>
                 </DialogContentInner>
               </DialogContentStyled>
