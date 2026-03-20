@@ -137,18 +137,68 @@ docker-compose up frontend
 
 ## ⚙️ Environment Configuration
 
-### Backend Variables
-Create a `.env` file in the root directory:
+Copy `.env.example` to `.env` and configure:
+
+```bash
+cp .env.example .env
+```
+
+### Frontend Variables (VITE_*)
+Embedded at build time - set in Docker environment or `.env`:
 
 ```env
-# JWT Configuration
-JWT_SECRET=your-jwt-secret-here
+# Wedding Date (ISO 8601)
+VITE_APP_WEDDING_DATE=2026-04-05T17:00:00
+
+# Event Times
+VITE_WEDDING_AKAD_TIME=08.00 - 10.00 WIB
+VITE_WEDDING_RESEPSI_TIME=11.00 - 13.00 WIB
+
+# Venue
+VITE_WEDDING_VENUE=Your Venue Name
+VITE_WEDDING_DETAIL=Venue address or details
+VITE_VENUE_MAPS_URL=https://maps.google.com/your-venue-link
+
+# Couple (Full Names)
+VITE_BRIDE_NAME=Bride Full Name
+VITE_GROOM_NAME=Groom Full Name
+
+# Couple (Short Names - for splash/thank you)
+VITE_BRIDE_SHORT_NAME=Bride
+VITE_GROOM_SHORT_NAME=Groom
+
+# Couple Parents
+VITE_BRIDE_FATHER=Bride's Father Name
+VITE_BRIDE_MOTHER=Bride's Mother Name
+VITE_GROOM_FATHER=Groom's Father Name
+VITE_GROOM_MOTHER=Groom's Mother Name
+
+# Gift Banking (Partner 1)
+VITE_PARTNER1_BANK_NAME=Bank Name
+VITE_PARTNER1_ACCOUNT_NAME=Partner 1 Full Name
+VITE_PARTNER1_ACCOUNT_NUMBER=1234567890
+
+# Gift Banking (Partner 2)
+VITE_PARTNER2_BANK_NAME=Bank Name
+VITE_PARTNER2_ACCOUNT_NAME=Partner 2 Full Name
+VITE_PARTNER2_ACCOUNT_NUMBER=0987654321
+
+# Music & Gallery
+VITE_YOUTUBE_PLAYLIST_URL=
+VITE_PHOTOS_JSON=
+VITE_DISABLE_GALLERY=false
+```
+
+### Backend Variables
+Loaded at runtime from `.env`:
+
+```env
+# JWT
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 JWT_EXPIRY=86400
 
-# Spotify Integration
-SPOTIFY_CLIENT_ID=your-spotify-client-id
-SPOTIFY_CLIENT_SECRET=your-spotify-client-secret
-SPOTIFY_REDIRECT_URI=http://localhost:8080/spotify/callback
+# Admin
+ADMIN_API_KEY=your-admin-api-key-change-this
 
 # Database
 DB_PATH=data/guests.db
@@ -156,22 +206,34 @@ DB_PATH=data/guests.db
 # Server
 SERVER_PORT=:8080
 
-# Admin
-ADMIN_API_KEY=your-admin-api-key
-```
+# Cache (duration: s, m, h)
+CACHE_GUEST_TTL=5m
+CACHE_COMMENT_TTL=2m
 
-### Frontend Variables (Docker build-time)
-Set these in your Docker environment or docker-compose.yml:
+# Rate Limiting - Auth
+RATE_LIMIT_AUTH_MAX=5
+RATE_LIMIT_AUTH_WINDOW=1m
 
-```env
-VITE_APP_WEDDING_DATE=2024-12-31
-VITE_APP_VENUE_LAT=40.7128
-VITE_APP_VENUE_LNG=-74.0060
-VITE_PARTNER1_ACCOUNT_NAME=Partner One
-VITE_PARTNER1_ACCOUNT_NUMBER=123456789
-VITE_PARTNER2_ACCOUNT_NAME=Partner Two
-VITE_PARTNER2_ACCOUNT_NUMBER=987654321
-VITE_YOUTUBE_PLAYLIST_URL=https://youtube.com/playlist?list=...
+# Rate Limiting - RSVP
+RATE_LIMIT_RSVP_MAX=10
+RATE_LIMIT_RSVP_WINDOW=1m
+
+# Rate Limiting - Comments
+RATE_LIMIT_COMMENT_MAX=5
+RATE_LIMIT_COMMENT_WINDOW=1m
+
+# Business Logic
+MAX_COMMENTS_PER_GUEST=2
+
+# Spotify (optional, currently disabled)
+SPOTIFY_CLIENT_ID=your_spotify_client_id
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+SPOTIFY_REDIRECT_URI=http://localhost:8080/spotify/callback
+SPOTIFY_CACHE_SECONDS=300
+
+# Deployment
+DOMAIN=example.com
+LETSENCRYPT_EMAIL=your-email@example.com
 ```
 
 ## 📊 Database Schema
